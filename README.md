@@ -3,7 +3,7 @@
     - MySql 5.7
 
 # Configuration
-    - cp .env.dev .env
+    - cp .env.example .env
 
 ## Run the database migrations
 
