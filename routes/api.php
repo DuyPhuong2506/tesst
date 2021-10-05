@@ -19,3 +19,5 @@ Route::group(['middleware' => 'jwtAuth'], function () {
     Route::get('user-info', 'UsersController@getUserCurrent');
     Route::post('auth/logout', 'AuthController@logout');
 });
+
+Route::get('agora/get-token','AgoraController@generateToken');
