@@ -33,23 +33,23 @@ build-dependence:
     - DEV_SHELL
 
 
-test-convention:
-  stage: test
-  script:
-    - echo $CI_PROJECT_DIR
-    - php vendor/bin/phpcs --standard=phpcs-laravel app/
-  cache:
-    paths:
-      - ./vendor
-    key: ${CI_COMMIT_REF_SLUG}
-    policy: pull
-  only:
-    refs:
-      - develop
-      - staging
-      - master
-  tags:
-    - DEV_SHELL
+# test-convention:
+#   stage: test
+#   script:
+#     - echo $CI_PROJECT_DIR
+#     - php vendor/bin/phpcs --standard=phpcs-laravel app/
+#   cache:
+#     paths:
+#       - ./vendor
+#     key: ${CI_COMMIT_REF_SLUG}
+#     policy: pull
+#   only:
+#     refs:
+#       - develop
+#       - staging
+#       - master
+#   tags:
+#     - DEV_SHELL
 
 include:
   - local: .gitlab/dev.gitlab-ci.yml
