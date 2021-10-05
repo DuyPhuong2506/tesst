@@ -1,0 +1,38 @@
+deploy-master:
+  stage: deploy
+  script:
+    - cat "$PRO_ENV_FILE" > ".env"
+    - mkdir -p storage/app/public/firebase
+    - cat "$CI_PRO_FIREBASE" > "storage/app/public/firebase/firebase_credentials-g71en-173da651a0.json"
+    - chmod +x .gitlab/deploy-master.sh
+    - sh .gitlab/deploy-master.sh
+    - tar -cf prod-api-matsueku.tar ../WeddingOnline-api
+    - aws s3 cp prod-api-matsueku.tar s3://prod-matsueku-soucecode/
+    # - rsync -hrzog --chown nginx:nginx --delete -e "ssh --rsync-path="sudo rsync" -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" $CI_PROJECT_DIR/ centos@10.1.1.88:/srv/WeddingOnline-api/
+  cache:
+    paths:
+      - ./vendor
+    key: ${CI_COMMIT_REF_SLUG}
+    policy: pull
+  only:
+    - master
+  tags:
+    - DEV_SHELL
+migrate-master:
+  stage: migration
+  script:
+    - ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null centos@10.1.1.88 "cd /srv/WeddingOnline-api/ && yes | php artisan migrate"
+  when: manual
+  only:
+    - master
+  tags:
+    - DEV_SHELL
+seed-master:
+  stage: seed
+  script:
+    - ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null centos@10.1.1.88 "cd /srv/WeddingOnline-api/ && yes | php artisan db:seed"
+  when: manual
+  only:
+    - master
+  tags:
+    - DEV_SHELL

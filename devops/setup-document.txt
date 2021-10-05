@@ -1,0 +1,8 @@
+CENTOS 7 - PHP 7.4 - MYSQL 5.7
+
+- using ansible: https://gitlab-new.bap.jp/BAP-SYSTEM-TEAM/system-template/-/tree/master/ansible/setup/WeddingOnline-dev.yml
+
+- install Mysql 5.7
+
+sudo yum localinstall https://dev.mysql.com/get/mysql57-community-release-el7-11.noarch.rpm -y
+sudo yum install mysql-community-server -y

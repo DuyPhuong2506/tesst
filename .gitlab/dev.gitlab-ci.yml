@@ -1,0 +1,36 @@
+deploy-develop:
+  stage: deploy
+  script:
+    - cat "$DEV_ENV_FILE" > ".env"
+    # - mkdir -p storage/app/public/firebase
+    # - cat "$CI_DEV_FIREBASE" > "storage/app/public/firebase/firebase_credentials-g71en-173da651a0.json"
+    - sudo rsync --delete -hrzog --chown centos:centos $CI_PROJECT_DIR/ /srv/WeddingOnline-api/
+    - sudo -H -u centos bash -c "cd /srv/WeddingOnline-api/ && php artisan cache:clear"
+    - sudo -H -u centos bash -c "cd /srv/WeddingOnline-api/ && php artisan config:clear"
+  cache:
+    paths:
+      - ./vendor
+    key: ${CI_COMMIT_REF_SLUG}
+    policy: pull
+  only:
+    - develop
+  tags:
+    - DEV_SHELL
+migrate-develop:
+  stage: migration
+  script:
+    - sudo -H -u centos bash -c "cd /srv/WeddingOnline-api/ && yes | php artisan migrate"
+  when: manual
+  only:
+    - develop
+  tags:
+    - DEV_SHELL
+seed-develop:
+  stage: seed
+  script:
+    - sudo -H -u centos bash -c "cd /srv/WeddingOnline-api/ && yes | php artisan db:seed"
+  when: manual
+  only:
+    - develop
+  tags:
+    - DEV_SHELL
