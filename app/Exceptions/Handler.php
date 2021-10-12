@@ -4,9 +4,11 @@ namespace App\Exceptions;
 
 use Exception;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use App\Traits\ApiTrait;
 
 class Handler extends ExceptionHandler
 {
+    use ApiTrait;
     /**
      * A list of the exception types that are not reported.
      *
@@ -50,6 +52,7 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
-        return parent::render($request, $exception);
+        return $this->respondError(501, $exception->getMessage());
+        //return parent::render($request, $exception);
     }
 }
