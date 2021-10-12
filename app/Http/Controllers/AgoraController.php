@@ -21,7 +21,7 @@ class AgoraController extends Controller
         $this->agoraService = app(AgoraService::class);
     }
 
-    public function generateToken()
+    public function generateToken(Request $request)
     {
         try {
             $roleHost = \App\Libs\Agora\RtcTokenBuilder::RolePublisher;

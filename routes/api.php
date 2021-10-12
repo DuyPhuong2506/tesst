@@ -20,4 +20,4 @@ Route::group(['middleware' => 'jwtAuth'], function () {
     Route::post('auth/logout', 'AuthController@logout');
 });
 
-Route::get('agora/get-token','AgoraController@generateToken');
+Route::get('agora/get-token','AgoraController@generateToken')->middleware('cors');
