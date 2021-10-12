@@ -24,18 +24,30 @@ class AgoraController extends Controller
     public function generateToken()
     {
         try {
-            $user = Auth::user();
+            $roleHost = \App\Libs\Agora\RtcTokenBuilder::RolePublisher;
+            $roleMember = \App\Libs\Agora\RtcTokenBuilder::RoleSubscriber;
+
+            $users = [
+                ['id' => 1, 'username' => 'pc_cam', 'role' => $roleHost],
+                ['id' => 2, 'username' => 'couple', 'role' => $roleMember],
+                ['id' => 3, 'username' => 'table_1', 'role' => $roleMember],
+                ['id' => 4, 'username' => 'table_2', 'role' => $roleMember],
+                ['id' => 5, 'username' => 'table_3', 'role' => $roleMember],
+                ['id' => 6, 'username' => 'table_4', 'role' => $roleMember],
+                ['id' => 7, 'username' => 'table_5', 'role' => $roleMember],
+            ];
             $dataChanels = array();
-            for ($i = 0; $i< 5; $i++) {
-                $channelName = (string) Uuid::generate(4);
-                $uuid = rand(1,10000);
+            foreach ($users as $user) {
+                $channelName = $user['username'];
+                $uuid = $user['id'];
                 // Rtc token using video call
-                $rtcToken = $this->agoraService->getRtcToken($channelName, $uuid);
+                $rtcToken = $this->agoraService->getRtcToken($channelName, $uuid, $user['role']);
                 $dataChanels[] = [
                     'app_id' => env('AGORA_APP_ID'),
                     'uuid' => $uuid,
                     'chanel_name' => $channelName,
-                    'rtc_token' => $rtcToken
+                    'rtc_token' => $rtcToken,
+                    'role' => $user['role']
                 ];
             }
 
