@@ -41,11 +41,11 @@ class AuthController extends Controller
      */
     public function login(LoginRequest $request)
     {
-        $credentials = $request->only('email', 'password');
+        $credentials = $request->only('username', 'password');
         $token = null;
         try {
            if (!$token = JWTAuth::attempt($credentials)) {
-                return $this->respondError(Response::HTTP_BAD_REQUEST, 'invalid_email_or_password');
+                return $this->respondError(Response::HTTP_BAD_REQUEST, 'invalid_credentials');
            }
         } catch (JWTAuthException $e) {
             return $this->respondError(Response::HTTP_BAD_REQUEST, 'failed_to_create_token');

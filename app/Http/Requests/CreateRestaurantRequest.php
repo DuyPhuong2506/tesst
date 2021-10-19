@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use App\Http\Requests\ApiRequest;
 
-class RegisterRequest extends ApiRequest
+class CreateRestaurantRequest extends ApiRequest
 {
     /**
      * Get the validation rules that apply to the request.
@@ -14,9 +14,9 @@ class RegisterRequest extends ApiRequest
     public function rules()
     {
         return [
-            'name' => 'required',
-            'email' => 'required|email|unique:users',
-            'password' => 'required',
+            'name' => 'required|unique:restaurants',
+            'phone' => 'required',
+            'address' => 'required',
         ];
     }
 }
