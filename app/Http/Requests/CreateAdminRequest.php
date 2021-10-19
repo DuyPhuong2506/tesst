@@ -4,10 +4,8 @@ namespace App\Http\Requests;
 
 use App\Http\Requests\ApiRequest;
 
-class LoginRequest extends ApiRequest
+class CreateAdminRequest extends ApiRequest
 {
-   
-
     /**
      * Get the validation rules that apply to the request.
      *
@@ -16,8 +14,10 @@ class LoginRequest extends ApiRequest
     public function rules()
     {
         return [
-            'username' => 'required',
+            'username' => 'required|unique:users',
+            'email' => 'required|email',
             'password' => 'required',
+            'restaurant_id' => 'required|exists:\App\Models\Restaurant,id'
         ];
     }
 }

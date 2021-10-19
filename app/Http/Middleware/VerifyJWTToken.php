@@ -28,14 +28,9 @@ class VerifyJWTToken
         try {
             JWTAuth::parseToken()->authenticate();
         }catch (JWTException $e) {
-            if($e instanceof \Tymon\JWTAuth\Exceptions\TokenExpiredException) {
-                return $this->respondError($e->getStatusCode(), 'token_expired');
-            }else if ($e instanceof \Tymon\JWTAuth\Exceptions\TokenInvalidException) {
-                return $this->respondError($e->getStatusCode(), 'token_invalid' );
-            }else{
-                return $this->respondError(Response::HTTP_UNAUTHORIZED, 'Token is required' );
-            }
+            return $this->respondError(Response::HTTP_UNAUTHORIZED, $e->getMessage() );
         }
+
         return $next($request);
     }
 }
