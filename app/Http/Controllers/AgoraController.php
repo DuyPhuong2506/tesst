@@ -42,17 +42,21 @@ class AgoraController extends Controller
                 $uuid = $user['id'];
                 // Rtc token using video call
                 $rtcToken = $this->agoraService->getRtcToken($channelName, $uuid, $user['role']);
+
+                // Rtm token using chat
+                $rtmToken = $this->agoraService->getRtmToken($channelName);
+
                 $dataChanels[] = [
                     'app_id' => env('AGORA_APP_ID'),
                     'uuid' => $uuid,
                     'chanel_name' => $channelName,
                     'rtc_token' => $rtcToken,
+                    'rtm_token' => $rtmToken,
                     'role' => $user['role']
                 ];
             }
 
-            // Rtm token using chat
-            //$rtmToken = $this->agoraService->getRtmToken($channelName);
+            
 
             if (empty($dataChanels)) {
                 return $this->respondError(Response::HTTP_BAD_REQUEST, 'Generate token error');
