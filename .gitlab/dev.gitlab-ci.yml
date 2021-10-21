@@ -37,3 +37,12 @@ seed-develop:
     - develop
   tags:
     - DEV_SHELL
+rollback-db-develop:
+  stage: seed
+  script:
+    - sudo -H -u centos bash -c "cd /srv/WeddingOnline-api/ && yes | php artisan migrate:rollback"
+  when: manual
+  only:
+    - develop
+  tags:
+    - DEV_SHELL
