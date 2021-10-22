@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Seeder;
 use App\Models\User;
+use App\Constants\Role;
 
 class UserSeeder extends Seeder
 {
@@ -13,10 +14,18 @@ class UserSeeder extends Seeder
     public function run()
     {
         User::create([
-            'username' => 'master_wedding',
-            'email' => 'master_wedding@test.com',
-            'password' => Hash::make(123456),
-            'role' => User::ROLE_SUPER_ADMIN
+            'username' => 'super_admin',
+            'email' => 'super_admin@test.com',
+            'password' => 123456,
+            'role' => Role::SUPER_ADMIN
+        ]);
+
+        User::create([
+            'username' => 'admin',
+            'email' => 'admin@test.com',
+            'password' => 123456,
+            'restaurant_id' => 1,
+            'role' => Role::STAFF_ADMIN
         ]);
     }
 }

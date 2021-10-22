@@ -17,8 +17,9 @@ class CreateTableAccountsTable extends Migration
             $table->bigIncrements('id');
             $table->string('username')->unique(true);
             $table->string('password');
+            $table->tinyInteger('role');
             $table->bigInteger('place_id');
-            $table->tinyInteger('status');
+            $table->tinyInteger('status')->default(1);
             $table->timestamps();
         });
     }

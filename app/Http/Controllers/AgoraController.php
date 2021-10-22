@@ -44,7 +44,7 @@ class AgoraController extends Controller
                 $rtcToken = $this->agoraService->getRtcToken($channelName, $uuid, $user['role']);
 
                 // Rtm token using chat
-                $rtmToken = $this->agoraService->getRtmToken($channelName);
+                $rtmToken = $this->agoraService->getRtmToken($uuid);
 
                 $dataChanels[] = [
                     'app_id' => env('AGORA_APP_ID'),

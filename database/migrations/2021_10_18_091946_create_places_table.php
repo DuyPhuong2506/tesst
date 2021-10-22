@@ -17,7 +17,7 @@ class CreatePlacesTable extends Migration
             $table->bigIncrements('id');
             $table->string('name');
             $table->bigInteger('restaurant_id');
-            $table->tinyInteger('status');
+            $table->tinyInteger('status')->default(1);
             $table->timestamps();
         });
     }
