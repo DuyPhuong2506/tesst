@@ -25,6 +25,8 @@ build-dependence:
       - master
     changes:
       - composer.json
+    variables:
+      - $BUILDDEV == "DEV"
   artifacts:
     expire_in: 1 hour
     paths:
