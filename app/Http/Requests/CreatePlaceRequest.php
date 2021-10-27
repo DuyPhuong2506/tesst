@@ -2,11 +2,10 @@
 
 namespace App\Http\Requests;
 
-use App\Http\Requests\ApiRequest;
+use Illuminate\Foundation\Http\FormRequest;
 
-class LoginRequest extends ApiRequest
+class CreatePlaceRequest extends ApiRequest
 {
-   
 
     /**
      * Get the validation rules that apply to the request.
@@ -16,8 +15,8 @@ class LoginRequest extends ApiRequest
     public function rules()
     {
         return [
-            'email' => 'required',
-            'password' => 'required',
+            'name' => 'required',
+            'restaurant_id' => 'required|exists:\App\Models\Restaurant,id',
         ];
     }
 }

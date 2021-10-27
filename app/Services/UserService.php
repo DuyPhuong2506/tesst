@@ -2,13 +2,13 @@
 namespace App\Services;
 
 use App\Models\User;
+use App\Constrants\Role;
 
 class UserService
 {
-
     public function createAdmin($data)
     {
-        $role = User::ROLE_ADMIN;
+        $role = Role::STAFF_ADMIN;
         $data = array_merge($data, ['role' => $role]);
         return User::create($data);
     }
