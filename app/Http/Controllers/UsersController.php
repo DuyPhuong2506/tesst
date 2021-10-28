@@ -39,7 +39,7 @@ class UsersController extends Controller
     {
         
         $users = $this->userService->getAllByRestaurant($id);
-        if (empty($users)) return $this->respondSuccess($users);
+        if (!empty($users)) return $this->respondSuccess($users);
 
         return $this->respondError('404','staffs does not exists');
     }
