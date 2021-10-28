@@ -2,7 +2,7 @@
 namespace App\Services;
 
 use App\Models\User;
-use App\Constrants\Role;
+use App\Constants\Role;
 
 class UserService
 {

@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Http\Request;
+use App\Mail\SendMail;
+use Illuminate\Support\Facades\Mail;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,3 +34,8 @@ Route::group(['middleware' => ['jwtAuth']], function () {
 });
 
 Route::get('agora/get-token','AgoraController@generateToken')->middleware('cors');
+
+Route::get('/send-mail', function () {
+    Mail::to('anhpmt@bap.jp')->send(new SendMail()); 
+    return 'A message has been sent to Mailtrap!';
+});
