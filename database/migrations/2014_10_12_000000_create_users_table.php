@@ -22,7 +22,7 @@ class CreateUsersTable extends Migration
             $table->bigInteger('restaurant_id')->nullable();
             $table->string('phone')->nullable();
             $table->string('address')->nullable();
-            $table->tinyInteger('role')->default(Role::SUPER_ADMIN);
+            $table->tinyInteger('role');
             $table->rememberToken();
             $table->timestamps();
         });

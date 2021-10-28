@@ -31,6 +31,12 @@ Route::group(['middleware' => ['jwtAuth']], function () {
     Route::post('admin/create','UsersController@createAdmin');
     Route::resource('places', 'PlacesController');
     Route::resource('restaurants','RestaurantsController');
+
+
+    /** route staffs */
+    Route::get('staffs/{restaurant_id}','UsersController@getStaffAdmin');
+    Route::get('staff/{user_id}','UsersController@getStaff');
+    Route::delete('staff/{user_id}','UsersController@destroyStaff');
 });
 
 Route::get('agora/get-token','AgoraController@generateToken')->middleware('cors');

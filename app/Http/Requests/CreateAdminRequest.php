@@ -15,7 +15,7 @@ class CreateAdminRequest extends ApiRequest
     {
         return [
             'username' => 'required|unique:users',
-            'email' => 'required|email',
+            'email' => 'required|unique:users|email',
             'password' => 'required',
             'restaurant_id' => 'required|exists:\App\Models\Restaurant,id'
         ];
