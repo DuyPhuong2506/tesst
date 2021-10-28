@@ -34,7 +34,7 @@ Route::group(['middleware' => ['jwtAuth']], function () {
 
 
     /** route staffs */
-    Route::get('staffs/{restaurant_id}','UsersController@getStaffAdmin');
+    Route::get('restaurants/{restaurant_id}/staffs','UsersController@getStaffAdmin');
     Route::get('staff/{user_id}','UsersController@getStaff');
     Route::delete('staff/{user_id}','UsersController@destroyStaff');
 });
