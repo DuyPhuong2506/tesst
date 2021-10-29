@@ -17,17 +17,11 @@ use Illuminate\Support\Facades\Mail;
 
 #Route::post('auth/register', 'AuthController@register');
 Route::post('auth/login', 'AuthController@login');
-Route::post('auth/customer/login', 'AuthController@customerLogin');
-
-
-
-Route::group(['middleware' => 'jwtAuth'], function () {
-    Route::get('user-info', 'UsersController@getUserCurrent');
-    Route::post('auth/logout', 'AuthController@logout');
-    #Route::post('admin/create','UsersController@createAdmin');    
-});
+Route::post('auth/customer/login', 'AuthCustomerController@login');
+Route::post('auth/table-account/login', 'AuthTableAccountController@login');
 
 Route::group(['middleware' => ['jwtAuth']], function () {
+    Route::post('auth/logout', 'AuthController@logout');
     Route::post('admin/create','UsersController@createAdmin');
     Route::resource('places', 'PlacesController');
     Route::resource('restaurants','RestaurantsController');
