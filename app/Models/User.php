@@ -28,4 +28,9 @@ class User extends AuthJWT
     {
         return $query->where(['role' => Role::STAFF_ADMIN]);
     }
+
+    public function isSuperAdmin()
+    {
+        return $this->role == Role::SUPER_ADMIN;
+    }
 }

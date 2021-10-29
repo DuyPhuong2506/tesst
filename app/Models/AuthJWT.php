@@ -29,4 +29,14 @@ class AuthJWT extends Authenticatable implements JWTSubject
     {
         return [];
     }
+
+    /**
+     * Password need to be all time encrypted.
+     *
+     * @param string $password
+     */
+    public function setPasswordAttribute($password)
+    {
+        $this->attributes['password'] = \Hash::make($password);
+    }
 }

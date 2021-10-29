@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
+use App\Models\TableAccount;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Http\Requests\LoginRequest;
@@ -14,29 +14,20 @@ use JWTAuth;
 use JWTAuthException;
 use Hash;
 
-class AuthController extends Controller
+class AuthTableAccountController extends Controller
 {
-    private $user;
+    private $tableAccount;
 
-    public function __construct(User $user)
+    public function __construct(TableAccount $tableAccount)
     {
-        \Config::set('jwt.user', User::class);
+        \Config::set('jwt.user', TableAccount::class);
         \Config::set('auth.providers', ['users' => [
                 'driver' => 'eloquent',
-                'model' => User::class,
+                'model' => TableAccount::class,
             ]]);
-        $this->user = $user;
+        $this->tableAccount = $tableAccount;
     }
 
-    public function register(RegisterRequest $request)
-    {
-        $user = $this->user->create([
-            'username' => $request->get('username'),
-            'email' => $request->get('email'),
-            'password' => Hash::make($request->get('password'))
-        ]);
-        return $this->respondSuccess($user);
-    }
 
     /**
      * Get a JWT token via given credentials.
@@ -45,9 +36,9 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function login(LoginRequest $request)
+    public function login(Request $request)
     {
-        $credentials = $request->only('email', 'password');
+        $credentials = $request->only('username', 'password');
 
         $token = null;
         try {
@@ -57,7 +48,6 @@ class AuthController extends Controller
         } catch (JWTAuthException $e) {
             return $this->respondError(Response::HTTP_BAD_REQUEST, 'failed_to_create_token');
         }
-        
         return $this->respondSuccess($this->respondWithToken($token));
     }
 
