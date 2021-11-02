@@ -1,0 +1,19 @@
+{
+	"id": "85fff757-04fe-43c6-a7c0-cd4967084dc8",
+	"name": "constant",
+	"values": [
+		{
+			"key": "localhost",
+			"value": "localhost:8000",
+			"enabled": true
+		},
+		{
+			"key": "access_token",
+			"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC93ZWRkaW5nLmJhY2tlbmQubG9jYWxcL2FwaVwvYXV0aFwvbG9naW4iLCJpYXQiOjE2MzU3NTU2ODgsImV4cCI6MTYzNTc1OTI4OCwibmJmIjoxNjM1NzU1Njg4LCJqdGkiOiJpOEpmTEpQN3dCazViWnRrIiwic3ViIjoxLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.myjGxvgMB6ThzsMHD-g9Cf4UDAUKKEn29g9MacyTs5Y",
+			"enabled": true
+		}
+	],
+	"_postman_variable_scope": "environment",
+	"_postman_exported_at": "2021-11-02T04:11:49.907Z",
+	"_postman_exported_using": "Postman/8.12.5"
+}

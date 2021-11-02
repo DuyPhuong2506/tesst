@@ -16,7 +16,7 @@ class TableAccountSeeder extends Seeder
         TableAccount::create([
             'username' => 'table1',
             'password' => 123456,
-            'place_id' => 1,
+            // 'place_id' => 1,
             'role' => Role::TABLE_ACCOUNT
         ]);
     }

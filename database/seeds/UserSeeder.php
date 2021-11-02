@@ -24,7 +24,7 @@ class UserSeeder extends Seeder
             'username' => 'admin',
             'email' => 'admin@test.com',
             'password' => 123456,
-            'restaurant_id' => 1,
+            // 'restaurant_id' => 1,
             'role' => Role::STAFF_ADMIN
         ]);
     }

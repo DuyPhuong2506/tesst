@@ -7,7 +7,16 @@ use App\Constants\Role;
 
 class User extends AuthJWT
 {
-    protected $fillable = ['username', 'email', 'restaurant_id','role', 'password'];
+    protected $fillable = [
+        'username', 
+        'email', 
+        'restaurant_id',
+        'role', 
+        'password', 
+        'company_id',
+        'phone', 
+        'address'
+    ];
 
 
     protected $hidden = [
@@ -32,5 +41,10 @@ class User extends AuthJWT
     public function isSuperAdmin()
     {
         return $this->role == Role::SUPER_ADMIN;
+    }
+
+    public function company()
+    {
+        return $this->belongsTo(Company::class, 'company_id', 'id');
     }
 }
