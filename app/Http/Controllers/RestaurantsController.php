@@ -47,7 +47,7 @@ class RestaurantsController extends Controller
     public function destroy($id)
     {
         
-        $isDel = $this->placeRrestaurantRepoepo->delete($id);
+        $isDel = $this->restaurantRepo->delete($id);
         if ($isDel) return $this->respondSuccess('restaurant is deleted');
 
         return $this->respondError(Response::HTTP_NOT_IMPLEMENTED, 'restaurant can\'t delete');
