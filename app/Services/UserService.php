@@ -4,6 +4,8 @@ namespace App\Services;
 use App\Models\User;
 use App\Constants\Role;
 use App\Models\Company;
+use Mail;
+use Str;
 
 class UserService
 {
@@ -47,6 +49,32 @@ class UserService
         $user = User::staff()->find($staff_id);
         if ($user) return $user->delete();
         return null;
+    }
+
+    public function updateRememberToken($email,$token){
+        User::where('email',$email)
+            ->update(['remember_token'=>$token]);
+    }  
+    
+    public function changePassword($email,$password){
+        return User::where('email',$email)
+            ->update([
+                'password'=>$password,
+                'remember_token'=>null
+            ]);
+    }
+
+    public function sendMailToReset($email){
+        $token = Str::random(100);
+        $emailInfo = [
+            'token'=>$token,
+            'email_address'=>$email
+        ];
+        $this->updateRememberToken($email,$token);
+        Mail::send('mails/changepassword',$emailInfo, function($msg) use($email){
+            $msg->to($email)->subject("Change Password !");
+        });
+        return true;
     }
 
     public function findDetail($id)

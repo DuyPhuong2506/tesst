@@ -11,6 +11,9 @@ use Hash;
 use Illuminate\Support\Facades\Auth;
 use App\Services\UserService;
 use App\Http\Requests\CreateAdminRequest;
+use App\Http\Requests\ChangePasswordRequest;
+use App\Http\Requests\EmailRequest;
+use Str;
 
 class UsersController extends Controller
 {
@@ -46,7 +49,6 @@ class UsersController extends Controller
 
     public function getStaffAdmin($id)
     {
-        
         $users = $this->userService->getAllByRestaurant($id);
         if (!empty($users)) return $this->respondSuccess($users);
 
@@ -55,7 +57,6 @@ class UsersController extends Controller
 
     public function getStaff($id)
     {
-        
         $user = $this->userService->getStaff($id);
         if ($user) return $this->respondSuccess($user);
 
@@ -68,5 +69,21 @@ class UsersController extends Controller
         if ($user) return $this->respondSuccess('staff is deleted');
 
         return $this->respondError(Response::HTTP_NOT_IMPLEMENTED,'staff cannot delete');
+    }
+
+    public function sendEmailResetPassword(EmailRequest $req){
+        if($this->userService->sendMailToReset($req->email)){
+            return $this->respondSuccess("Email has been sent !");
+        }
+        return $this->respondError(Response::HTTP_BAD_REQUEST, 'Failed to send mail!');
+    }
+
+    public function updatePassword(ChangePasswordRequest $req){
+        if($req){
+            $this->userService
+                ->changePassword($req['email'], Hash::make($req['password']));
+            return $this->respondSuccess("Password has been changed !");
+        }
+        return $this->respondError(Response::HTTP_BAD_REQUEST,'Failed !');
     }
 }
