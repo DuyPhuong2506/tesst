@@ -74,16 +74,16 @@ class UsersController extends Controller
     public function sendEmailResetPassword(EmailRequest $req){
         if($this->userService->sendMailToReset($req->email)){
             return $this->respondSuccess("Email has been sent !");
-        }else{
-            return $this->respondError(Response::HTTP_BAD_REQUEST, 'Failed to send mail!');
         }
+        return $this->respondError(Response::HTTP_BAD_REQUEST, 'Failed to send mail!');
     }
 
     public function updatePassword(ChangePasswordRequest $req){
-        if($this->userService->checkRememberToken($req['email'], $req['token'])){
-            $this->userService->changePassword($req['email'],Hash::make($req['password']));
+        if($req){
+            $this->userService
+                ->changePassword($req['email'], Hash::make($req['password']));
             return $this->respondSuccess("Password has been changed !");
         }
-        return $this->respondError(Response::HTTP_NOT_IMPLEMENTED,'Failed !');
+        return $this->respondError(Response::HTTP_BAD_REQUEST,'Failed !');
     }
 }

@@ -15,8 +15,8 @@ class ChangePasswordRequest extends ApiRequest
     public function rules()
     {
         return [
-            'token'=>'required',
-            'email'=>'required|email',
+            'token'=>'required|exists:users,remember_token',
+            'email'=>'required|email|exists:users,email',
             'password'=>'required|confirmed'
         ];
     }

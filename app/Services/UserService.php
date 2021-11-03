@@ -51,45 +51,30 @@ class UserService
         return null;
     }
 
-    public function existEmail($email){
-        return (User::where('email',$email)->count() > 0) ? true : false;
-    }
-
     public function updateRememberToken($email,$token){
         User::where('email',$email)
-        ->update(['remember_token'=>$token]);
-    }
-
-    public function checkRememberToken($email, $form_token){
-        $db_token = User::where('email',$email)
-        ->where('remember_token',$form_token)
-        ->get('remember_token')
-        ->first()
-        ->remember_token;
-        return ($db_token === $form_token) ? true : false;
-    }
+            ->update(['remember_token'=>$token]);
+    }  
     
     public function changePassword($email,$password){
         return User::where('email',$email)
-        ->update([
-            'password'=>$password,
-            'remember_token'=>null
-        ]);
+            ->update([
+                'password'=>$password,
+                'remember_token'=>null
+            ]);
     }
 
     public function sendMailToReset($email){
         $token = Str::random(100);
-        $email_info = [
+        $emailInfo = [
             'token'=>$token,
             'email_address'=>$email
         ];
         $this->updateRememberToken($email,$token);
-        Mail::send('mails/changepassword',$email_info, function($msg) use($email){
-            $msg
-            ->to($email)
-            ->subject("Change Password !");
-            return true;
+        Mail::send('mails/changepassword',$emailInfo, function($msg) use($email){
+            $msg->to($email)->subject("Change Password !");
         });
+        return true;
     }
 
     public function findDetail($id)
