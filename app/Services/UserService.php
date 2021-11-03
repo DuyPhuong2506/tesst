@@ -29,4 +29,30 @@ class UserService
         if ($user) return $user->delete();
         return null;
     }
+
+    public function existEmail($email){
+        return (User::where('email',$email)->count() > 0) ? true : false;
+    }
+
+    public function updateRememberToken($email,$token){
+        User::where('email',$email)
+        ->update(['remember_token'=>$token]);
+    }
+
+    public function checkRememberToken($email, $form_token){
+        $db_token = User::where('email',$email)
+        ->where('remember_token',$form_token)
+        ->get('remember_token')
+        ->first()->remember_token;
+        return ($db_token === $form_token) ? true : false;
+    }
+
+    public function changePassword($email,$password){
+        return User::where('email',$email)
+        ->update([
+            'password'=>$password,
+            'remember_token'=>null
+        ]);
+    }
+
 }
