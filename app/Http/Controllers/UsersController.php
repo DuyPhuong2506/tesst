@@ -33,10 +33,18 @@ class UsersController extends Controller
 
     public function createAdmin(CreateAdminRequest $request)
     {
-        $data = $request
-        ->only('username','email','password','phone','address', 'restaurant_id');
-        $user = $this->userService->createAdmin($data);
-        return $this->respondSuccess($user);
+        \DB::beginTransaction();
+        try {
+            $data = $request->only('username','email','password','phone','address', 'restaurant_id');
+            $user = $this->userService->createAdmin($data);
+            \DB::commit();
+            
+            return $this->respondSuccess($user);
+        }  catch (\Exception $e) {
+            \DB::rollback();
+            
+            return $this->respondError(Response::HTTP_BAD_REQUEST, $e->getMessage());
+        }
     }
 
     public function getStaffAdmin($id)
