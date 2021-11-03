@@ -64,10 +64,11 @@ class UserService
         $db_token = User::where('email',$email)
         ->where('remember_token',$form_token)
         ->get('remember_token')
-        ->first()->remember_token;
+        ->first()
+        ->remember_token;
         return ($db_token === $form_token) ? true : false;
     }
-
+    
     public function changePassword($email,$password){
         return User::where('email',$email)
         ->update([
@@ -77,21 +78,18 @@ class UserService
     }
 
     public function sendMailToReset($email){
-        if($this->existEmail($email)){
-            $token = Str::random(100);
-            $email_info = [
-                'token'=>$token,
-                'email_address'=>$email
-            ];
-            $this->updateRememberToken($email,$token);
-            Mail::send('mails/changepassword',$email_info,function($msg) use($email){
-                $msg
-                ->to($email)
-                ->subject("BAP | Change Password !");
-            });
+        $token = Str::random(100);
+        $email_info = [
+            'token'=>$token,
+            'email_address'=>$email
+        ];
+        $this->updateRememberToken($email,$token);
+        Mail::send('mails/changepassword',$email_info, function($msg) use($email){
+            $msg
+            ->to($email)
+            ->subject("Change Password !");
             return true;
-        }
-        return false;
+        });
     }
 
     public function findDetail($id)
