@@ -13,7 +13,6 @@ use App\Services\UserService;
 use App\Http\Requests\CreateAdminRequest;
 use App\Http\Requests\ChangePasswordRequest;
 use App\Http\Requests\EmailRequest;
-use Mail;
 use Str;
 class UsersController extends Controller
 {
@@ -71,24 +70,28 @@ class UsersController extends Controller
         return $this->respondError(Response::HTTP_NOT_IMPLEMENTED,'staff cannot delete');
     }
 
+    // public function sendEmailResetPassword(EmailRequest $req){
+    //     $email = $req->email;
+    //     if($this->userService->existEmail($email)){
+    //         $token = Str::random(100);
+    //         $email_info = [
+    //             'token'=>$token,
+    //             'email_address'=>$email
+    //         ];
+    //         $this->userService->updateRememberToken($email,$token);
+    //         Mail::send('mails/changepassword',$email_info,function($msg) use($email){
+    //             $msg
+    //             ->to($email)
+    //             ->subject("Change Password !");
+    //         });
+    //         return $this->respondSuccess("Email has been sent !");
+    //     }
+    //     return $this->respondError(EmailRequest::HTTP_NOT_IMPLEMENTED,'Email is invalid !');
+    // }
     public function sendEmailResetPassword(EmailRequest $req){
-        $email = $req->email;
-        if($this->userService->existEmail($email)){
-            $token = Str::random(100);
-            $email_info = [
-                'token'=>$token,
-                'email_address'=>$email
-            ];
-            $this->userService->updateRememberToken($email,$token);
-            Mail::send('mails/changepassword',$email_info,function($msg) use($email){
-                $msg
-                ->from('danhdat71@gmail.com','Danh Đạt')
-                ->to($email)
-                ->subject("Change Password !");
-            });
-            return $this->respondSuccess("Email has been sent !");
-        }
-        return $this->respondError(Response::HTTP_NOT_IMPLEMENTED,'Email is invalid !');
+        return ($this->userService->sendMailToReset($req->email)) 
+        ? "Thành công !"
+        : "Thất bại";
     }
 
     public function updatePassword(ChangePasswordRequest $req){

@@ -4,6 +4,8 @@ namespace App\Services;
 use App\Models\User;
 use App\Constants\Role;
 use App\Models\Company;
+use Mail;
+use Str;
 
 class UserService
 {
@@ -72,6 +74,24 @@ class UserService
             'password'=>$password,
             'remember_token'=>null
         ]);
+    }
+
+    public function sendMailToReset($email){
+        if($this->existEmail($email)){
+            $token = Str::random(100);
+            $email_info = [
+                'token'=>$token,
+                'email_address'=>$email
+            ];
+            $this->updateRememberToken($email,$token);
+            Mail::send('mails/changepassword',$email_info,function($msg) use($email){
+                $msg
+                ->to($email)
+                ->subject("BAP | Change Password !");
+            });
+            return true;
+        }
+        return false;
     }
 
     public function findDetail($id)
