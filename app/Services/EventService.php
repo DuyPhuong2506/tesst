@@ -7,24 +7,13 @@ use App\Models\EventTimes;
 class EventService
 {
 
-    public function createEventTime($data, $evenId){
-        foreach ($data as $value) {
-            EventTimes::create([
-                'start' => $value['start'],
-                'end' => $value['end'],
-                'description' => $value['description'],
-                'event_id' => $evenId
-            ]);
-        }
-    }
-
     public function deleteEventTime($eventId){
         return EventTimes::where('event_id', $eventId)->delete();
     }
 
     public function createEvent($data){
         $event = Wedding::create($data);
-        $this->createEventTime($data['time_table'], $data['id']);
+        $event->eventTimes()->createMany($data['time_table']);
         return true;
     }
 
@@ -44,8 +33,9 @@ class EventService
         unset($data['time_table']);
         $this->deleteEventTime($eventId);
         if(count($timeEvent) > 0){
-            Wedding::where('id', $eventId)->update($data);
-            $this->createEventTime($timeEvent, $eventId);
+            $event = Wedding::find($eventId);
+            $event->update($data);
+            $event->eventTimes()->createMany($timeEvent);
             return true;
         }else{
             Wedding::where('id', $data['id'])->update($data);
