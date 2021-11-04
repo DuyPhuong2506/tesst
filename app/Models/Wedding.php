@@ -23,4 +23,9 @@ class Wedding extends Model
         'bride_email'
     ];
     protected $table = 'wedding_test';
+
+
+    public function eventTimes(){
+        return $this->hasMany(EventTimes::class,'event_id');
+    }
 }
