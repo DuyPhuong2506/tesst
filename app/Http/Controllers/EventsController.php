@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Services\EventService;
 use App\Http\Requests\WeddingEventRequest;
+use App\Http\Requests\UpdateEventRequest;
 use App\Http\Requests\EventIDRequest;
 
 class EventsController extends Controller
@@ -17,22 +18,7 @@ class EventsController extends Controller
     }
 
     public function createEvent(WeddingEventRequest $req){
-        $data = $req->only(
-            'event_name',
-            'date',
-            'welcome_start',
-            'welcome_end',
-            'wedding_start',
-            'wedding_end',
-            'reception_start',
-            'reception_end',
-            'place_id',
-            'groom_name',
-            'groom_email',
-            'bride_name',
-            'bride_email',
-            'time_table'
-        );
+        $data = $req->all();
         if($this->eventService->createEvent($data)){
             return $this->respondSuccess($data);
         }
@@ -47,5 +33,11 @@ class EventsController extends Controller
         return $this->respondError(Response::HTTP_BAD_REQUEST, 'Failed to get event!');
     }
 
-
+    public function updateEvent(UpdateEventRequest $req){
+        $data = $req->all();
+        if($this->eventService->updateEvent($data)){
+            return $this->respondSuccess($data);
+        }
+        return $this->respondError(Response::HTTP_BAD_REQUEST, 'Failed to update !');
+    }
 }
