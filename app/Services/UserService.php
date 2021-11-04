@@ -67,8 +67,9 @@ class UserService
     public function sendMailToReset($email){
         $token = Str::random(100);
         $emailInfo = [
-            'token'=>$token,
-            'email_address'=>$email
+            'token' => $token,
+            'email_address' => $email,
+            'app_url' => env('APP_URL')
         ];
         $this->updateRememberToken($email,$token);
         Mail::send('mails/changepassword',$emailInfo, function($msg) use($email){
