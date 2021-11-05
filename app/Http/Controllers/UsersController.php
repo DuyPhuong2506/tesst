@@ -82,9 +82,10 @@ class UsersController extends Controller
     }
 
     public function updatePassword(ChangePasswordRequest $req){
+        $data = $req->all();
         if($req){
             $this->userService
-                ->changePassword($req['email'], Hash::make($req['password']));
+                ->changePassword($data['token'], Hash::make($data['password']));
             return $this->respondSuccess([
                 'message'=>"Password has been changed !"
             ]);

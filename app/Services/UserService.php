@@ -54,10 +54,10 @@ class UserService
     public function updateRememberToken($email,$token){
         User::where('email',$email)
             ->update(['remember_token'=>$token]);
-    }  
+    }
     
-    public function changePassword($email,$password){
-        return User::where('email',$email)
+    public function changePassword($token, $password){
+        return User::where('remember_token', $token)
             ->update([
                 'password'=>$password,
                 'remember_token'=>null
@@ -68,7 +68,6 @@ class UserService
         $token = Str::random(100);
         $emailInfo = [
             'token' => $token,
-            'email_address' => $email,
             'app_url' => env('APP_URL')
         ];
         $this->updateRememberToken($email,$token);
