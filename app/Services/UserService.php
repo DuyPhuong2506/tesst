@@ -75,6 +75,7 @@ class UserService
         Mail::send('mails/changepassword',$emailInfo, function($msg) use($email){
             $msg->to($email)->subject("Change Password !");
         });
+        
         return true;
     }
 

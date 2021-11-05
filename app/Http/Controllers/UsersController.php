@@ -77,6 +77,7 @@ class UsersController extends Controller
                 "message"=>"Email has been sent !"
             ]);
         }
+
         return $this->respondError(Response::HTTP_BAD_REQUEST, 'Failed to send mail!');
     }
 
@@ -88,6 +89,7 @@ class UsersController extends Controller
                 'message'=>"Password has been changed !"
             ]);
         }
+
         return $this->respondError(Response::HTTP_BAD_REQUEST,'Failed !');
     }
 }

@@ -14,16 +14,18 @@ class EventService
     public function createEvent($data){
         $event = Wedding::create($data);
         $event->eventTimes()->createMany($data['time_table']);
+
         return true;
     }
 
     public function detailEvent($id){
         $weddingEvent = Wedding::where('id', $id)->get();
         $weddingTimes = EventTimes::where('event_id', $id)->get();
+
         return [
             'status' => true,
-            'weddingEvent' => $weddingEvent,
-            'weddingTimes' => $weddingTimes
+            'event' => $weddingEvent,
+            'event_time' => $weddingTimes
         ];
     }
 
@@ -36,11 +38,14 @@ class EventService
             $event = Wedding::find($eventId);
             $event->update($data);
             $event->eventTimes()->createMany($timeEvent);
+            
             return true;
         }else{
             Wedding::where('id', $data['id'])->update($data);
+
             return true;
         }
+
         return false;
     }
 
