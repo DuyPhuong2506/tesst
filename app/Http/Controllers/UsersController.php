@@ -73,7 +73,9 @@ class UsersController extends Controller
 
     public function sendEmailResetPassword(EmailRequest $req){
         if($this->userService->sendMailToReset($req->email)){
-            return $this->respondSuccess("Email has been sent !");
+            return $this->respondSuccess([
+                "message"=>"Email has been sent !"
+            ]);
         }
         return $this->respondError(Response::HTTP_BAD_REQUEST, 'Failed to send mail!');
     }
@@ -82,7 +84,9 @@ class UsersController extends Controller
         if($req){
             $this->userService
                 ->changePassword($req['email'], Hash::make($req['password']));
-            return $this->respondSuccess("Password has been changed !");
+            return $this->respondSuccess([
+                'message'=>"Password has been changed !"
+            ]);
         }
         return $this->respondError(Response::HTTP_BAD_REQUEST,'Failed !');
     }
