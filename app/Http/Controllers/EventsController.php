@@ -17,8 +17,8 @@ class EventsController extends Controller
         $this->eventService = $eventService;
     }
 
-    public function createEvent(WeddingEventRequest $req){
-        $data = $req->all();
+    public function createEvent(WeddingEventRequest $request){
+        $data = $request->all();
         if($this->eventService->createEvent($data)){
             return $this->respondSuccess([
                 'event'=>$data
@@ -28,8 +28,8 @@ class EventsController extends Controller
         return $this->respondError(Response::HTTP_BAD_REQUEST, 'Failed to create event!');
     }
 
-    public function detailEvent(EventIDRequest $req){
-        $data = $this->eventService->detailEvent($req->id);
+    public function detailEvent(EventIDRequest $request){
+        $data = $this->eventService->detailEvent($request->id);
         if($data['status']){
             return $this->respondSuccess($data);
         }
@@ -37,8 +37,8 @@ class EventsController extends Controller
         return $this->respondError(Response::HTTP_BAD_REQUEST, 'Failed to get event!');
     }
 
-    public function updateEvent(UpdateEventRequest $req){
-        $data = $req->all();
+    public function updateEvent(UpdateEventRequest $request){
+        $data = $request->all();
         if($this->eventService->updateEvent($data)){
             return $this->respondSuccess([
                 'event'=>$data

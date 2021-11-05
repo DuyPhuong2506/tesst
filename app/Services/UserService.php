@@ -6,6 +6,7 @@ use App\Constants\Role;
 use App\Models\Company;
 use Mail;
 use Str;
+use JWTAuth;
 
 class UserService
 {
@@ -51,27 +52,40 @@ class UserService
         return null;
     }
 
-    public function updateRememberToken($email,$token){
+    public function updateRememberToken($email, $token)
+    {
         User::where('email',$email)
-            ->update(['remember_token'=>$token]);
+            ->update(['remember_token' => $token]);
     }
     
-    public function changePassword($token, $password){
+    public function changePassword($token, $password)
+    {
         return User::where('remember_token', $token)
             ->update([
-                'password'=>$password,
-                'remember_token'=>null
+                'password' => $password,
+                'remember_token' => null,
+                'is_first_login' => '1'
             ]);
     }
 
-    public function sendMailToReset($email){
+    public function updatePasswordLogin($password, $email)
+    {
+        return User::where('email', $email)
+                ->update([
+                    'password' => $password,
+                    'is_first_login' => '1'
+                ]);
+    }
+
+    public function sendMailToReset($email)
+    {
         $token = Str::random(100);
         $emailInfo = [
             'token' => $token,
             'app_url' => env('APP_URL')
         ];
-        $this->updateRememberToken($email,$token);
-        Mail::send('mails/changepassword',$emailInfo, function($msg) use($email){
+        $this->updateRememberToken($email, $token);
+        Mail::send('mails/change_password', $emailInfo, function($msg) use($email){
             $msg->to($email)->subject("Change Password !");
         });
         

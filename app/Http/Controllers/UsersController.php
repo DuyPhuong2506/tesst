@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Services\UserService;
 use App\Http\Requests\CreateAdminRequest;
 use App\Http\Requests\ChangePasswordRequest;
+use App\Http\Requests\ChangePasswordLogin;
 use App\Http\Requests\EmailRequest;
 use Str;
 
@@ -71,8 +72,9 @@ class UsersController extends Controller
         return $this->respondError(Response::HTTP_NOT_IMPLEMENTED,'staff cannot delete');
     }
 
-    public function sendEmailResetPassword(EmailRequest $req){
-        if($this->userService->sendMailToReset($req->email)){
+    public function sendEmailResetPassword(EmailRequest $request)
+    {
+        if($this->userService->sendMailToReset($request->email)){
             return $this->respondSuccess([
                 "message"=>"Email has been sent !"
             ]);
@@ -81,11 +83,25 @@ class UsersController extends Controller
         return $this->respondError(Response::HTTP_BAD_REQUEST, 'Failed to send mail!');
     }
 
-    public function updatePassword(ChangePasswordRequest $req){
-        $data = $req->all();
-        if($req){
+    public function updatePassword(ChangePasswordRequest $request)
+    {
+        $data = $request->all();
+        if($request){
             $this->userService
-                ->changePassword($data['token'], Hash::make($data['password']));
+                 ->changePassword($data['token'], Hash::make($data['password']));
+            return $this->respondSuccess([
+                'message' => "Password has been changed !"
+            ]);
+        }
+
+        return $this->respondError(Response::HTTP_BAD_REQUEST,'Failed !');
+    }
+
+    public function updatePasswordLogin(ChangePasswordLogin $request)
+    {
+        $email = auth()->userOrFail()->email;
+        $password = Hash::make($request->password);
+        if($this->userService->updatePasswordLogin($password, $email)){
             return $this->respondSuccess([
                 'message'=>"Password has been changed !"
             ]);
@@ -93,4 +109,5 @@ class UsersController extends Controller
 
         return $this->respondError(Response::HTTP_BAD_REQUEST,'Failed !');
     }
+
 }
