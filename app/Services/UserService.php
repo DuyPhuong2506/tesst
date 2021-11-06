@@ -7,6 +7,7 @@ use App\Models\Company;
 use Mail;
 use Str;
 use JWTAuth;
+use Carbon\Carbon;
 
 class UserService
 {
@@ -52,20 +53,31 @@ class UserService
         return null;
     }
 
-    public function updateRememberToken($email, $token)
+    public function createRememberMail($email, $token, $email_at)
     {
         User::where('email',$email)
-            ->update(['remember_token' => $token]);
+            ->update([
+                'remember_token' => $token,
+                'email_at' => $email_at
+            ]);
     }
     
     public function changePassword($token, $password)
     {
-        return User::where('remember_token', $token)
-            ->update([
-                'password' => $password,
-                'remember_token' => null,
-                'is_first_login' => '1'
-            ]);
+        $startTime = User::where('remember_token', $token)->get('email_at')
+                            ->first()
+                            ->email_at;
+        $endTime = Carbon::now();
+        if($endTime->diffInSeconds($startTime) < 3600){
+            return User::where('remember_token', $token)
+                        ->update([
+                            'password' => $password,
+                            'remember_token' => null,
+                            'is_first_login' => '1'
+                        ]);
+        }
+
+        return false;        
     }
 
     public function updatePasswordLogin($password, $email)
@@ -73,7 +85,8 @@ class UserService
         return User::where('email', $email)
                 ->update([
                     'password' => $password,
-                    'is_first_login' => '1'
+                    'is_first_login' => '1',
+                    'remember_token' => null
                 ]);
     }
 
@@ -84,7 +97,7 @@ class UserService
             'token' => $token,
             'app_url' => env('APP_URL')
         ];
-        $this->updateRememberToken($email, $token);
+        $this->createRememberMail($email, $token, Carbon::now()->toDateTimeString());
         Mail::send('mails/change_password', $emailInfo, function($msg) use($email){
             $msg->to($email)->subject("Change Password !");
         });

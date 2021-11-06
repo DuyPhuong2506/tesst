@@ -86,15 +86,19 @@ class UsersController extends Controller
     public function updatePassword(ChangePasswordRequest $request)
     {
         $data = $request->all();
-        if($request){
-            $this->userService
-                 ->changePassword($data['token'], Hash::make($data['password']));
+        $status = $this->userService
+                       ->changePassword($data['token'], Hash::make($data['password']));
+        if($status){
             return $this->respondSuccess([
                 'message' => "Password has been changed !"
             ]);
+        }else if($status == false){
+            return $this->respondError(Response::HTTP_GONE, [
+                'email' => 'Email is expired !',
+                'status' => false
+            ]);
         }
-
-        return $this->respondError(Response::HTTP_BAD_REQUEST,'Failed !');
+        return $this->respondError(Response::HTTP_BAD_REQUEST, 'HTTP_BAD_REQUEST');
     }
 
     public function updatePasswordLogin(ChangePasswordLogin $request)

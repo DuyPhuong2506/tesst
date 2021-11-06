@@ -15,6 +15,7 @@ class InsertUsersColumnFirstLogin extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->tinyInteger('is_first_login')->default(0);
+            $table->dateTime('email_at')->nullable();
         });
     }
 
@@ -22,6 +23,7 @@ class InsertUsersColumnFirstLogin extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->dropColumn('is_first_login');
+            $table->dropColumn('email_at');
         });
     }
 }
