@@ -68,7 +68,7 @@ class UserService
                             ->first()
                             ->email_at;
         $endTime = Carbon::now();
-        if($endTime->diffInSeconds($startTime) < 60){
+        if($endTime->diffInSeconds($startTime) < config('email.email_expired')){
             return User::where('remember_token', $token)
                         ->update([
                             'password' => $password,
