@@ -137,6 +137,6 @@ return [
     | Token email expired at seconds
     */
     
-    'email_expired' => 60
+    'reset_password_expired' => 60
 
 ];
