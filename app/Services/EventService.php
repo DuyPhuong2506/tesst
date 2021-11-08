@@ -13,7 +13,7 @@ class EventService
 
     public function createEvent($data){
         $event = Wedding::create($data);
-        $event->eventTimes()->createMany($data['time_table']);
+        $event->eventTimes()->createMany($data['event_times']);
 
         return true;
     }
@@ -29,8 +29,8 @@ class EventService
 
     public function updateEvent($data){
         $eventId = $data['id'];
-        $timeEvent = $data['time_table'];
-        unset($data['time_table']);
+        $timeEvent = $data['event_times'];
+        unset($data['event_times']);
         $this->deleteEventTime($eventId);
         if(count($timeEvent) > 0){
             $event = Wedding::find($eventId);
