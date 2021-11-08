@@ -68,7 +68,7 @@ class UserService
                             ->first()
                             ->email_at;
         $endTime = Carbon::parse($startTime)->addHours(1);
-        if($endTime > Carbon::now()){
+        if($endTime < Carbon::now()){
             return User::where('remember_token', $token)
                         ->update([
                             'password' => $password,
