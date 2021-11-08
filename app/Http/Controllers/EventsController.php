@@ -17,7 +17,7 @@ class EventsController extends Controller
         $this->eventService = $eventService;
     }
 
-    public function createEvent(WeddingEventRequest $request){
+    public function store(WeddingEventRequest $request){
         $data = $request->all();
         if($this->eventService->createEvent($data)){
             return $this->respondSuccess([
@@ -25,19 +25,23 @@ class EventsController extends Controller
             ]);
         }
 
-        return $this->respondError(Response::HTTP_BAD_REQUEST, 'Failed to create event!');
+        return $this->respondError(Response::HTTP_BAD_REQUEST, [
+            'message'=>'Failed to create event!'
+        ]);
     }
 
-    public function detailEvent(EventIDRequest $request){
-        $data = $this->eventService->detailEvent($request->id);
+    public function show($id){
+        $data = $this->eventService->detailEvent($id);
         if($data['status']){
             return $this->respondSuccess($data);
         }
 
-        return $this->respondError(Response::HTTP_BAD_REQUEST, 'Failed to get event!');
+        return $this->respondError(Response::HTTP_BAD_REQUEST, [
+            'message' => 'Failed to get event!'
+        ]);
     }
 
-    public function updateEvent(UpdateEventRequest $request){
+    public function update(UpdateEventRequest $request, $id){
         $data = $request->all();
         if($this->eventService->updateEvent($data)){
             return $this->respondSuccess([
@@ -45,6 +49,8 @@ class EventsController extends Controller
             ]);
         }
         
-        return $this->respondError(Response::HTTP_BAD_REQUEST, 'Failed to update !');
+        return $this->respondError(Response::HTTP_BAD_REQUEST, [
+            'message' => 'Failed to update !'
+        ]);
     }
 }

@@ -80,7 +80,9 @@ class UsersController extends Controller
             ]);
         }
 
-        return $this->respondError(Response::HTTP_BAD_REQUEST, 'Failed to send mail!');
+        return $this->respondError(Response::HTTP_BAD_REQUEST, [
+            'message' => 'Failed to send mail !'
+        ]);
     }
 
     public function updatePassword(ChangePasswordRequest $request)
@@ -98,7 +100,9 @@ class UsersController extends Controller
                 'status' => false
             ]);
         }
-        return $this->respondError(Response::HTTP_BAD_REQUEST, 'HTTP_BAD_REQUEST');
+        return $this->respondError(Response::HTTP_BAD_REQUEST, [
+            'message' => 'Failed to change password !'
+        ]);
     }
 
     public function updatePasswordLogin(ChangePasswordLogin $request)
@@ -111,7 +115,9 @@ class UsersController extends Controller
             ]);
         }
 
-        return $this->respondError(Response::HTTP_BAD_REQUEST,'Failed !');
+        return $this->respondError(Response::HTTP_BAD_REQUEST, [
+            'message' => 'Failed to update !'
+        ]);
     }
 
 }
