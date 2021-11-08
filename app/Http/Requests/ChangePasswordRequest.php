@@ -16,8 +16,7 @@ class ChangePasswordRequest extends ApiRequest
     {
         return [
             'token'=>'required|exists:users,remember_token',
-            'email'=>'required|email|exists:users,email',
-            'password'=>'required|confirmed'
+            'password'=>'required|confirmed|min:8|max:16'
         ];
     }
 }

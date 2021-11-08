@@ -13,34 +13,37 @@ class EventService
 
     public function createEvent($data){
         $event = Wedding::create($data);
-        $event->eventTimes()->createMany($data['time_table']);
+        $event->eventTimes()->createMany($data['event_times']);
+
         return true;
     }
 
     public function detailEvent($id){
-        $weddingEvent = Wedding::where('id', $id)->get();
-        $weddingTimes = EventTimes::where('event_id', $id)->get();
+        $weddingEvent = Wedding::where('id', $id)->with('eventTimes')->first();
+        
         return [
             'status' => true,
-            'weddingEvent' => $weddingEvent,
-            'weddingTimes' => $weddingTimes
+            'event' => $weddingEvent
         ];
     }
 
     public function updateEvent($data){
         $eventId = $data['id'];
-        $timeEvent = $data['time_table'];
-        unset($data['time_table']);
+        $timeEvent = $data['event_times'];
+        unset($data['event_times']);
         $this->deleteEventTime($eventId);
         if(count($timeEvent) > 0){
             $event = Wedding::find($eventId);
             $event->update($data);
             $event->eventTimes()->createMany($timeEvent);
+            
             return true;
         }else{
             Wedding::where('id', $data['id'])->update($data);
+
             return true;
         }
+
         return false;
     }
 

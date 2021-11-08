@@ -27,10 +27,11 @@ Route::post('change-password','UsersController@updatePassword');
 
 Route::group(['middleware' => ['jwtAuth']], function () {
 
+    /**First login and change password**/
+    Route::post('change-password-login', 'UsersController@updatePasswordLogin');
+
     /**Wedding event API**/
-    Route::post('event/create','EventsController@createEvent');
-    Route::get('event/detail','EventsController@detailEvent');
-    Route::post('event/update','EventsController@updateEvent');
+    Route::resource('event','EventsController');
     
     Route::post('auth/logout', 'AuthController@logout');
     Route::post('admin/create','UsersController@createAdmin');

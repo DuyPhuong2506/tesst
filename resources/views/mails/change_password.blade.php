@@ -112,7 +112,6 @@
           <tr>
             <td align="left" bgcolor="#ffffff" style="padding: 24px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; line-height: 24px;">
               <p style="margin: 0;">Token: {{$token}}</p>
-              <p style="margin: 0;">Email: {{$email_address}}</p>
             </td>
           </tr>
           <!-- end copy -->
@@ -141,7 +140,7 @@
           <tr>
             <td align="left" bgcolor="#ffffff" style="padding: 24px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; line-height: 24px;">
               <p style="margin: 0;">If that doesn't work, copy and paste the following link in your browser:</p>
-              <p style="margin: 0;"><a href="" target="_blank">http://127.0.0.1/change-password?email={{$email_address}}&token={{$token}}</a></p>
+              <p style="margin: 0;"><a href="" target="_blank">{{$app_url}}/change-password?token={{$token}}</a></p>
             </td>
           </tr>
           <!-- end copy -->

@@ -2,11 +2,10 @@
 
 namespace App\Http\Requests;
 
-use App\Http\Requests\ApiRequest;
+use Illuminate\Foundation\Http\FormRequest;
 
-class EventIDRequest extends ApiRequest
+class ChangePasswordLogin extends ApiRequest
 {
-   
 
     /**
      * Get the validation rules that apply to the request.
@@ -16,7 +15,7 @@ class EventIDRequest extends ApiRequest
     public function rules()
     {
         return [
-            'id'=>'required|exists:wedding_test,id'
+            'password'=>'required|confirmed|min:8|max:16'
         ];
     }
 }

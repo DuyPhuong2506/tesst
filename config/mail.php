@@ -133,4 +133,10 @@ return [
 
     'log_channel' => env('MAIL_LOG_CHANNEL'),
 
+    /*
+    | Token email expired at seconds
+    */
+    
+    'reset_password_expired' => 60
+
 ];

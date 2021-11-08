@@ -6,6 +6,8 @@ use App\Constants\Role;
 use App\Models\Company;
 use Mail;
 use Str;
+use JWTAuth;
+use Carbon\Carbon;
 
 class UserService
 {
@@ -51,29 +53,55 @@ class UserService
         return null;
     }
 
-    public function updateRememberToken($email,$token){
+    public function createRememberMail($email, $token)
+    {
         User::where('email',$email)
-            ->update(['remember_token'=>$token]);
-    }  
-    
-    public function changePassword($email,$password){
-        return User::where('email',$email)
             ->update([
-                'password'=>$password,
-                'remember_token'=>null
+                'remember_token' => $token,
+                'email_at' => Carbon::now()
             ]);
     }
+    
+    public function changePassword($token, $password)
+    {
+        $startTime = User::where('remember_token', $token)->get('email_at')
+                            ->first()
+                            ->email_at;
+        $endTime = Carbon::parse($startTime)->addHours(1);
+        if(Carbon::now() < $endTime){
+            return User::where('remember_token', $token)
+                        ->update([
+                            'password' => $password,
+                            'remember_token' => null,
+                            'is_first_login' => config('constant', !defined('STATUS_TRUE'))
+                        ]);
+        }
 
-    public function sendMailToReset($email){
+        return false;        
+    }
+
+    public function updatePasswordLogin($password, $email)
+    {
+        return User::where('email', $email)
+                ->update([
+                    'password' => $password,
+                    'is_first_login' => config('constant', !defined('STATUS_TRUE')),
+                    'remember_token' => null
+                ]);
+    }
+
+    public function sendMailToReset($email)
+    {
         $token = Str::random(100);
         $emailInfo = [
-            'token'=>$token,
-            'email_address'=>$email
+            'token' => $token,
+            'app_url' => env('APP_URL')
         ];
-        $this->updateRememberToken($email,$token);
-        Mail::send('mails/changepassword',$emailInfo, function($msg) use($email){
+        $this->createRememberMail($email, $token);
+        Mail::send('mails/change_password', $emailInfo, function($msg) use($email){
             $msg->to($email)->subject("Change Password !");
         });
+        
         return true;
     }
 

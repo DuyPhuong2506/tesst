@@ -24,7 +24,6 @@ class Wedding extends Model
     ];
     protected $table = 'wedding_test';
 
-
     public function eventTimes(){
         return $this->hasMany(EventTimes::class,'event_id');
     }

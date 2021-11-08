@@ -17,27 +17,34 @@ class EventsController extends Controller
         $this->eventService = $eventService;
     }
 
-    public function createEvent(WeddingEventRequest $req){
-        $data = $req->all();
+    public function store(WeddingEventRequest $request){
+        $data = $request->all();
         if($this->eventService->createEvent($data)){
-            return $this->respondSuccess($data);
+            return $this->respondSuccess([
+                'event'=>$data
+            ]);
         }
-        return $this->respondError(Response::HTTP_BAD_REQUEST, 'Failed to create event!');
+
+        return $this->respondError(Response::HTTP_BAD_REQUEST, 'Failed to store !');
     }
 
-    public function detailEvent(EventIDRequest $req){
-        $data = $this->eventService->detailEvent($req->id);
+    public function show($id){
+        $data = $this->eventService->detailEvent($id);
         if($data['status']){
             return $this->respondSuccess($data);
         }
-        return $this->respondError(Response::HTTP_BAD_REQUEST, 'Failed to get event!');
+
+        return $this->respondError(Response::HTTP_NOT_FOUND, 'Show detail event failed !');
     }
 
-    public function updateEvent(UpdateEventRequest $req){
-        $data = $req->all();
+    public function update(UpdateEventRequest $request, $id){
+        $data = $request->all();
         if($this->eventService->updateEvent($data)){
-            return $this->respondSuccess($data);
+            return $this->respondSuccess([
+                'event'=>$data
+            ]);
         }
-        return $this->respondError(Response::HTTP_BAD_REQUEST, 'Failed to update !');
+        
+        return $this->respondError(Response::HTTP_BAD_REQUEST, 'Failed to update event !');
     }
 }

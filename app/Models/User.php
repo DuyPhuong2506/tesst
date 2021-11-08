@@ -15,7 +15,9 @@ class User extends AuthJWT
         'password', 
         'company_id',
         'phone', 
-        'address'
+        'address',
+        'is_first_login',
+        'email_at',
     ];
 
 
