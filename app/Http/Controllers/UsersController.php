@@ -100,6 +100,7 @@ class UsersController extends Controller
                 'status' => false
             ]);
         }
+        
         return $this->respondError(Response::HTTP_BAD_REQUEST, [
             'message' => 'Failed to change password !'
         ]);
