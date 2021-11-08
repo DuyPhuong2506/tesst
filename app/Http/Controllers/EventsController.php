@@ -25,9 +25,7 @@ class EventsController extends Controller
             ]);
         }
 
-        return $this->respondError(Response::HTTP_BAD_REQUEST, [
-            'message'=>'Failed to create event!'
-        ]);
+        return $this->respondError(Response::HTTP_BAD_REQUEST, 'Failed to store !');
     }
 
     public function show($id){
@@ -36,9 +34,7 @@ class EventsController extends Controller
             return $this->respondSuccess($data);
         }
 
-        return $this->respondError(Response::HTTP_BAD_REQUEST, [
-            'message' => 'Failed to get event!'
-        ]);
+        return $this->respondError(Response::HTTP_NOT_FOUND, 'Show detail event failed !');
     }
 
     public function update(UpdateEventRequest $request, $id){
@@ -49,8 +45,6 @@ class EventsController extends Controller
             ]);
         }
         
-        return $this->respondError(Response::HTTP_BAD_REQUEST, [
-            'message' => 'Failed to update !'
-        ]);
+        return $this->respondError(Response::HTTP_BAD_REQUEST, 'Failed to update event !');
     }
 }

@@ -19,7 +19,7 @@ class EventService
     }
 
     public function detailEvent($id){
-        $weddingEvent = Wedding::where('id', $id)->with('eventTimes')->get();
+        $weddingEvent = Wedding::where('id', $id)->with('eventTimes')->first();
         
         return [
             'status' => true,

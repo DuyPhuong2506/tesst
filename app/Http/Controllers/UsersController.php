@@ -69,7 +69,7 @@ class UsersController extends Controller
         $user = $this->userService->destroyStaff($id);
         if ($user) return $this->respondSuccess('staff is deleted');
 
-        return $this->respondError(Response::HTTP_NOT_IMPLEMENTED,'staff cannot delete');
+        return $this->respondError(Response::HTTP_NOT_IMPLEMENTED, 'staff cannot delete');
     }
 
     public function sendEmailResetPassword(EmailRequest $request)
@@ -80,9 +80,7 @@ class UsersController extends Controller
             ]);
         }
 
-        return $this->respondError(Response::HTTP_BAD_REQUEST, [
-            'message' => 'Failed to send mail !'
-        ]);
+        return $this->respondError(Response::HTTP_BAD_REQUEST, 'Failed to send mail !');
     }
 
     public function updatePassword(ChangePasswordRequest $request)
@@ -94,16 +92,9 @@ class UsersController extends Controller
             return $this->respondSuccess([
                 'message' => "Password has been changed !"
             ]);
-        }else if($status == false){
-            return $this->respondError(Response::HTTP_BAD_REQUEST, [
-                'email' => 'Email is expired !',
-                'status' => false
-            ]);
         }
-        
-        return $this->respondError(Response::HTTP_BAD_REQUEST, [
-            'message' => 'Failed to change password !'
-        ]);
+
+        return $this->respondError(Response::HTTP_BAD_REQUEST, 'Failed to update password !');
     }
 
     public function updatePasswordLogin(ChangePasswordLogin $request)
@@ -116,9 +107,7 @@ class UsersController extends Controller
             ]);
         }
 
-        return $this->respondError(Response::HTTP_BAD_REQUEST, [
-            'message' => 'Failed to update !'
-        ]);
+        return $this->respondError(Response::HTTP_BAD_REQUEST, 'Failed to update password !');
     }
 
 }
