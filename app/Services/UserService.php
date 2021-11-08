@@ -53,12 +53,12 @@ class UserService
         return null;
     }
 
-    public function createRememberMail($email, $token, $email_at)
+    public function createRememberMail($email, $token)
     {
         User::where('email',$email)
             ->update([
                 'remember_token' => $token,
-                'email_at' => $email_at
+                'email_at' => Carbon::now()
             ]);
     }
     
@@ -67,8 +67,8 @@ class UserService
         $startTime = User::where('remember_token', $token)->get('email_at')
                             ->first()
                             ->email_at;
-        $endTime = Carbon::now();
-        if($endTime->diffInSeconds($startTime) < config('mail.reset_password_expired')){
+        $endTime = Carbon::parse($startTime)->addHours(1);
+        if($endTime > Carbon::now()){
             return User::where('remember_token', $token)
                         ->update([
                             'password' => $password,
@@ -97,7 +97,7 @@ class UserService
             'token' => $token,
             'app_url' => env('APP_URL')
         ];
-        $this->createRememberMail($email, $token, Carbon::now()->toDateTimeString());
+        $this->createRememberMail($email, $token);
         Mail::send('mails/change_password', $emailInfo, function($msg) use($email){
             $msg->to($email)->subject("Change Password !");
         });
