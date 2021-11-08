@@ -93,7 +93,7 @@ class UsersController extends Controller
                 'message' => "Password has been changed !"
             ]);
         }else if($status == false){
-            return $this->respondError(Response::HTTP_GONE, [
+            return $this->respondError(Response::HTTP_BAD_REQUEST, [
                 'email' => 'Email is expired !',
                 'status' => false
             ]);
