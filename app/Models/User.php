@@ -24,7 +24,8 @@ class User extends AuthJWT
         'portal_code',
         'address_1',
         'address_2',
-        'lasted_login'
+        'lasted_login',
+        'company_name'
     ];
 
 

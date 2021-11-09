@@ -40,7 +40,8 @@ class UserSeeder extends Seeder
             'contact_email' => 'datd@bap.jp',
             'portal_code' => '200',
             'address_1' => '200 Street, Tokyo, Japan',
-            'address_2' => '201 Street, Tokyo, Japan'
+            'address_2' => '201 Street, Tokyo, Japan',
+            'company_name' => 'Company Name 1'
         ]);
     }
 }
