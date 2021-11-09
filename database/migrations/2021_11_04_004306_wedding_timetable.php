@@ -19,7 +19,7 @@ class WeddingTimetable extends Migration
             $table->time('end');
             $table->string('description',200);
             $table->unsignedBigInteger('event_id');
-            $table->foreign('event_id')->references('id')->on('wedding_test');
+            $table->foreign('event_id')->references('id')->on('weddings');
             $table->timestamps();
         });
     }
