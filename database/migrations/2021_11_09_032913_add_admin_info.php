@@ -14,13 +14,13 @@ class AddAdminInfo extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('ceremony_name', 50)->nullable()->default(null);
-            $table->string('charge_name', 100)->nullable()->default(null);
-            $table->string('contact_email', 100)->nullable()->default(null);
-            $table->string('portal_code', 50)->nullable()->default(null);
+            $table->string('ceremony_name')->nullable()->default(null);
+            $table->string('charge_name')->nullable()->default(null);
+            $table->string('contact_email')->nullable()->default(null);
+            $table->string('portal_code')->nullable()->default(null);
             $table->dropColumn('address');
-            $table->string('address_1', 255)->nullable()->default(null);
-            $table->string('address_2', 255)->nullable()->default(null);
+            $table->string('address_1')->nullable()->default(null);
+            $table->string('address_2')->nullable()->default(null);
             $table->dateTime('lasted_login')->nullable()->default(null);
         });
     }
