@@ -61,14 +61,22 @@ class UserService
                 'email_at' => Carbon::now()
             ]);
     }
-    
-    public function changePassword($token, $password)
-    {
+
+    public function checkExpiredToken($token){
         $startTime = User::where('remember_token', $token)->get('email_at')
                             ->first()
                             ->email_at;
-        $endTime = Carbon::parse($startTime)->addHours(1);
+        $endTime = Carbon::parse($startTime)->addMinutes(1);
         if(Carbon::now() < $endTime){
+            return true;
+        }
+
+        return false;
+    }
+    
+    public function changePassword($token, $password)
+    {
+        if($this->checkExpiredToken($token)){
             return User::where('remember_token', $token)
                         ->update([
                             'password' => $password,

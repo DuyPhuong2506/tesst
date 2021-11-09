@@ -14,6 +14,7 @@ use App\Http\Requests\CreateAdminRequest;
 use App\Http\Requests\ChangePasswordRequest;
 use App\Http\Requests\ChangePasswordLogin;
 use App\Http\Requests\EmailRequest;
+use App\Http\Requests\EmailTokenRequest;
 use Str;
 
 class UsersController extends Controller
@@ -108,6 +109,16 @@ class UsersController extends Controller
         }
 
         return $this->respondError(Response::HTTP_BAD_REQUEST, 'Failed to update password !');
+    }
+
+    public function checkExpiredToken(EmailTokenRequest $request){
+        if($this->userService->checkExpiredToken($request->token)){
+            return $this->respondSuccess([
+                'message' => 'Token is now can use !'
+            ]);
+        }
+        
+        return $this->respondError(Response::HTTP_BAD_REQUEST, 'Token is expired !');
     }
 
     public function getMe(){

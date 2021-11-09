@@ -23,6 +23,7 @@ Route::post('auth/table-account/login', 'AuthTableAccountController@login');
 #API CHANGE PASSWORD
 Route::post('forgot-password','UsersController@sendEmailResetPassword');
 Route::post('change-password','UsersController@updatePassword');
+Route::post('check-token-expired','UsersController@checkExpiredToken');
 
 
 Route::group(['middleware' => ['jwtAuth']], function () {

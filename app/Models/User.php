@@ -28,9 +28,9 @@ class User extends AuthJWT
     ];
 
 
-    protected $hidden = [
-        'password', 'remember_token',
-    ];
+    // protected $hidden = [
+    //     'password', 'remember_token',
+    // ];
     
      /**
      * Password need to be all time encrypted.
