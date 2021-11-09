@@ -32,6 +32,9 @@ Route::group(['middleware' => ['jwtAuth']], function () {
 
     /**Wedding event API**/
     Route::resource('event','EventsController');
+
+    /**My Page - Detail Account**/
+    Route::get('users/get-me','UsersController@getMe');
     
     Route::post('auth/logout', 'AuthController@logout');
     Route::post('admin/create','UsersController@createAdmin');

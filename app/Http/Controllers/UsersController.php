@@ -110,4 +110,14 @@ class UsersController extends Controller
         return $this->respondError(Response::HTTP_BAD_REQUEST, 'Failed to update password !');
     }
 
+    public function getMe(){
+        $id = Auth::user()->id;
+        $data = $this->userService->findDetail($id);
+        if($data){
+            return $this->respondSuccess($data);
+        }
+
+        return $this->respondError(Response::HTTP_BAD_REQUEST, 'Failed to get users info !');
+    }
+
 }

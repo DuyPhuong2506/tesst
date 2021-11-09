@@ -109,7 +109,10 @@ class UserService
     {
         $user = User::whereId($id)
             ->with(['company' => function($q){
-                $q->select('id', 'name', 'description');
+                $q->select('id', 'name', 'description', 'is_active');
+            }])
+            ->with(['restaurant' => function($q){
+                $q->select('id', 'name', 'phone', 'address', 'logo_url', 'greeting_msg');
             }])
             ->first();
 

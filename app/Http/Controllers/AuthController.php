@@ -13,6 +13,7 @@ use App\Constants\Role;
 use JWTAuth;
 use JWTAuthException;
 use Hash;
+use Carbon\Carbon;
 
 class AuthController extends Controller
 {
@@ -57,6 +58,11 @@ class AuthController extends Controller
         } catch (JWTAuthException $e) {
             return $this->respondError(Response::HTTP_BAD_REQUEST, 'failed_to_create_token');
         }
+        
+        Auth::user()
+            ->update([
+                'lasted_login' => Carbon::now()->toDateTimeString()
+            ]);
         
         return $this->respondSuccess($this->respondWithToken($token));
     }
