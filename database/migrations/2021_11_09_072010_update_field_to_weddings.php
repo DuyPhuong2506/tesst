@@ -21,17 +21,17 @@ class UpdateFieldToWeddings extends Migration
             $table->dropColumn('img_couple');
             $table->dropColumn('thank_msg');
             $table->string('event_name', 200);
-            $table->date('date');
-            $table->time('welcome_start');
-            $table->time('welcome_end');
-            $table->time('wedding_start');
-            $table->time('wedding_end');
-            $table->time('reception_start');
-            $table->time('reception_end');
-            $table->string('groom_name', 30);
-            $table->string('groom_email', 50);
-            $table->string('bride_name', 30);
-            $table->string('bride_email', 50);
+            $table->date('date')->nullable();
+            $table->time('welcome_start')->nullable();
+            $table->time('welcome_end')->nullable();
+            $table->time('wedding_start')->nullable();
+            $table->time('wedding_end')->nullable();
+            $table->time('reception_start')->nullable();
+            $table->time('reception_end')->nullable();
+            $table->string('groom_name')->nullable();
+            $table->string('groom_email')->nullable();
+            $table->string('bride_name')->nullable();
+            $table->string('bride_email')->nullable();
         });
     }
 
