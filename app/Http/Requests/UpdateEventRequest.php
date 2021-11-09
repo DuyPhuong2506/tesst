@@ -16,7 +16,7 @@ class UpdateEventRequest extends ApiRequest
     public function rules()
     {
         return [
-            'id'=>'required|exists:wedding_test,id',
+            'id'=>'required|exists:weddings,id',
             'event_name'=>'required|max:100',
             'date'=>'required|date',
             'welcome_start'=>'required|date_format:H:i',

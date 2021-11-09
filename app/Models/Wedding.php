@@ -22,9 +22,9 @@ class Wedding extends Model
         'bride_name',
         'bride_email'
     ];
-    protected $table = 'wedding_test';
+    protected $table = 'weddings';
 
     public function eventTimes(){
-        return $this->hasMany(EventTimes::class,'event_id');
+        return $this->hasMany(EventTimes::class, 'event_id');
     }
 }

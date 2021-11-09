@@ -13,8 +13,13 @@ class TestWeddingEvent extends Migration
      */
     public function up()
     {
-        Schema::create('wedding_test', function (Blueprint $table) {
-            $table->bigIncrements('id');
+        Schema::table('weddings', function (Blueprint $table) {
+            $table->dropColumn('schedule_starttime');
+            $table->dropColumn('schedule_endtime');
+            $table->dropColumn('is_close');
+            $table->dropColumn('note');
+            $table->dropColumn('img_couple');
+            $table->dropColumn('thank_msg');
             $table->string('event_name', 200);
             $table->date('date');
             $table->time('welcome_start');
@@ -23,13 +28,10 @@ class TestWeddingEvent extends Migration
             $table->time('wedding_end');
             $table->time('reception_start');
             $table->time('reception_end');
-            $table->unsignedBigInteger('place_id');
-            $table->foreign('place_id')->references('id')->on('places');
             $table->string('groom_name', 30);
             $table->string('groom_email', 50);
             $table->string('bride_name', 30);
             $table->string('bride_email', 50);
-            $table->timestamps();
         });
     }
 
@@ -40,6 +42,6 @@ class TestWeddingEvent extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('wedding_test');
+        Schema::dropIfExists('weddings');
     }
 }
