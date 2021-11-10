@@ -27,14 +27,6 @@ class UserSeeder extends Seeder
             // 'restaurant_id' => 1,
             'role' => Role::STAFF_ADMIN
         ]);
-
-        User::create([
-            'username' => 'danhdat',
-            'email' => 'datd@bap.jp',
-            'password' => 12345678,
-            'role' => Role::SUPER_ADMIN,
-            'restaurant_id' => 1,
-            'company_id' => 1
-        ]);
+        
     }
 }
