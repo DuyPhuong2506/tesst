@@ -36,6 +36,7 @@ Route::group(['middleware' => ['jwtAuth']], function () {
     Route::post('auth/logout', 'AuthController@logout');
     Route::post('admin/create','UsersController@createAdmin');
     Route::resource('places', 'PlacesController');
+    Route::get('places-get-pre-signed', 'PlacesController@getPreSigned')->name('get.getPreSigned');
     Route::resource('restaurants','RestaurantsController');
 
     /** route staffs */
@@ -44,6 +45,7 @@ Route::group(['middleware' => ['jwtAuth']], function () {
     Route::get('staff/{user_id}','UsersController@getStaff');
     Route::delete('staff/{user_id}','UsersController@destroyStaff');
 
+   
 });
 Route::get('agora/get-token','AgoraController@generateToken')->middleware('cors');
 Route::get('/send-mail', function () {
