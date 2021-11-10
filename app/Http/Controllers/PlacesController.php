@@ -68,10 +68,9 @@ class PlacesController extends Controller
 
     public function getPreSigned(Request $request)
     {
-        $place = $this->placeService->getPreSigned($request);
-        
         try {
-
+            $place = $this->placeService->getPreSigned($request);
+            
             return $this->respondSuccess($place);
         }  catch (\Exception $e) {
             return $this->respondError(Response::HTTP_BAD_REQUEST, $e->getMessage());
