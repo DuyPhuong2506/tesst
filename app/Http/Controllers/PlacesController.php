@@ -5,23 +5,34 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Repositories\PlaceRepository;
+use App\Services\PlaceService;
 use App\Http\Requests\CreatePlaceRequest;
 use App\Models\Place;
 
 class PlacesController extends Controller
 {
     protected $placeRepo;
+    protected $placeService;
 
-    public function __construct(PlaceRepository $placeRepo)
+    public function __construct(PlaceRepository $placeRepo, PlaceService $placeService)
     {
         $this->placeRepo = $placeRepo;
+        $this->placeService = $placeService;
     }
 
     public function store(CreatePlaceRequest $request)
     {
-        $attributes = $request->only('name','restaurant_id');
-        $place = $this->placeRepo->create($attributes);
-        return $this->respondSuccess($place);
+        \DB::beginTransaction();
+        try {
+            $place = $this->placeService->storePlace($request);
+            \DB::commit();
+            
+            return $this->respondSuccess($place);
+        }  catch (\Exception $e) {
+            \DB::rollback();
+            
+            return $this->respondError(Response::HTTP_BAD_REQUEST, $e->getMessage());
+        }
     }
 
     public function index()

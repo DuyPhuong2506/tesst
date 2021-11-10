@@ -13,7 +13,9 @@ class Place extends Model
      */
     protected $fillable = [
         'name',
-        'restaurant_id'
+        'restaurant_id',
+        'image',
+        'image_thumb'
     ];
 
     /**
@@ -22,5 +24,21 @@ class Place extends Model
     public function restaurant()
     {
         return $this->belongsTo(Restaurant::class);
+    }
+
+    /**
+     * Get the post that owns the comment.
+     */
+    public function tablePositions()
+    {
+        return $this->hasMany(TablePosition::class, 'place_id', 'id');
+    }
+
+    /**
+     * Get the post that owns the comment.
+     */
+    public function positionCameras()
+    {
+        return $this->hasMany(PositionCamera::class, 'place_id', 'id');
     }
 }
