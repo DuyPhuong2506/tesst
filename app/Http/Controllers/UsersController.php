@@ -138,7 +138,7 @@ class UsersController extends Controller
     {
         $user = $this->userService->userInfoUpdate($request->all());
         if($user){
-            return $this->userService->findDetail($request->id);
+            return $this->respondSuccess($this->userService->findDetail($request->id));
         }
 
         return $this->respondError(Response::HTTP_BAD_REQUEST, 'Failed to update users info !');
