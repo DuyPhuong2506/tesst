@@ -23,6 +23,7 @@ Route::post('auth/table-account/login', 'AuthTableAccountController@login');
 #API CHANGE PASSWORD
 Route::post('forgot-password','UsersController@sendEmailResetPassword');
 Route::post('change-password','UsersController@updatePassword');
+Route::post('check-token-expired','UsersController@checkExpiredToken');
 
 
 Route::group(['middleware' => ['jwtAuth']], function () {
@@ -32,6 +33,9 @@ Route::group(['middleware' => ['jwtAuth']], function () {
 
     /**Wedding event API**/
     Route::resource('event','EventsController');
+
+    /**My Page - Detail Account**/
+    Route::get('users/get-me','UsersController@getMe');
     
     Route::post('auth/logout', 'AuthController@logout');
     Route::post('admin/create','UsersController@createAdmin');

@@ -15,9 +15,17 @@ class User extends AuthJWT
         'password', 
         'company_id',
         'phone', 
-        'address',
         'is_first_login',
         'email_at',
+        'lasted_update',
+        'ceremony_name',
+        'charge_name',
+        'contact_email',
+        'portal_code',
+        'address_1',
+        'address_2',
+        'lasted_login',
+        'company_name'
     ];
 
 
@@ -48,5 +56,10 @@ class User extends AuthJWT
     public function company()
     {
         return $this->belongsTo(Company::class, 'company_id', 'id');
+    }
+
+    public function restaurant()
+    {
+        return $this->belongsTo(Restaurant::class, 'restaurant_id', 'id');
     }
 }

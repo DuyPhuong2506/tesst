@@ -13,6 +13,7 @@ use App\Constants\Role;
 use JWTAuth;
 use JWTAuthException;
 use Hash;
+use Carbon\Carbon;
 
 class AuthController extends Controller
 {
