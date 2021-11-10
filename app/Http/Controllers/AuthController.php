@@ -59,11 +59,6 @@ class AuthController extends Controller
             return $this->respondError(Response::HTTP_BAD_REQUEST, 'failed_to_create_token');
         }
         
-        Auth::user()
-            ->update([
-                'lasted_login' => Carbon::now()->toDateTimeString()
-            ]);
-        
         return $this->respondSuccess($this->respondWithToken($token));
     }
 
