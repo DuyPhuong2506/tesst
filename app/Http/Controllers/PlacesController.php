@@ -65,4 +65,16 @@ class PlacesController extends Controller
 
         return $this->respondError(Response::HTTP_NOT_IMPLEMENTED, 'place can\'t delete');
     }
+
+    public function getPreSigned(Request $request)
+    {
+        $place = $this->placeService->getPreSigned($request);
+        
+        try {
+
+            return $this->respondSuccess($place);
+        }  catch (\Exception $e) {
+            return $this->respondError(Response::HTTP_BAD_REQUEST, $e->getMessage());
+        }
+    }
 }
