@@ -15,9 +15,6 @@ class User extends AuthJWT
         'company_id',
         'is_first_login',
         'email_at',
-        'ceremony_name',
-        'charge_name',
-        'portal_code',
         'lasted_login'
     ];
 

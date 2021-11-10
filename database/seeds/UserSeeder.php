@@ -34,10 +34,7 @@ class UserSeeder extends Seeder
             'password' => 12345678,
             'role' => Role::SUPER_ADMIN,
             'restaurant_id' => 1,
-            'company_id' => 1,
-            'ceremony_name' => 'Ceremony',
-            'charge_name' => 'Charge Name',
-            'portal_code' => '200'
+            'company_id' => 1
         ]);
     }
 }

@@ -19,6 +19,9 @@ class DropColumnUsers extends Migration
             $table->dropColumn('address_2');
             $table->dropColumn('company_name');
             $table->dropColumn('contact_email');
+            $table->dropColumn('ceremony_name');
+            $table->dropColumn('charge_name');
+            $table->dropColumn('portal_code');
         });
     }
 
@@ -35,6 +38,9 @@ class DropColumnUsers extends Migration
             $table->dropColumn('address_2');
             $table->dropColumn('company_name');
             $table->dropColumn('contact_email');
+            $table->dropColumn('ceremony_name');
+            $table->dropColumn('charge_name');
+            $table->dropColumn('portal_code');
         });
     }
 }
