@@ -36,6 +36,7 @@ Route::group(['middleware' => ['jwtAuth']], function () {
 
     /**My Page - Detail Account**/
     Route::get('users/get-me','UsersController@getMe');
+    Route::resource('users', 'UsersController');
     
     Route::post('auth/logout', 'AuthController@logout');
     Route::post('admin/create','UsersController@createAdmin');

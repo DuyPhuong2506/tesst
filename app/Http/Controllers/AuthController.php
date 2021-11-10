@@ -58,6 +58,12 @@ class AuthController extends Controller
         } catch (JWTAuthException $e) {
             return $this->respondError(Response::HTTP_BAD_REQUEST, 'failed_to_create_token');
         }
+
+        if(Auth::user()->role === Role::SUPER_ADMIN){
+            Auth::user()->update([
+                'is_first_login' => config('constant', !defined('STATUS_TRUE'))
+            ]);
+        }
         
         return $this->respondSuccess($this->respondWithToken($token));
     }

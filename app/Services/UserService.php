@@ -116,17 +116,49 @@ class UserService
     public function findDetail($id)
     {
         $user = User::whereId($id)
-            ->with(['company' => function($q){
-                $q->select('id', 'name', 'description', 'is_active');
-            }])
-            ->with(['restaurant' => function($q){
-                $q->select('id', 'name', 'phone', 'address', 'logo_url', 'greeting_msg');
-            }])
+            ->with(['company', 'restaurant'])
             ->first();
 
         if ($user) return $user;
 
         return null;
+    }
+
+    public function userInfoUpdate($data)
+    {
+        $user = User::find($data['id']);
+        
+        if(!$user) return false;
+
+        $user->restaurant()->update([
+            'name' => $data['restaurant_name'],
+            'phone' => $data['phone'],
+            'contact_name' => $data['contact_name'],
+            'contact_email' => $data['contact_email'],
+            'post_code' => $data['post_code'],
+            'address_1' => $data['address_1'],
+            'address_2' => $data['address_2']
+        ]);
+
+        $user->company()->update([
+            'name' => $data['company_name']
+        ]);
+
+        $user->update([
+            'lasted_login' => $data['lasted_login'],
+            'created_at' => $data['created_at'],
+            
+        ]);
+
+        if($user->role === Role::STAFF_ADMIN){
+            $user->update([
+                'lasted_login' => $data['lasted_login'],
+                'created_at' => $data['created_at'],
+                'is_first_login' => config('constant', !defined('STATUS_TRUE'))
+            ]);
+        }
+
+        return $user;
     }
 
 }

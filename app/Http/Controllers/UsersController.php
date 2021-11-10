@@ -15,6 +15,7 @@ use App\Http\Requests\ChangePasswordRequest;
 use App\Http\Requests\ChangePasswordLogin;
 use App\Http\Requests\EmailRequest;
 use App\Http\Requests\EmailTokenRequest;
+use App\Http\Requests\UpdateUsersInfoRequest;
 use Str;
 
 class UsersController extends Controller
@@ -111,7 +112,8 @@ class UsersController extends Controller
         return $this->respondError(Response::HTTP_BAD_REQUEST, 'Failed to update password !');
     }
 
-    public function checkExpiredToken(EmailTokenRequest $request){
+    public function checkExpiredToken(EmailTokenRequest $request)
+    {
         if($this->userService->checkExpiredToken($request->token)){
             return $this->respondSuccess([
                 'message' => 'Token is now can use !'
@@ -121,7 +123,8 @@ class UsersController extends Controller
         return $this->respondError(Response::HTTP_BAD_REQUEST, 'Token is expired !');
     }
 
-    public function getMe(){
+    public function getMe()
+    {
         $id = Auth::user()->id;
         $data = $this->userService->findDetail($id);
         if($data){
@@ -130,5 +133,16 @@ class UsersController extends Controller
 
         return $this->respondError(Response::HTTP_BAD_REQUEST, 'Failed to get users info !');
     }
+
+    public function update(UpdateUsersInfoRequest $request)
+    {
+        $user = $this->userService->userInfoUpdate($request->all());
+        if($user){
+            return $this->userService->findDetail($request->id);
+        }
+
+        return $this->respondError(Response::HTTP_BAD_REQUEST, 'Failed to update users info !');
+    }
+    
 
 }
