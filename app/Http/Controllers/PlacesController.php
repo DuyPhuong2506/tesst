@@ -37,13 +37,13 @@ class PlacesController extends Controller
 
     public function index()
     {
-        $places = $this->placeRepo->getAll();
+        $places = $this->placeService->getAll();
         return $this->respondSuccess($places);
     }
 
     public function show($id)
     {
-        $place = $this->placeRepo->find($id);
+        $place = $this->placeService->showDetail($id);
         return $this->respondSuccess($place);
     }
 
@@ -70,7 +70,7 @@ class PlacesController extends Controller
     {
         try {
             $place = $this->placeService->getPreSigned($request);
-            
+
             return $this->respondSuccess($place);
         }  catch (\Exception $e) {
             return $this->respondError(Response::HTTP_BAD_REQUEST, $e->getMessage());

@@ -167,6 +167,13 @@ class PlaceService
         return $place;
     }
 
+    public function getAll()
+    {   
+        $place = Place::with(['tablePositions', 'positionCameras'])->orderBy('created_at', 'desc')->paginate(PAGINATE);
+
+        return $place;
+    }
+
     public function removeImageS3($link)
     {   
         $host = Storage::disk('s3')->url('../');
