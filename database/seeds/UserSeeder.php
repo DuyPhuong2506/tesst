@@ -37,11 +37,7 @@ class UserSeeder extends Seeder
             'company_id' => 1,
             'ceremony_name' => 'Ceremony',
             'charge_name' => 'Charge Name',
-            'contact_email' => 'datd@bap.jp',
-            'portal_code' => '200',
-            'address_1' => '200 Street, Tokyo, Japan',
-            'address_2' => '201 Street, Tokyo, Japan',
-            'company_name' => 'Company Name 1'
+            'portal_code' => '200'
         ]);
     }
 }
