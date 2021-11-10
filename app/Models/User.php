@@ -11,21 +11,11 @@ class User extends AuthJWT
         'username', 
         'email', 
         'restaurant_id',
-        'role', 
-        'password', 
+        'role',
         'company_id',
-        'phone', 
         'is_first_login',
         'email_at',
-        'lasted_update',
-        'ceremony_name',
-        'charge_name',
-        'contact_email',
-        'portal_code',
-        'address_1',
-        'address_2',
-        'lasted_login',
-        'company_name'
+        'lasted_login'
     ];
 
 
