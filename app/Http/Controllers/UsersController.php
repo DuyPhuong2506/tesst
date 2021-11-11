@@ -127,9 +127,16 @@ class UsersController extends Controller
     public function getMe()
     {
         $id = Auth::user()->id;
+        $role = Auth::user()->role;
         $data = $this->userService->findDetail($id);
-        if($data){
+
+        if(in_array($role, [Role::STAFF_ADMIN, Role::SUPER_ADMIN]))
+        {
             return $this->respondSuccess($data);
+        }
+        else
+        {
+            return $this->respondError(Response::HTTP_BAD_REQUEST, 'Your role is denied !');
         }
 
         return $this->respondError(Response::HTTP_BAD_REQUEST, 'Failed to get users info !');
@@ -144,9 +151,13 @@ class UsersController extends Controller
         {
             $user = $this->userService->staffAdminInfoUpdate($data);
         }
+        else
+        {
+            return $this->respondError(Response::HTTP_BAD_REQUEST, 'Your role is denied !');
+        }
         
         if($user){
-            auth()->logout();
+            Auth::logout();
             return $this->respondSuccess('You have successfully logged out.');
         }
 
@@ -177,11 +188,15 @@ class UsersController extends Controller
                         Response::HTTP_BAD_REQUEST, 
                         'Old password is not correct !'
                     );
+
+                Auth::logout();
+                return $this->respondSuccess('You have successfully logged out.');
             }
             $this->userService->changeEmail($email, $data['email']);
-            auth()->logout();
-
-            return $this->respondSuccess('You have successfully logged out.');
+        }
+        else
+        {
+            return $this->respondError(Response::HTTP_BAD_REQUEST, 'Your role is denied !');
         }
         
         return $this->respondError(Response::HTTP_BAD_REQUEST, 'Failed to update super admin info !');
