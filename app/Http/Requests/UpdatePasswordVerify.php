@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use App\Http\Requests\ApiRequest;
 
-class UpdateSuperInfoRequest extends ApiRequest
+class UpdatePasswordVerify extends ApiRequest
 {
    
 
@@ -16,9 +16,8 @@ class UpdateSuperInfoRequest extends ApiRequest
     public function rules()
     {
         return [
-            'email' => 'nullable|email',
-            'old_password' => 'nullable|min:8|max:16',
-            'password' => 'nullable|min:8|max:16|confirmed'
+            'verify_password' => 'required|min:8|max:255',
+            'password' => 'required|confirmed|min:8|max:255'
         ];
     }
 }

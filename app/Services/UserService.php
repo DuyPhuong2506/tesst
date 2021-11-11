@@ -93,7 +93,7 @@ class UserService
     {
         return User::where('email', $email)
                 ->update([
-                    'password' => $password,
+                    'password' => Hash::make($password),
                     'is_first_login' => config('constant', !defined('STATUS_TRUE')),
                     'remember_token' => null
                 ]);
@@ -101,11 +101,10 @@ class UserService
 
     public function updatePasswordVerify($oldPass, $userPass, $newPass, $email)
     {
-        if(Hash::check($oldPass, $userPass))
-        {
+        if(Hash::check($oldPass, $userPass)){
             return $this->updatePasswordLogin($newPass, $email);
         }
-
+            
         return false;
     }
 

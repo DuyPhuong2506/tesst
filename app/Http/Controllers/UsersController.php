@@ -5,8 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use JWTAuth;
-use JWTAuthException;
 use Hash;
 use Illuminate\Support\Facades\Auth;
 use App\Services\UserService;
@@ -16,7 +14,8 @@ use App\Http\Requests\ChangePasswordLogin;
 use App\Http\Requests\EmailRequest;
 use App\Http\Requests\EmailTokenRequest;
 use App\Http\Requests\UpdateStaffInfoRequest;
-use App\Http\Requests\UpdateSuperInfoRequest;
+use App\Http\Requests\UpdateEmailRequest;
+use App\Http\Requests\UpdatePasswordVerify;
 use App\Constants\Role;
 
 class UsersController extends Controller
@@ -130,12 +129,10 @@ class UsersController extends Controller
         $role = Auth::user()->role;
         $data = $this->userService->findDetail($id);
 
-        if(in_array($role, [Role::STAFF_ADMIN, Role::SUPER_ADMIN]))
-        {
+        if(in_array($role, [Role::STAFF_ADMIN, Role::SUPER_ADMIN])){
             return $this->respondSuccess($data);
         }
-        else
-        {
+        else{
             return $this->respondError(Response::HTTP_BAD_REQUEST, 'Your role is denied !');
         }
 
@@ -147,59 +144,69 @@ class UsersController extends Controller
         $role = Auth::user()->role;
         $data = $request->all();
 
-        if($role === Role::STAFF_ADMIN)
-        {
+        if($role === Role::STAFF_ADMIN){
             $user = $this->userService->staffAdminInfoUpdate($data);
         }
-        else
-        {
+        else{
             return $this->respondError(Response::HTTP_BAD_REQUEST, 'Your role is denied !');
         }
-        
+            
         if($user){
             Auth::logout();
             return $this->respondSuccess('You have successfully logged out.');
         }
+            
 
         return $this->respondError(Response::HTTP_BAD_REQUEST, 'Failed to update staff admin info !');
     }
 
-    public function updateSuperAdminInfo(UpdateSuperInfoRequest $request)
+    public function updateSupperAdminEmail(UpdateEmailRequest $request)
     {
-        $data = $request->all();
-        $role = Auth::user()->role;
-        $email = Auth::user()->email;
-        $userID = Auth::user()->id;
+        $oldEmail = Auth::user()->email;
+        $newEmail = $request->email;
+
+        if(Role::SUPER_ADMIN !== Auth::user()->role){
+            return $this->respondError(
+                Response::HTTP_BAD_REQUEST, 'Your role is not correct !'
+            );
+        }
+
+        $status = $this->userService->changeEmail($oldEmail, $newEmail);
+        if($status){
+            return $this->respondSuccess('You have successfully changed email !');
+        }   
+
+        return $this->respondError(Response::HTTP_BAD_REQUEST, 'Failed to update email super admin email !');
+    }
+
+    public function updateSupperAdminPassword(UpdatePasswordVerify $request)
+    {
+        $oldPassword = $request->verify_password;
+        $newPassword = $request->password;
         $userPassword = Auth::user()->password;
-        
-        if($role === Role::SUPER_ADMIN)
-        {
-            if(isset($data['old_password']))
-            {
-                $status = $this->userService->updatePasswordVerify(
-                    $data['old_password'],
-                    $userPassword,
-                    Hash::make($data['password']),
-                    $email
-                );
+        $email = Auth::user()->email;
 
-                if(!$status) 
-                    return $this->respondError(
-                        Response::HTTP_BAD_REQUEST, 
-                        'Old password is not correct !'
-                    );
-
-                Auth::logout();
-                return $this->respondSuccess('You have successfully logged out.');
-            }
-            $this->userService->changeEmail($email, $data['email']);
-        }
-        else
-        {
-            return $this->respondError(Response::HTTP_BAD_REQUEST, 'Your role is denied !');
+        if(Role::SUPER_ADMIN !== Auth::user()->role){
+            return $this->respondError(
+                Response::HTTP_BAD_REQUEST, 'Your role is not correct !'
+            );
         }
         
-        return $this->respondError(Response::HTTP_BAD_REQUEST, 'Failed to update super admin info !');
+        $status = $this->userService->updatePasswordVerify(
+            $oldPassword, $userPassword, $newPassword, $email
+        );
+        
+        if($status){
+            Auth::logout();
+            return $this->respondSuccess('You have successfully changed password !');
+        }
+        else if($status === false){
+            return $this->respondError(Response::HTTP_BAD_REQUEST, [
+                "password" => ["Old password is not correct !"]
+            ]);
+        }
+            
+        return $this->respondError(Response::HTTP_BAD_REQUEST, 'Failed to update super admin password !');
     }
     
 
