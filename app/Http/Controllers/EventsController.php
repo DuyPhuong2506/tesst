@@ -47,4 +47,5 @@ class EventsController extends Controller
         
         return $this->respondError(Response::HTTP_BAD_REQUEST, 'Failed to update event !');
     }
+
 }
