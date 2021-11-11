@@ -15,8 +15,9 @@ use App\Http\Requests\ChangePasswordRequest;
 use App\Http\Requests\ChangePasswordLogin;
 use App\Http\Requests\EmailRequest;
 use App\Http\Requests\EmailTokenRequest;
-use App\Http\Requests\UpdateUsersInfoRequest;
-use Str;
+use App\Http\Requests\UpdateStaffInfoRequest;
+use App\Http\Requests\UpdateSuperInfoRequest;
+use App\Constants\Role;
 
 class UsersController extends Controller
 {
@@ -134,14 +135,56 @@ class UsersController extends Controller
         return $this->respondError(Response::HTTP_BAD_REQUEST, 'Failed to get users info !');
     }
 
-    public function update(UpdateUsersInfoRequest $request)
+    public function updateStaffAdminInfo(UpdateStaffInfoRequest $request)
     {
-        $user = $this->userService->userInfoUpdate($request->all());
+        $role = Auth::user()->role;
+        $data = $request->all();
+
+        if($role === Role::STAFF_ADMIN)
+        {
+            $user = $this->userService->staffAdminInfoUpdate($data);
+        }
+        
         if($user){
-            return $this->respondSuccess($this->userService->findDetail($request->id));
+            auth()->logout();
+            return $this->respondSuccess('You have successfully logged out.');
         }
 
-        return $this->respondError(Response::HTTP_BAD_REQUEST, 'Failed to update users info !');
+        return $this->respondError(Response::HTTP_BAD_REQUEST, 'Failed to update staff admin info !');
+    }
+
+    public function updateSuperAdminInfo(UpdateSuperInfoRequest $request)
+    {
+        $data = $request->all();
+        $role = Auth::user()->role;
+        $email = Auth::user()->email;
+        $userID = Auth::user()->id;
+        $userPassword = Auth::user()->password;
+        
+        if($role === Role::SUPER_ADMIN)
+        {
+            if(isset($data['old_password']))
+            {
+                $status = $this->userService->updatePasswordVerify(
+                    $data['old_password'],
+                    $userPassword,
+                    Hash::make($data['password']),
+                    $email
+                );
+
+                if(!$status) 
+                    return $this->respondError(
+                        Response::HTTP_BAD_REQUEST, 
+                        'Old password is not correct !'
+                    );
+            }
+            $this->userService->changeEmail($email, $data['email']);
+            auth()->logout();
+
+            return $this->respondSuccess('You have successfully logged out.');
+        }
+        
+        return $this->respondError(Response::HTTP_BAD_REQUEST, 'Failed to update super admin info !');
     }
     
 

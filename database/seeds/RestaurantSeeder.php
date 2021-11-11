@@ -23,6 +23,7 @@ class RestaurantSeeder extends Seeder
             'post_code' => '1234',
             'contact_name' => 'Restaurant 123',
             'contact_email' => 'restaurant1@mail.jp',
+            'company_name' => 'Company 1',
             'company_id' => 1
         ]);
     }

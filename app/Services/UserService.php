@@ -5,6 +5,7 @@ use App\Models\User;
 use App\Constants\Role;
 use App\Models\Company;
 use Mail;
+use Hash;
 use Str;
 use JWTAuth;
 use Carbon\Carbon;
@@ -98,6 +99,16 @@ class UserService
                 ]);
     }
 
+    public function updatePasswordVerify($oldPass, $userPass, $newPass, $email)
+    {
+        if(Hash::check($oldPass, $userPass))
+        {
+            return $this->updatePasswordLogin($newPass, $email);
+        }
+
+        return false;
+    }
+
     public function sendMailToReset($email)
     {
         $token = Str::random(100);
@@ -124,7 +135,7 @@ class UserService
         return null;
     }
 
-    public function userInfoUpdate($data)
+    public function staffAdminInfoUpdate($data)
     {
         $user = User::find($data['id']);
         
@@ -145,20 +156,32 @@ class UserService
         ]);
 
         $user->update([
-            'lasted_login' => $data['lasted_login'],
             'created_at' => $data['created_at'],
-            
+            'company_name' => $data['company_name']
         ]);
 
         if($user->role === Role::STAFF_ADMIN){
             $user->update([
-                'lasted_login' => $data['lasted_login'],
                 'created_at' => $data['created_at'],
                 'is_first_login' => config('constant', !defined('STATUS_TRUE'))
             ]);
-        }
+        }        
 
         return $user;
+    }
+
+    public function changeEmail($oldEmail, $newEmail)
+    {
+        $user = User::where('email', $oldEmail);
+        
+        if(!$user) return false;
+        
+        $user->update([
+            'email' => $newEmail
+        ]);
+        
+        return true;
+
     }
 
 }

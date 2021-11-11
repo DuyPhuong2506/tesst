@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use App\Http\Requests\ApiRequest;
 
-class UpdateUsersInfoRequest extends ApiRequest
+class UpdateStaffInfoRequest extends ApiRequest
 {
    
 
@@ -25,8 +25,7 @@ class UpdateUsersInfoRequest extends ApiRequest
             'post_code' => 'required|numeric',
             'created_at' => 'required|date_format:Y-m-d H:i:s',
             'address_1' => 'required',
-            'address_2' => 'required',
-            'lasted_login' => 'required|date_format:Y-m-d H:i:s'
+            'address_2' => 'required'
         ];
     }
 }
