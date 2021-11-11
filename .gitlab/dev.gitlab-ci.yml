@@ -21,7 +21,7 @@ deploy-develop:
 migrate-develop:
   stage: migration
   script:
-    - ssh $CI_DEV_SSH_USER@$CI_DEV_ADMIN_IP "cd /srv/WeddingOnline-api/ && yes | php artisan migrate" | cp ../adminer.php ./public"
+    - ssh $CI_DEV_SSH_USER@$CI_DEV_ADMIN_IP "cd /srv/WeddingOnline-api/ && yes | php artisan migrate"
   when: manual
   only:
     - develop
