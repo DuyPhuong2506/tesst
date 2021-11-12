@@ -17,17 +17,14 @@ class UserSeeder extends Seeder
             'username' => 'super_admin',
             'email' => 'super_admin@test.com',
             'password' => 12345678,
-            'role' => Role::SUPER_ADMIN,
-            'restaurant_id' => 1,
-            'company_id' => 1,
+            'role' => Role::SUPER_ADMIN
         ]);
 
         User::create([
             'username' => 'admin',
             'email' => 'admin@test.com',
             'password' => 12345678,
-            'restaurant_id' => 1,
-            'company_id' => 1,
+            // 'restaurant_id' => 1,
             'role' => Role::STAFF_ADMIN
         ]);
         

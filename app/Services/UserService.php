@@ -134,40 +134,40 @@ class UserService
         return null;
     }
 
-    public function staffAdminInfoUpdate($data)
-    {
-        $user = User::find($data['id']);
+    // public function staffAdminInfoUpdate($data)
+    // {
+    //     $user = User::find($data['id']);
         
-        if(!$user) return false;
+    //     if(!$user) return false;
 
-        $user->restaurant()->update([
-            'name' => $data['restaurant_name'],
-            'phone' => $data['phone'],
-            'contact_name' => $data['contact_name'],
-            'contact_email' => $data['contact_email'],
-            'post_code' => $data['post_code'],
-            'address_1' => $data['address_1'],
-            'address_2' => $data['address_2']
-        ]);
+    //     $user->restaurant()->update([
+    //         'name' => $data['restaurant_name'],
+    //         'phone' => $data['phone'],
+    //         'contact_name' => $data['contact_name'],
+    //         'contact_email' => $data['contact_email'],
+    //         'post_code' => $data['post_code'],
+    //         'address_1' => $data['address_1'],
+    //         'address_2' => $data['address_2']
+    //     ]);
 
-        $user->company()->update([
-            'name' => $data['company_name']
-        ]);
+    //     $user->company()->update([
+    //         'name' => $data['company_name']
+    //     ]);
 
-        $user->update([
-            'created_at' => $data['created_at'],
-            'company_name' => $data['company_name']
-        ]);
+    //     $user->update([
+    //         'created_at' => $data['created_at'],
+    //         'company_name' => $data['company_name']
+    //     ]);
 
-        if($user->role === Role::STAFF_ADMIN){
-            $user->update([
-                'created_at' => $data['created_at'],
-                'is_first_login' => config('constant', !defined('STATUS_TRUE'))
-            ]);
-        }        
+    //     if($user->role === Role::STAFF_ADMIN){
+    //         $user->update([
+    //             'created_at' => $data['created_at'],
+    //             'is_first_login' => config('constant', !defined('STATUS_TRUE'))
+    //         ]);
+    //     }        
 
-        return $user;
-    }
+    //     return $user;
+    // }
 
     public function changeEmail($oldEmail, $newEmail)
     {
@@ -178,8 +178,8 @@ class UserService
         $user->update([
             'email' => $newEmail
         ]);
-        
-        return true;
+
+        return $newEmail;
 
     }
 

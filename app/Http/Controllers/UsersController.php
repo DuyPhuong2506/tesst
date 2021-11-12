@@ -126,14 +126,15 @@ class UsersController extends Controller
     public function getMe()
     {
         $id = Auth::user()->id;
-        $role = Auth::user()->role;
         $data = $this->userService->findDetail($id);
+        $role = Auth::user()->role;
 
-        if(in_array($role, [Role::STAFF_ADMIN, Role::SUPER_ADMIN])){
-            return $this->respondSuccess($data);
+        if(!in_array($role, [Role::SUPER_ADMIN, Role::STAFF_ADMIN])){
+            return $this->respondError(Response::HTTP_BAD_REQUEST, 'Failed not found !');
         }
-        else{
-            return $this->respondError(Response::HTTP_BAD_REQUEST, 'Your role is denied !');
+
+        if($data){
+            return $this->respondSuccess($data);
         }
 
         return $this->respondError(Response::HTTP_BAD_REQUEST, 'Failed to get users info !');
@@ -142,20 +143,12 @@ class UsersController extends Controller
     public function updateStaffAdminInfo(UpdateStaffInfoRequest $request)
     {
         $role = Auth::user()->role;
-        $data = $request->all();
+        $requestData = $request->all();
+        $userData = $this->userService->staffAdminInfoUpdate($requestData);
 
-        if($role === Role::STAFF_ADMIN){
-            $user = $this->userService->staffAdminInfoUpdate($data);
+        if($userData){
+            return $this->respondSuccess($userData);
         }
-        else{
-            return $this->respondError(Response::HTTP_BAD_REQUEST, 'Your role is denied !');
-        }
-            
-        if($user){
-            Auth::logout();
-            return $this->respondSuccess('You have successfully logged out.');
-        }
-            
 
         return $this->respondError(Response::HTTP_BAD_REQUEST, 'Failed to update staff admin info !');
     }
@@ -164,6 +157,7 @@ class UsersController extends Controller
     {
         $oldEmail = Auth::user()->email;
         $newEmail = $request->email;
+        $data = $this->userService->changeEmail($oldEmail, $newEmail);
 
         if(Role::SUPER_ADMIN !== Auth::user()->role){
             return $this->respondError(
@@ -171,9 +165,8 @@ class UsersController extends Controller
             );
         }
 
-        $status = $this->userService->changeEmail($oldEmail, $newEmail);
-        if($status){
-            return $this->respondSuccess('You have successfully changed email !');
+        if($data){
+            return $this->respondSuccess($data);
         }   
 
         return $this->respondError(Response::HTTP_BAD_REQUEST, 'Failed to update email super admin email !');
@@ -198,7 +191,7 @@ class UsersController extends Controller
         
         if($status){
             Auth::logout();
-            return $this->respondSuccess('You have successfully changed password !');
+            return $this->respondSuccess(['message' => 'You have successfully changed password !']);
         }
         else if($status === false){
             return $this->respondError(Response::HTTP_BAD_REQUEST, [
