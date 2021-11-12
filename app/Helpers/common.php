@@ -55,9 +55,21 @@ if (!function_exists('uploadImageS3')) {
     }
 }
 
-if (!function_exists('random_str')) {
-    function random_str($length) {
-        $chars = 'abcdefghjkmnpqrstuvwxyzABCDEFGHJKMNPQRSTUVWXYZ123456789';
+if (!function_exists('random_str_az')) {
+    function random_str_az($length) {
+        $chars = 'abcdefghjkmnpqrstuvwxyz';
+        $str = '';
+        for($i = 0; $i < $length; $i++)
+        {
+            $str .= $chars[mt_rand(0, strlen($chars) - 1)];
+        }
+        return $str;
+    }
+}
+
+if (!function_exists('random_str_number')) {
+    function random_str_number($length) {
+        $chars = '123456789';
         $str = '';
         for($i = 0; $i < $length; $i++)
         {
