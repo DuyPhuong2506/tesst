@@ -54,3 +54,15 @@ if (!function_exists('uploadImageS3')) {
         }
     }
 }
+
+if (!function_exists('random_str')) {
+    function random_str($length) {
+        $chars = 'abcdefghjkmnpqrstuvwxyzABCDEFGHJKMNPQRSTUVWXYZ123456789';
+        $str = '';
+        for($i = 0; $i < $length; $i++)
+        {
+            $str .= $chars[mt_rand(0, strlen($chars) - 1)];
+        }
+        return $str;
+    }
+}
