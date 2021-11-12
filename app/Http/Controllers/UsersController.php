@@ -105,7 +105,7 @@ class UsersController extends Controller
         $password = Hash::make($request->password);
         if($this->userService->updatePasswordLogin($password, $email)){
             return $this->respondSuccess([
-                'message'=>"Password has been changed !"
+                'message' => "Password has been changed !"
             ]);
         }
 
@@ -138,19 +138,6 @@ class UsersController extends Controller
         }
 
         return $this->respondError(Response::HTTP_BAD_REQUEST, 'Failed to get users info !');
-    }
-
-    public function updateStaffAdminInfo(UpdateStaffInfoRequest $request)
-    {
-        $role = Auth::user()->role;
-        $requestData = $request->all();
-        $userData = $this->userService->staffAdminInfoUpdate($requestData);
-
-        if($userData){
-            return $this->respondSuccess($userData);
-        }
-
-        return $this->respondError(Response::HTTP_BAD_REQUEST, 'Failed to update staff admin info !');
     }
 
     public function updateSupperAdminEmail(UpdateEmailRequest $request)
