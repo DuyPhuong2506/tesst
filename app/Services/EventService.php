@@ -46,17 +46,17 @@ class EventService
     
         $this->makeCouple($coupleEmail, $event->id);
 
-        return true;
+        return $this->detailEvent($event->id);
     }
 
     public function detailEvent($id)
     {
-        $weddingEvent = Wedding::where('id', $id)->with('eventTimes')->first();
+        $event = Wedding::where('id', $id)->with('eventTimes')->first();
+        if($event){
+            return $event;
+        }
         
-        return [
-            'status' => true,
-            'event' => $weddingEvent
-        ];
+        return null;
     }
 
     public function updateEvent($data)
