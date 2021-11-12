@@ -35,7 +35,12 @@ Route::group(['middleware' => ['jwtAuth']], function () {
 
     /**My Page - Detail Account**/
     Route::get('users/get-me','UsersController@getMe');
-    
+
+    Route::prefix('users')->group(function () {
+        Route::put('/super-admin/email/update', 'UsersController@updateSupperAdminEmail');
+        Route::put('/super-admin/password-verify/update', 'UsersController@updateSupperAdminPassword');
+    });
+
     Route::post('auth/logout', 'AuthController@logout');
     Route::post('admin/create','UsersController@createAdmin');
     Route::resource('places', 'PlacesController');
