@@ -5,8 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use JWTAuth;
-use JWTAuthException;
 use Hash;
 use Illuminate\Support\Facades\Auth;
 use App\Services\UserService;
@@ -15,7 +13,10 @@ use App\Http\Requests\ChangePasswordRequest;
 use App\Http\Requests\ChangePasswordLogin;
 use App\Http\Requests\EmailRequest;
 use App\Http\Requests\EmailTokenRequest;
-use Str;
+use App\Http\Requests\UpdateStaffInfoRequest;
+use App\Http\Requests\UpdateEmailRequest;
+use App\Http\Requests\UpdatePasswordVerify;
+use App\Constants\Role;
 
 class UsersController extends Controller
 {
@@ -104,14 +105,15 @@ class UsersController extends Controller
         $password = Hash::make($request->password);
         if($this->userService->updatePasswordLogin($password, $email)){
             return $this->respondSuccess([
-                'message'=>"Password has been changed !"
+                'message' => "Password has been changed !"
             ]);
         }
 
         return $this->respondError(Response::HTTP_BAD_REQUEST, 'Failed to update password !');
     }
 
-    public function checkExpiredToken(EmailTokenRequest $request){
+    public function checkExpiredToken(EmailTokenRequest $request)
+    {
         if($this->userService->checkExpiredToken($request->token)){
             return $this->respondSuccess([
                 'message' => 'Token is now can use !'
@@ -121,14 +123,71 @@ class UsersController extends Controller
         return $this->respondError(Response::HTTP_BAD_REQUEST, 'Token is expired !');
     }
 
-    public function getMe(){
+    public function getMe()
+    {
         $id = Auth::user()->id;
         $data = $this->userService->findDetail($id);
+        $role = Auth::user()->role;
+
+        if(!in_array($role, [Role::SUPER_ADMIN, Role::STAFF_ADMIN])){
+            return $this->respondError(Response::HTTP_BAD_REQUEST, 'Failed not found !');
+        }
+
         if($data){
             return $this->respondSuccess($data);
         }
 
         return $this->respondError(Response::HTTP_BAD_REQUEST, 'Failed to get users info !');
     }
+
+    public function updateSupperAdminEmail(UpdateEmailRequest $request)
+    {
+        $oldEmail = Auth::user()->email;
+        $newEmail = $request->email;
+        $data = $this->userService->changeEmail($oldEmail, $newEmail);
+
+        if(Role::SUPER_ADMIN !== Auth::user()->role){
+            return $this->respondError(
+                Response::HTTP_BAD_REQUEST, 'Your role is not correct !'
+            );
+        }
+
+        if($data){
+            return $this->respondSuccess($data);
+        }   
+
+        return $this->respondError(Response::HTTP_BAD_REQUEST, 'Failed to update email super admin email !');
+    }
+
+    public function updateSupperAdminPassword(UpdatePasswordVerify $request)
+    {
+        $oldPassword = $request->verify_password;
+        $newPassword = $request->password;
+        $userPassword = Auth::user()->password;
+        $email = Auth::user()->email;
+
+        if(Role::SUPER_ADMIN !== Auth::user()->role){
+            return $this->respondError(
+                Response::HTTP_BAD_REQUEST, 'Your role is not correct !'
+            );
+        }
+        
+        $status = $this->userService->updatePasswordVerify(
+            $oldPassword, $userPassword, $newPassword, $email
+        );
+        
+        if($status){
+            Auth::logout();
+            return $this->respondSuccess(['message' => 'You have successfully changed password !']);
+        }
+        else if($status === false){
+            return $this->respondError(Response::HTTP_BAD_REQUEST, [
+                "password" => ["Old password is not correct !"]
+            ]);
+        }
+            
+        return $this->respondError(Response::HTTP_BAD_REQUEST, 'Failed to update super admin password !');
+    }
+    
 
 }

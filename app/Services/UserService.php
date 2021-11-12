@@ -5,6 +5,7 @@ use App\Models\User;
 use App\Constants\Role;
 use App\Models\Company;
 use Mail;
+use Hash;
 use Str;
 use JWTAuth;
 use Carbon\Carbon;
@@ -92,10 +93,19 @@ class UserService
     {
         return User::where('email', $email)
                 ->update([
-                    'password' => $password,
+                    'password' => Hash::make($password),
                     'is_first_login' => config('constant', !defined('STATUS_TRUE')),
                     'remember_token' => null
                 ]);
+    }
+
+    public function updatePasswordVerify($oldPass, $userPass, $newPass, $email)
+    {
+        if(Hash::check($oldPass, $userPass)){
+            return $this->updatePasswordLogin($newPass, $email);
+        }
+            
+        return false;
     }
 
     public function sendMailToReset($email)
@@ -116,12 +126,7 @@ class UserService
     public function findDetail($id)
     {
         $user = User::whereId($id)
-            ->with(['company' => function($q){
-                $q->select('id', 'name', 'description', 'is_active');
-            }])
-            ->with(['restaurant' => function($q){
-                $q->select('id', 'name', 'phone', 'address', 'logo_url', 'greeting_msg');
-            }])
+            ->with(['company', 'restaurant'])
             ->first();
 
         if ($user) return $user;
@@ -129,4 +134,18 @@ class UserService
         return null;
     }
 
+    public function changeEmail($oldEmail, $newEmail)
+    {
+        $user = User::where('email', $oldEmail);
+        
+        if(!$user) return false;
+        
+        $user->update([
+            'email' => $newEmail
+        ]);
+
+        return $newEmail;
+
+    }
+    
 }
