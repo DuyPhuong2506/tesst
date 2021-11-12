@@ -14,10 +14,10 @@ class CreateAdminRequest extends ApiRequest
     public function rules()
     {
         return [
-            'username' => 'required|unique:users',
-            'email' => 'required|unique:users|email',
-            'password' => 'required',
-            'restaurant_id' => 'required|exists:\App\Models\Restaurant,id'
+            'username' => 'unique:users',
+            'email' => 'unique:users|email|max:50',
+            'password' => 'min:8|max:255',
+            'restaurant_id' => 'exists:\App\Models\Restaurant,id'
         ];
     }
 }
