@@ -4,6 +4,7 @@ namespace App\Services;
 use App\Models\User;
 use App\Constants\Role;
 use App\Models\Company;
+use App\Models\Restaurant;
 use Mail;
 use Hash;
 use Str;
@@ -69,6 +70,15 @@ class UserService
                             ->email_at;
         $endTime = Carbon::parse($startTime)->addMinutes(1);
         if(Carbon::now() < $endTime){
+            return true;
+        }
+
+        return false;
+    }
+
+    public function checkExistToken($token)
+    {
+        if(User::where('remember_token', $token)){
             return true;
         }
 
@@ -146,6 +156,66 @@ class UserService
 
         return $newEmail;
 
+    }
+
+    public function inviteNewAdminStaff($email)
+    {
+        $token = Str::random(100);
+        $emailInfo = [
+            'app_url' => env('APP_URL'),
+            'token' => $token
+        ];
+
+        User::updateOrCreate(
+            ['email' => $email],
+            [
+                'email' => $email,
+                'remember_token' => $token,
+                'role' => Role::STAFF_ADMIN,
+                'username' => random_str(20),
+                'password' => random_str(200)
+            ]
+        );
+
+        Mail::send('mails/admin_staff_invite', $emailInfo, function($msg) use($email){
+            $msg->to($email)->subject("Invite Registry Account Admin Staff!");
+        });
+
+        return true;
+    }
+
+    public function staffAdminInfoUpdate($data)
+    {
+        $user = User::find($data['id']);
+        if(!$user) return false;
+        
+        $user->restaurant()->update([
+            'name' => $data['restaurant_name'],
+            'phone' => $data['phone'],
+            'contact_name' => $data['contact_name'],
+            'contact_email' => $data['contact_email'],
+            'post_code' => $data['post_code'],
+            'address_1' => $data['address_1'],
+            'address_2' => $data['address_2']
+        ]);
+
+        $user->company()->update([
+            'name' => $data['company_name']
+        ]);
+
+        $user->update([
+            'created_at' => $data['created_at'],
+            'company_name' => $data['company_name']
+        ]);
+
+        if($user->role === Role::STAFF_ADMIN){
+            $user->update([
+                'created_at' => $data['created_at'],
+                'is_first_login' => config('constant', !defined('STATUS_TRUE'))
+            ]);
+        }
+
+        return $this->findDetail($data['id']);
     }
     
 }

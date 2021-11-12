@@ -14,7 +14,6 @@ use Illuminate\Support\Facades\Mail;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-Route::get('/test','UsersController@get');
 Route::post('auth/register', 'AuthController@register');
 Route::post('auth/login', 'AuthController@login');
 Route::post('auth/customer/login', 'AuthCustomerController@login');
@@ -24,6 +23,7 @@ Route::post('auth/table-account/login', 'AuthTableAccountController@login');
 Route::post('forgot-password','UsersController@sendEmailResetPassword');
 Route::post('change-password','UsersController@updatePassword');
 Route::post('check-token-expired','UsersController@checkExpiredToken');
+Route::post('check-token-exist','UsersController@checkExistToken');
 
 Route::group(['middleware' => ['jwtAuth']], function () {
 
@@ -34,11 +34,12 @@ Route::group(['middleware' => ['jwtAuth']], function () {
     Route::resource('event','EventsController');
 
     /**My Page - Detail Account**/
-    Route::get('users/get-me','UsersController@getMe');
-
     Route::prefix('users')->group(function () {
+        Route::get('/get-me','UsersController@getMe');
         Route::put('/super-admin/email/update', 'UsersController@updateSupperAdminEmail');
         Route::put('/super-admin/password-verify/update', 'UsersController@updateSupperAdminPassword');
+        Route::post('/super-admin/invite-admin-staff', 'UsersController@inviteNewAdminStaff');
+        Route::put('/staff-admin/create-or-update', 'UsersController@upadateStaffAdmin');
     });
 
     Route::post('auth/logout', 'AuthController@logout');

@@ -15,7 +15,9 @@ class User extends AuthJWT
         'company_id',
         'is_first_login',
         'email_at',
-        'lasted_login'
+        'lasted_login',
+        'password',
+        'remember_token'
     ];
 
 

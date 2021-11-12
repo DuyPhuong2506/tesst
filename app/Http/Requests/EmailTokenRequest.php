@@ -16,7 +16,7 @@ class EmailTokenRequest extends ApiRequest
     public function rules()
     {
         return [
-            'token' => 'required|exists:users,remember_token'
+            'token' => 'required|exists:users,remember_token|max:400'
         ];
     }
 }
