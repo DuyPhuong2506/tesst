@@ -184,12 +184,24 @@ class UserService
         return true;
     }
 
+    public function checkBelongToRestaurant($id)
+    {
+        $user = User::where('id', $id)
+                    ->get('restaurant_id')
+                    ->first()->restaurant_id;
+        if($user !== null){
+            return true;
+        }
+
+        return false;
+    }
+
     public function staffAdminInfoUpdate($data)
     {
         $user = User::find($data['id']);
         if(!$user) return false;
-        
-        $user->restaurant()->update([
+
+        $dataRestaurant = [
             'name' => $data['restaurant_name'],
             'phone' => $data['phone'],
             'contact_name' => $data['contact_name'],
@@ -197,7 +209,21 @@ class UserService
             'post_code' => $data['post_code'],
             'address_1' => $data['address_1'],
             'address_2' => $data['address_2']
-        ]);
+        ];
+
+        /*
+        | Check user is belong to restaurant ???
+        | If user IS NOT belong to restaurant, we CREATE new restaurant
+        | Else we UPDATE restaurant info where user belong to
+        */
+        
+        if(!$this->checkBelongToRestaurant($data['id'])){
+            $restaurant = Restaurant::create($dataRestaurant);
+            $user->restaurant_id = $restaurant->id;
+            $user->save();
+        }else{
+            $user->restaurant()->update($dataRestaurant);
+        }
 
         $user->company()->update([
             'name' => $data['company_name']
@@ -207,6 +233,10 @@ class UserService
             'created_at' => $data['created_at'],
             'company_name' => $data['company_name']
         ]);
+
+        /*
+        | If STAFF_ADMIN update info, we look it IS FIRST LOGIN
+        */
 
         if($user->role === Role::STAFF_ADMIN){
             $user->update([

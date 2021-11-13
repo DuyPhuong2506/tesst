@@ -160,14 +160,14 @@ class UsersController extends Controller
         return $this->respondError(Response::HTTP_BAD_REQUEST, 'Failed to update email super admin email !');
     }
 
-    public function updateSupperAdminPassword(UpdatePasswordVerify $request)
+    public function updatePasswordWithVerify(UpdatePasswordVerify $request)
     {
         $oldPassword = $request->verify_password;
         $newPassword = $request->password;
         $userPassword = Auth::user()->password;
         $email = Auth::user()->email;
 
-        if(Role::SUPER_ADMIN !== Auth::user()->role){
+        if(!in_array(Auth::user()->role, [Role::SUPER_ADMIN, Role::STAFF_ADMIN])){
             return $this->respondError(
                 Response::HTTP_BAD_REQUEST, 'Your role is not correct !'
             );

@@ -37,7 +37,7 @@ Route::group(['middleware' => ['jwtAuth']], function () {
     Route::prefix('users')->group(function () {
         Route::get('/get-me','UsersController@getMe');
         Route::put('/super-admin/email/update', 'UsersController@updateSupperAdminEmail');
-        Route::put('/super-admin/password-verify/update', 'UsersController@updateSupperAdminPassword');
+        Route::put('/password-verify/update', 'UsersController@updatePasswordWithVerify');
         Route::post('/super-admin/invite-admin-staff', 'UsersController@inviteNewAdminStaff');
         Route::put('/staff-admin/create-or-update', 'UsersController@upadateStaffAdmin');
     });
