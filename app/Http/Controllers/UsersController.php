@@ -149,7 +149,7 @@ class UsersController extends Controller
 
         if(Role::SUPER_ADMIN !== Auth::user()->role){
             return $this->respondError(
-                Response::HTTP_BAD_REQUEST, 'Your role is not correct !'
+                Response::HTTP_BAD_REQUEST, 'Not found !'
             );
         }
 
