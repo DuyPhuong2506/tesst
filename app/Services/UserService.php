@@ -8,7 +8,6 @@ use App\Models\Restaurant;
 use Mail;
 use Hash;
 use Str;
-use JWTAuth;
 use Carbon\Carbon;
 
 class UserService
@@ -158,8 +157,12 @@ class UserService
 
     }
 
-    public function inviteNewAdminStaff($email)
+    public function inviteNewAdminStaff($email, $inviterMail)
     {
+        if($email === $inviterMail){
+            return false;
+        }
+
         $token = Str::random(100);
         $emailInfo = [
             'app_url' => env('APP_URL'),
@@ -216,7 +219,7 @@ class UserService
         | If user IS NOT belong to restaurant, we CREATE new restaurant
         | Else we UPDATE restaurant info where user belong to
         */
-        
+
         if(!$this->checkBelongToRestaurant($data['id'])){
             $restaurant = Restaurant::create($dataRestaurant);
             $user->restaurant_id = $restaurant->id;

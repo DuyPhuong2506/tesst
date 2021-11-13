@@ -206,6 +206,7 @@ class UsersController extends Controller
     public function inviteNewAdminStaff(NewEmailRequest $request)
     {
         $role = Auth::user()->role;
+        $inviterMail = Auth::user()->email;
         $requestEmail = $request->email;
         
         if($role !== Role::SUPER_ADMIN){
@@ -214,14 +215,14 @@ class UsersController extends Controller
             );
         }
 
-        if($this->userService->inviteNewAdminStaff($requestEmail)){
+        if($this->userService->inviteNewAdminStaff($requestEmail, $inviterMail)){
             return $this->respondSuccess([
                 'message' => 'You have successfully invite '.$requestEmail
             ]);
         }
 
         return $this->respondError(
-            Response::HTTP_BAD_REQUEST, 'Failed to update super admin password !'
+            Response::HTTP_BAD_REQUEST, 'Failed to invite !'
         );
     }
 
