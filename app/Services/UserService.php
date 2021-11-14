@@ -102,7 +102,7 @@ class UserService
     {
         return User::where('email', $email)
                 ->update([
-                    'password' => Hash::make($password),
+                    'password' => $password,
                     'is_first_login' => config('constant', !defined('STATUS_TRUE')),
                     'remember_token' => null
                 ]);

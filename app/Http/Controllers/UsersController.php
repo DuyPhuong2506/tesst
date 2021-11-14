@@ -174,7 +174,7 @@ class UsersController extends Controller
         }
         
         $status = $this->userService->updatePasswordVerify(
-            $oldPassword, $userPassword, $newPassword, $email
+            $oldPassword, $userPassword, Hash::make($newPassword), $email
         );
         
         if($status){
