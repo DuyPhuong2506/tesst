@@ -5,5 +5,5 @@
 </div>
 <div>
     <b>Link: </b>
-    <span>{{$app_url}}/admin-staff-registry/{{$token}}">{{$token}}</span>
+    <span>{{$app_url}}/admin-staff-registry/{{$token}}</span>
 </div>
