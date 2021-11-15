@@ -6,6 +6,7 @@ use App\Models\EventTimes;
 use App\Models\Customer;
 use App\Jobs\SendEventEmailJob;
 use App\Constants\Role;
+use Carbon\Carbon;
 
 class EventService
 {
@@ -28,7 +29,9 @@ class EventService
                 'password' => $password,
                 'email'    => $email,
                 'wedding_id' => $weddingEventId,
-                'role' => Role::COUPLE
+                'role' => Role::COUPLE,
+                'updated_at' => Carbon::now(),
+                'created_at' => Carbon::now()
             ];
             array_push($item, $coupleContent);
             $sendEmailJob = new SendEventEmailJob($email, $coupleContent);

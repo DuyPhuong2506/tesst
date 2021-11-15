@@ -52,7 +52,9 @@ class AuthCustomerController extends Controller
             return $this->respondError(Response::HTTP_BAD_REQUEST, 'failed_to_create_token');
         }
 
-        return $this->respondSuccess($this->respondWithToken($token));
+        $token = $this->respondWithToken($token);
+        $token['info'] = $customer;
+        return $this->respondSuccess($token);
     }
 
     /**
