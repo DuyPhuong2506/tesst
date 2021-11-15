@@ -119,7 +119,7 @@ class UserService
         $token = Str::random(100);
         $emailInfo = [
             'token' => $token,
-            'app_url' => env('APP_URL')
+            'app_url' => env('ADMIN_URL')
         ];
         $this->createRememberMail($email, $token);
         Mail::send('mails/change_password', $emailInfo, function($msg) use($email){
@@ -162,7 +162,7 @@ class UserService
 
         $token = Str::random(100);
         $emailInfo = [
-            'app_url' => env('APP_URL'),
+            'app_url' => env('ADMIN_URL'),
             'token' => $token
         ];
 
