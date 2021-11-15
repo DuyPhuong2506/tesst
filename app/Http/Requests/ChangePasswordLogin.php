@@ -15,7 +15,7 @@ class ChangePasswordLogin extends ApiRequest
     public function rules()
     {
         return [
-            'password'=>'required|confirmed|min:8|max:16'
+            'password'=>'required|confirmed|min:8|max:255'
         ];
     }
 }

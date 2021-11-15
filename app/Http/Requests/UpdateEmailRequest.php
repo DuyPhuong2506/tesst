@@ -16,7 +16,7 @@ class UpdateEmailRequest extends ApiRequest
     public function rules()
     {
         return [
-            'email' => 'required|email|min:4|max:100'
+            'email' => 'required|email|max:50'
         ];
     }
 }
