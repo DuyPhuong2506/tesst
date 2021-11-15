@@ -78,3 +78,15 @@ if (!function_exists('random_str_number')) {
         return $str;
     }
 }
+
+if (!function_exists('random_str')) {
+    function random_str($length) {
+        $chars = '123456789abcdefghjkmnpqrstuvwxyz';
+        $str = '';
+        for($i = 0; $i < $length; $i++)
+        {
+            $str .= $chars[mt_rand(0, strlen($chars) - 1)];
+        }
+        return $str;
+    }
+}
