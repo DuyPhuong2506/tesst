@@ -38,16 +38,20 @@ class AuthCustomerController extends Controller
      */
     public function login(Request $request)
     {
-        $credentials = $request->only('username', 'password');
+        $username = $request->username;
+        $password = $request->password;
+        $customer = Customer::where('username', $username)
+                            ->where('password', $password)
+                            ->first();
 
-        $token = null;
         try {
-            if (!$token = JWTAuth::attempt($credentials)) {
+            if(!$token = JWTAuth::fromUser($customer)){
                 return $this->respondError(Response::HTTP_BAD_REQUEST, 'invalid_email_credentials');
             }
-        } catch (JWTAuthException $e) {
+        } catch (\Throwable $th) {
             return $this->respondError(Response::HTTP_BAD_REQUEST, 'failed_to_create_token');
         }
+
         return $this->respondSuccess($this->respondWithToken($token));
     }
 
