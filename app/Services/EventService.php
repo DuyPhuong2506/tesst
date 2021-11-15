@@ -17,20 +17,25 @@ class EventService
 
     public function makeCouple($coupleEmail, $weddingEventId)
     {
+        $item = [];
         foreach ($coupleEmail as $email)
         {
+            $username = random_str_az(8).random_str_number(4);
+            $password = random_str_az(8).random_str_number(4);
+
             $coupleContent = [
-                'username' => random_str(20),
-                'password' => random_str(12),
+                'username' => $username,
+                'password' => $password,
                 'email'    => $email,
                 'wedding_id' => $weddingEventId,
                 'role' => Role::COUPLE
             ];
-
+            array_push($item, $coupleContent);
             $sendEmailJob = new SendEventEmailJob($email, $coupleContent);
             dispatch($sendEmailJob);
-            Customer::insert($coupleContent);
         }
+
+        Customer::insert($item);
     }
 
     public function createEvent($data)
