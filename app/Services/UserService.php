@@ -248,7 +248,7 @@ class UserService
             ]);
         }
 
-        return $this->findDetail($data['id']);
+        return $this->findDetail($userId);
     }
     
 }
