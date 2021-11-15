@@ -38,8 +38,7 @@ class AuthCustomerController extends Controller
      */
     public function login(Request $request)
     {
-        $myTTL = 99999999;
-        JWTAuth::factory()->setTTL($myTTL);
+        JWTAuth::factory()->setTTL(99999999);
         $username = $request->username;
         $password = $request->password;
         $customer = Customer::where('username', $username)
