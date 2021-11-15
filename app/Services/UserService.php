@@ -90,8 +90,7 @@ class UserService
             return User::where('remember_token', $token)
                         ->update([
                             'password' => $password,
-                            'remember_token' => null,
-                            'is_first_login' => config('constant', !defined('STATUS_TRUE'))
+                            'remember_token' => null
                         ]);
         }
 
@@ -103,7 +102,6 @@ class UserService
         return User::where('email', $email)
                 ->update([
                     'password' => $password,
-                    'is_first_login' => config('constant', !defined('STATUS_TRUE')),
                     'remember_token' => null
                 ]);
     }
