@@ -211,7 +211,8 @@ class UserService
             'contact_email' => $data['contact_email'],
             'post_code' => $data['post_code'],
             'address_1' => $data['address_1'],
-            'address_2' => $data['address_2']
+            'address_2' => $data['address_2'],
+            'company_name' => $data['company_name']
         ];
 
         /*
@@ -233,8 +234,7 @@ class UserService
         ]);
 
         $user->update([
-            'created_at' => $data['created_at'],
-            'company_name' => $data['company_name']
+            'created_at' => $data['created_at']
         ]);
 
         /*
