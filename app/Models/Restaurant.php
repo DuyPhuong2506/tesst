@@ -16,7 +16,8 @@ class Restaurant extends Model
         'post_code',
         'contact_name',
         'contact_email',
-        'company_id'
+        'company_id',
+        'company_name'
     ];
     protected $table = 'restaurants';
 }

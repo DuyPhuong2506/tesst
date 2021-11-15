@@ -22,7 +22,6 @@ class UpdateStaffInfoRequest extends ApiRequest
             'phone' => 'required|numeric',
             'company_name' => 'required',
             'post_code' => 'required|numeric',
-            'created_at' => 'required|date_format:Y-m-d H:i:s',
             'address_1' => 'required',
             'address_2' => 'required'
         ];
