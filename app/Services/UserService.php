@@ -162,7 +162,7 @@ class UserService
 
         $token = Str::random(100);
         $emailInfo = [
-            'app_url' => env('ADMIN_URL '),
+            'app_url' => env('ADMIN_URL'),
             'token' => $token
         ];
 
