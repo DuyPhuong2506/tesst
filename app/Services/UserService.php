@@ -199,9 +199,9 @@ class UserService
         return false;
     }
 
-    public function staffAdminInfoUpdate($data)
+    public function staffAdminInfoUpdate($data, $userId)
     {
-        $user = User::find($data['id']);
+        $user = User::find($userId);
         if(!$user) return false;
 
         $dataRestaurant = [
@@ -220,7 +220,7 @@ class UserService
         | Else we UPDATE restaurant info where user belong to
         */
 
-        if(!$this->checkBelongToRestaurant($data['id'])){
+        if(!$this->checkBelongToRestaurant($userId)){
             $restaurant = Restaurant::create($dataRestaurant);
             $user->restaurant_id = $restaurant->id;
             $user->save();
