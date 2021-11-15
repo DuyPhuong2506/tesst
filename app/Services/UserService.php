@@ -66,7 +66,7 @@ class UserService
         $startTime = User::where('remember_token', $token)->get('email_at')
                             ->first()
                             ->email_at;
-        $endTime = Carbon::parse($startTime)->addMinutes(1);
+        $endTime = Carbon::parse($startTime)->addHours(1);
         if(Carbon::now() < $endTime){
             return true;
         }
