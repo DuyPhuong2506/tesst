@@ -51,9 +51,9 @@ class UsersController extends Controller
         }
     }
 
-    public function getStaffAdmin($id)
+    public function getStaffAdmin()
     {
-        $users = $this->userService->getAllByRestaurant($id);
+        $users = $this->userService->getAllByRestaurant();
         if (!empty($users)) return $this->respondSuccess($users);
 
         return $this->respondError('404','staffs does not exists');
