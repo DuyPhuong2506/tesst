@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use App\Http\Requests\ApiRequest;
 
-class EmailTokenRequest extends ApiRequest
+class NewEmailRequest extends ApiRequest
 {
    
 
@@ -16,7 +16,7 @@ class EmailTokenRequest extends ApiRequest
     public function rules()
     {
         return [
-            'token' => 'required|exists:users,remember_token|max:400'
+            'email' => 'required|email|min:4|max:50'
         ];
     }
 }

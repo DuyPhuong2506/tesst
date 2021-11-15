@@ -16,6 +16,7 @@ use App\Http\Requests\EmailTokenRequest;
 use App\Http\Requests\UpdateStaffInfoRequest;
 use App\Http\Requests\UpdateEmailRequest;
 use App\Http\Requests\UpdatePasswordVerify;
+use App\Http\Requests\NewEmailRequest;
 use App\Constants\Role;
 
 class UsersController extends Controller
@@ -148,7 +149,7 @@ class UsersController extends Controller
 
         if(Role::SUPER_ADMIN !== Auth::user()->role){
             return $this->respondError(
-                Response::HTTP_BAD_REQUEST, 'Your role is not correct !'
+                Response::HTTP_BAD_REQUEST, 'Not found !'
             );
         }
 
@@ -159,21 +160,21 @@ class UsersController extends Controller
         return $this->respondError(Response::HTTP_BAD_REQUEST, 'Failed to update email super admin email !');
     }
 
-    public function updateSupperAdminPassword(UpdatePasswordVerify $request)
+    public function updatePasswordWithVerify(UpdatePasswordVerify $request)
     {
         $oldPassword = $request->verify_password;
         $newPassword = $request->password;
         $userPassword = Auth::user()->password;
         $email = Auth::user()->email;
 
-        if(Role::SUPER_ADMIN !== Auth::user()->role){
+        if(!in_array(Auth::user()->role, [Role::SUPER_ADMIN, Role::STAFF_ADMIN])){
             return $this->respondError(
                 Response::HTTP_BAD_REQUEST, 'Your role is not correct !'
             );
         }
         
         $status = $this->userService->updatePasswordVerify(
-            $oldPassword, $userPassword, $newPassword, $email
+            $oldPassword, $userPassword, Hash::make($newPassword), $email
         );
         
         if($status){
@@ -188,6 +189,55 @@ class UsersController extends Controller
             
         return $this->respondError(Response::HTTP_BAD_REQUEST, 'Failed to update super admin password !');
     }
-    
+
+    public function checkExistToken(EmailTokenRequest $request)
+    {
+        if($this->userService->checkExistToken($request->token)){
+            return $this->respondSuccess([
+                'message' => 'The token you check is OK in use !'
+            ]);
+        }
+
+        return $this->respondError(
+            Response::HTTP_BAD_REQUEST, 'Failed to check token exist !'
+        );
+    }
+
+    public function inviteNewAdminStaff(NewEmailRequest $request)
+    {
+        $role = Auth::user()->role;
+        $inviterMail = Auth::user()->email;
+        $requestEmail = $request->email;
+        
+        if($role !== Role::SUPER_ADMIN){
+            return $this->respondError(
+                Response::HTTP_BAD_REQUEST, 'Not Found !'
+            );
+        }
+
+        if($this->userService->inviteNewAdminStaff($requestEmail, $inviterMail)){
+            return $this->respondSuccess([
+                'message' => 'You have successfully invite '.$requestEmail
+            ]);
+        }
+
+        return $this->respondError(
+            Response::HTTP_BAD_REQUEST, 'Failed to invite !'
+        );
+    }
+
+    public function upadateStaffAdmin(UpdateStaffInfoRequest $request)
+    {
+        $requestData = $request->all();
+        $data = $this->userService->staffAdminInfoUpdate($requestData);
+        
+        if($data){
+            return $this->respondSuccess($data);
+        }
+
+        return $this->respondError(
+            Response::HTTP_BAD_REQUEST, 'Failed to update staff admin !'
+        );
+    }
 
 }
