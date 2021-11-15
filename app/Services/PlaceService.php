@@ -59,35 +59,37 @@ class PlaceService
     {   
         $files = $request->position_cameras;
         $dataCamera = [];
-        foreach($files as $key => $camera){
-            if($camera['image']){
-                $file = $camera['image'];
-                $nameDirectory = 'cameras/';
-                $fullName = $file->getClientOriginalName();
-                $extension = $file->getClientOriginalExtension();
-                $nameFile = \Str::random(10) . '_' . $fullName;
-                uploadImageS3($nameDirectory . $nameFile, $file);
-                $linkS3 = Storage::disk('s3')->url($nameDirectory . $nameFile);
-
-                if(in_array($extension , ['png', 'jpg', 'jpeg'])){
-                    $imgThumb = Image::make($file)->resize(260, 260, function ($constraint) {
-                        $constraint->aspectRatio();
-                    })->stream();
-                    
-                    $linkS3Thumbnail = Storage::disk('s3')->put(
-                        $nameDirectory.'thumbnail_' . $nameFile,
-                        $imgThumb->__toString(),
-                        // 'public'
-                    );
-                    $linkS3Thumbnail = Storage::disk('s3')->url($nameDirectory.'thumbnail_' . $nameFile);
-
-                    $objectCamera = [
-                        'image' => $linkS3,
-                        'image_thumb' => $linkS3Thumbnail,
-                        'name' => $request->position_cameras[$key]['name']
-                    ];
-                    
-                    array_push($dataCamera, $objectCamera);
+        if(isset($request->position_cameras) && count($request->position_cameras)){
+            foreach($files as $key => $camera){
+                if($camera['image']){
+                    $file = $camera['image'];
+                    $nameDirectory = 'cameras/';
+                    $fullName = $file->getClientOriginalName();
+                    $extension = $file->getClientOriginalExtension();
+                    $nameFile = \Str::random(10) . '_' . $fullName;
+                    uploadImageS3($nameDirectory . $nameFile, $file);
+                    $linkS3 = Storage::disk('s3')->url($nameDirectory . $nameFile);
+    
+                    if(in_array($extension , ['png', 'jpg', 'jpeg'])){
+                        $imgThumb = Image::make($file)->resize(260, 260, function ($constraint) {
+                            $constraint->aspectRatio();
+                        })->stream();
+                        
+                        $linkS3Thumbnail = Storage::disk('s3')->put(
+                            $nameDirectory.'thumbnail_' . $nameFile,
+                            $imgThumb->__toString(),
+                            // 'public'
+                        );
+                        $linkS3Thumbnail = Storage::disk('s3')->url($nameDirectory.'thumbnail_' . $nameFile);
+    
+                        $objectCamera = [
+                            'image' => $linkS3,
+                            'image_thumb' => $linkS3Thumbnail,
+                            'name' => $request->position_cameras[$key]['name']
+                        ];
+                        
+                        array_push($dataCamera, $objectCamera);
+                    }
                 }
             }
         }
@@ -98,17 +100,18 @@ class PlaceService
     public function storeFileCamera($request)
     {   
         $files = $request->position_cameras;
-       
         $dataCamera = [];
-        foreach($files as $key => $camera){
-            if($camera['image']){
-                $objectCamera = [
-                    'image' => $camera['image'],
-                    'image_thumb' => $camera['image_thumb'],
-                    'name' => $camera['name']
-                ];
-                
-                array_push($dataCamera, $objectCamera);
+        if(isset($request->position_cameras) && count($request->position_cameras)){
+            foreach($files as $key => $camera){
+                if($camera['image']){
+                    $objectCamera = [
+                        'image' => $camera['image'],
+                        'image_thumb' => $camera['image_thumb'],
+                        'name' => $camera['name']
+                    ];
+                    
+                    array_push($dataCamera, $objectCamera);
+                }
             }
         }
         return $dataCamera;
@@ -131,27 +134,7 @@ class PlaceService
         }
 
         if($place) {
-            foreach($place->tablePositions as $item){
-                if($item->image) {
-                    $this->removeImageS3($item->image);
-                }
-                if($item->image) {
-                    $this->removeImageS3($item->image_thumb);
-                }
-            }
-            $place->tablePositions()->delete();
             $place->tablePositions()->createMany($dataTable);
-            // check delete image
-            foreach($place->positionCameras as $item){
-                if($item->image) {
-                    $this->removeImageS3($item->image);
-                }
-                if($item->image) {
-                    $this->removeImageS3($item->image_thumb);
-                }
-            }
-           
-            $place->positionCameras()->delete();
             $place->positionCameras()->createMany($dataCamera);
         }
 
@@ -161,7 +144,7 @@ class PlaceService
 
     public function showDetail($id)
     {   
-        $place = Place::whereId($id)->with(['tablePositions', 'positionCameras'])->first();
+        $place = $this->placeRepo->model->whereId($id)->with(['tablePositions', 'positionCameras'])->first();
 
         return $place;
     }
@@ -316,40 +299,45 @@ class PlaceService
     {   
         $dataCamera = $this->storeFileCamera($request);
         $attributes = $request->only('name','restaurant_id', 'image', 'image_thumb');
-        $place = $this->placeRepo->update($id, $attributes);
-        $dataTable = [];
-        foreach($request->table_positions as $key => $item) {
-            $objectTable = [
-                'amount_chair' => $item['amount_chair'],
-                'position' =>   $item['position'],
-                'customer_id' => auth()->id(),
-                'status' => STATUS_TRUE
-            ];
-            array_push($dataTable, $objectTable);
+        $place = $this->placeRepo->model->whereId($id)->first();
+        if(isset($request->image) && $place->image) {
+            $this->removeImageS3($place->image);
         }
-
+        if(isset($request->image_thumb) && $place->image_thumb) {
+            $this->removeImageS3($place->image_thumb);
+        }
+        if($place)$place->update($attributes);
+        $dataTable = [];
+        if(isset($request->table_positions) && count($request->table_positions)){
+            foreach($request->table_positions as $key => $item) {
+                $objectTable = [
+                    'amount_chair' => $item['amount_chair'],
+                    'position' =>   $item['position'],
+                    'customer_id' => auth()->id(),
+                    'status' => STATUS_TRUE
+                ];
+                array_push($dataTable, $objectTable);
+            }
+        }
         if($place) {
-            foreach($place->tablePositions as $item){
-                if($item->image) {
-                    // $this->removeImageS3($item->image);
-                }
-                if($item->image) {
-                    // $this->removeImageS3($item->image_thumb);
-                }
+            if(count($request->del_table_positions)){
+                $tablePositions = $place->tablePositions()->whereIn('id', $request->del_table_positions)->delete();
             }
-            $place->tablePositions()->delete();
             $place->tablePositions()->createMany($dataTable);
-            // check delete image
-            foreach($place->positionCameras as $item){
-                if($item->image) {
-                    // $this->removeImageS3($item->image);
-                }
-                if($item->image) {
-                    // $this->removeImageS3($item->image_thumb);
+
+            if(count($request->del_position_cameras)){
+                $positionCameras = $place->positionCameras()->whereIn('id', $request->del_position_cameras)->get();
+                    // check delete image
+                foreach($positionCameras as $item){
+                    if($item->image) {
+                        $this->removeImageS3($item->image);
+                    }
+                    if($item->image_thumb) {
+                        $this->removeImageS3($item->image_thumb);
+                    }
+                    $item->delete();
                 }
             }
-           
-            $place->positionCameras()->delete();
             $place->positionCameras()->createMany($dataCamera);
         }
 

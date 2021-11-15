@@ -7,6 +7,7 @@ use Illuminate\Http\Response;
 use App\Repositories\PlaceRepository;
 use App\Services\PlaceService;
 use App\Http\Requests\CreatePlaceRequest;
+use App\Http\Requests\UpdatePlaceRequest;
 use App\Models\Place;
 
 class PlacesController extends Controller
@@ -47,16 +48,19 @@ class PlacesController extends Controller
         return $this->respondSuccess($place);
     }
 
-    public function update(CreatePlaceRequest $request, $id)
+    public function update(UpdatePlaceRequest $request, $id)
     {
         \DB::beginTransaction();
         try {
+
             $place = $this->placeService->updatePlace($id, $request);
             if ($place) {
+                \DB::commit();
                 return $this->respondSuccess($place);
             }
+            
+            \DB::rollback();
             return $this->respondError(Response::HTTP_NOT_IMPLEMENTED, 'place can\'t update');
-            \DB::commit();
         }  catch (\Exception $e) {
             \DB::rollback();
             

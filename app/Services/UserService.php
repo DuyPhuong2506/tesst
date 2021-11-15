@@ -27,19 +27,18 @@ class UserService
         return $detail;
     }
 
-    public function getAllByRestaurant($restaurant_id)
+    public function getAllByRestaurant()
     {
         return User::staff()
-        ->where(['restaurant_id' => $restaurant_id])
-        ->where(function($q) {
-            $q->whereHas('company' ,function($q){
-                $q->whereIsActive(STATUS_TRUE);
-            })->orWhere('company_id', null);
-        })
-        ->with(['company' => function($q){
-            $q->select('id', 'name', 'description');
-        }])
-        ->get();
+            ->where(function($q) {
+                $q->whereHas('company' ,function($q){
+                    $q->whereIsActive(STATUS_TRUE);
+                })->orWhere('company_id', null);
+            })
+            ->with(['company' => function($q){
+                $q->select('id', 'name', 'description');
+            }])
+            ->get();
     }
 
     public function getStaff($staff_id)
