@@ -16,7 +16,6 @@ class UpdateStaffInfoRequest extends ApiRequest
     public function rules()
     {
         return [
-            'id' => 'required|exists:users,id',
             'restaurant_name' => 'required',
             'contact_name' => 'required',
             'contact_email' => 'required|email',

@@ -228,8 +228,9 @@ class UsersController extends Controller
 
     public function upadateStaffAdmin(UpdateStaffInfoRequest $request)
     {
+        $userId = Auth::user()->id;
         $requestData = $request->all();
-        $data = $this->userService->staffAdminInfoUpdate($requestData);
+        $data = $this->userService->staffAdminInfoUpdate($requestData, $userId);
         
         if($data){
             return $this->respondSuccess($data);
