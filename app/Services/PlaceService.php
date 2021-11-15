@@ -84,7 +84,7 @@ class PlaceService
                     $objectCamera = [
                         'image' => $linkS3,
                         'image_thumb' => $linkS3Thumbnail,
-                        'name' => $request->position_cameras[$key]
+                        'name' => $request->position_cameras[$key]['name']
                     ];
                     
                     array_push($dataCamera, $objectCamera);
@@ -98,25 +98,24 @@ class PlaceService
     public function storeFileCamera($request)
     {   
         $files = $request->position_cameras;
+       
         $dataCamera = [];
         foreach($files as $key => $camera){
             if($camera['image']){
                 $objectCamera = [
-                    'image' => $request->position_cameras[$key]['image'],
-                    'image_thumb' => $request->position_cameras[$key]['image_thumb'],
-                    'name' => $request->position_cameras[$key]
+                    'image' => $camera['image'],
+                    'image_thumb' => $camera['image_thumb'],
+                    'name' => $camera['name']
                 ];
                 
                 array_push($dataCamera, $objectCamera);
             }
         }
-        
         return $dataCamera;
     }
 
     public function storePlace($request)
     {   
-        $dataImage = $this->storeFilePlace($request);
         $dataCamera = $this->storeFileCamera($request);
         $attributes = $request->only('name','restaurant_id', 'image', 'image_thumb');
         $place = $this->placeRepo->create($attributes);
@@ -311,5 +310,49 @@ class PlaceService
             'place_file_paths' => $file_paths,
             'place_pre_signeds' => $pre_signed,
         ];
+    }
+
+    public function updatePlace($id, $request)
+    {   
+        $dataCamera = $this->storeFileCamera($request);
+        $attributes = $request->only('name','restaurant_id', 'image', 'image_thumb');
+        $place = $this->placeRepo->update($id, $attributes);
+        $dataTable = [];
+        foreach($request->table_positions as $key => $item) {
+            $objectTable = [
+                'amount_chair' => $item['amount_chair'],
+                'position' =>   $item['position'],
+                'customer_id' => auth()->id(),
+                'status' => STATUS_TRUE
+            ];
+            array_push($dataTable, $objectTable);
+        }
+
+        if($place) {
+            foreach($place->tablePositions as $item){
+                if($item->image) {
+                    // $this->removeImageS3($item->image);
+                }
+                if($item->image) {
+                    // $this->removeImageS3($item->image_thumb);
+                }
+            }
+            $place->tablePositions()->delete();
+            $place->tablePositions()->createMany($dataTable);
+            // check delete image
+            foreach($place->positionCameras as $item){
+                if($item->image) {
+                    // $this->removeImageS3($item->image);
+                }
+                if($item->image) {
+                    // $this->removeImageS3($item->image_thumb);
+                }
+            }
+           
+            $place->positionCameras()->delete();
+            $place->positionCameras()->createMany($dataCamera);
+        }
+
+        return $this->showDetail($place->id);
     }
 }

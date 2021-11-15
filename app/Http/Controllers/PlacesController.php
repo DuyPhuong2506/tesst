@@ -49,12 +49,20 @@ class PlacesController extends Controller
 
     public function update(CreatePlaceRequest $request, $id)
     {
-        $attributes = $request->only('name','restaurant_id');
-        $place = $this->placeRepo->update($id, $attributes);
-        if ($place) {
-            return $this->respondSuccess($place);
+        \DB::beginTransaction();
+        try {
+            $place = $this->placeService->updatePlace($id, $request);
+            if ($place) {
+                return $this->respondSuccess($place);
+            }
+            return $this->respondError(Response::HTTP_NOT_IMPLEMENTED, 'place can\'t update');
+            \DB::commit();
+        }  catch (\Exception $e) {
+            \DB::rollback();
+            
+            return $this->respondError(Response::HTTP_BAD_REQUEST, $e->getMessage());
         }
-        return $this->respondError(Response::HTTP_NOT_IMPLEMENTED, 'place can\'t update');
+        
     }
 
     public function destroy($id)
