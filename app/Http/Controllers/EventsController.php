@@ -18,6 +18,16 @@ class EventsController extends Controller
         $this->eventService = $eventService;
     }
 
+    public function index()
+    {
+        $events = $this->eventService->eventList();
+        if($events){
+            return $this->respondSuccess($events);
+        }
+
+        return $this->respondError(Response::HTTP_BAD_REQUEST, 'Failed to get event list !');
+    }
+
     public function store(WeddingEventRequest $request)
     {
         $requestData = $request->all();

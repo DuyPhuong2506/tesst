@@ -10,6 +10,11 @@ use App\Constants\Role;
 class EventService
 {
 
+    public function eventList()
+    {
+        return Wedding::with(['place'])->get();
+    }
+
     public function deleteEventTime($eventId)
     {
         return EventTimes::where('event_id', $eventId)->delete();
