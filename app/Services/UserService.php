@@ -227,14 +227,6 @@ class UserService
             $user->restaurant()->update($dataRestaurant);
         }
 
-        $user->company()->update([
-            'name' => $data['company_name']
-        ]);
-
-        $user->update([
-            'created_at' => $data['created_at']
-        ]);
-
         /*
         | If STAFF_ADMIN update info, we look it IS FIRST LOGIN
         */
