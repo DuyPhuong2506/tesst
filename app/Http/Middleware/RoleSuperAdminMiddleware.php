@@ -24,6 +24,6 @@ class RoleSuperAdminMiddleware
         $user = JWTAuth::parseToken()->authenticate();
         if ($user->role == \App\Constants\Role::SUPER_ADMIN) return $next($request);
         
-        return  $this->respondError(Response::HTTP_METHOD_NOT_ALLOWED, ' PERMISSION DENIED');
+        return  $this->respondError(Response::HTTP_METHOD_NOT_ALLOWED, 'PERMISSION DENIED, ROLE SUPER ADMIN');
     }
 }
