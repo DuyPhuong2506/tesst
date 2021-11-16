@@ -16,14 +16,14 @@ class EventService
     public function eventList($data)
     {
 
-        $keyword = (isset($data['keyword'])) ? $data['keyword'] : null;
+        $keyword = (isset($data['keyword'])) ? $data['keyword'] : NULL;
         $orderEventDate = (isset($data['event-date'])) ? $data['event-date'] : "";
         $orderCreatedAt = (isset($data['created-at'])) ? $data['created-at'] : "";
 
         return Wedding::whereHas('place')
-                        ->selectRaw('*')
+                        ->join('places', 'places.id', '=', 'weddings.place_id')
                         ->when(isset($keyword), function ($q) use($keyword) {
-                            return $q->whereRaw("name LIKE '%$keyword%' OR event_name LIKE '%$keyword%'");
+                            return $q->whereRaw("event_name LIKE '%$keyword%' OR places.name LIKE '%$keyword%'");
                         })
                         ->when($orderEventDate == 'asc', function ($q) use($keyword) {
                             return $q->orderBy("date", 'asc');
