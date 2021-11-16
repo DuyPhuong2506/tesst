@@ -70,7 +70,9 @@ class AuthCustomerController extends Controller
         
         try {
             auth()->logout();
-            return $this->respondSuccess('You have successfully logged out.');
+            return $this->respondSuccess([
+                'message' => 'You have successfully logged out.'
+            ]);
         } catch (JWTException $e) {
             return $this->respondError(Response::HTTP_BAD_REQUEST, 'Failed to logout, please try again.');
         }
