@@ -26,7 +26,7 @@ class EventService
                             event_name,
                             name as place_name,
                             groom_name,
-                            bride_name
+                            bride_name,
                             date    
                         ')
                         ->when(isset($keyword), function ($q) use($keyword) {
