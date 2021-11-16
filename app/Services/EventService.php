@@ -6,7 +6,7 @@ use App\Models\EventTimes;
 use App\Models\Customer;
 use App\Jobs\SendEventEmailJob;
 use App\Constants\Role;
-use App\Constants\Paginate;
+use App\Constants\Event;
 use Carbon\Carbon;
 
 class EventService
@@ -14,33 +14,36 @@ class EventService
 
     public function eventList($data)
     {
-        $events = Wedding::join('places', 'places.id', '=', 'weddings.place_id')
-                         ->select('*');
 
         $keyword = (isset($data['keyword'])) ? $data['keyword'] : "";
-        $events->when(isset($keyword), function ($q) use($keyword) {
-            return $q->whereRaw("name LIKE '%$keyword%' OR event_name LIKE '%$keyword%'");
-        });
+        $order_event_date = (isset($data['order_event_date'])) ? $data['order_event_date'] : "";
+        $order_created_at = (isset($data['order_created_at'])) ? $data['order_created_at'] : "";
 
-        if(isset($data['order_event_date'])){
-            $events->when($data['order_event_date'] == 'desc', function ($q){
-                return $q->orderBy('date', 'desc');
-            });
-            $events->when($data['order_event_date'] == 'asc', function ($q){
-                return $q->orderBy('date', 'asc');
-            });
-        }
-
-        if(isset($data['order_created_at'])){
-            $events->when($data['order_created_at'] == 'asc', function ($q){
-                return $q->orderBy('weddings.created_at', 'asc');
-            });
-            $events->when($data['order_created_at'] == 'desc', function ($q){
-                return $q->orderBy('weddings.created_at', 'desc');
-            });
-        }        
-
-        return $events->paginate(Paginate::EVENT_LIST);
+        return Wedding::join('places', 'places.id', '=', 'weddings.place_id')
+                        ->selectRaw('
+                            weddings.id as id,
+                            weddings.created_at,
+                            event_name,
+                            name as place_name,
+                            groom_name,
+                            bride_name'
+                        )
+                        ->when(isset($keyword), function ($q) use($keyword) {
+                            return $q->whereRaw("name LIKE '%$keyword%' OR event_name LIKE '%$keyword%'");
+                        })
+                        ->when($order_event_date == 'asc', function ($q) use($keyword) {
+                            return $q->orderBy("date", 'asc');
+                        })
+                        ->when($order_event_date == 'desc', function ($q) use($keyword) {
+                            return $q->orderBy("date", 'desc');
+                        })
+                        ->when($order_created_at == 'asc', function ($q) use($keyword) {
+                            return $q->orderBy("weddings.created_at", 'asc');
+                        })
+                        ->when($order_created_at == 'desc', function ($q) use($keyword) {
+                            return $q->orderBy("weddings.created_at", 'desc');
+                        })
+                        ->paginate(Event::PAGINATE);
     }
 
     public function deleteEventTime($eventId)
