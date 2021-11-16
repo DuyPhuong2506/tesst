@@ -15,6 +15,10 @@ return [
 
     'login' => [
         'login_fail' => 'Email or Password is not correct ! Try again',
+    ],
+    'place' => [
+        'delete_success' => 'place delete success',
+        'delete_fail' => 'place delete fail',
     ]
 
 ];
