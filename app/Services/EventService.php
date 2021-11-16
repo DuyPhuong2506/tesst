@@ -16,8 +16,8 @@ class EventService
     {
 
         $keyword = (isset($data['keyword'])) ? $data['keyword'] : "";
-        $order_event_date = (isset($data['order_event_date'])) ? $data['order_event_date'] : "";
-        $order_created_at = (isset($data['order_created_at'])) ? $data['order_created_at'] : "";
+        $order_event_date = (isset($data['event-date'])) ? $data['event-date'] : "";
+        $order_created_at = (isset($data['created-at'])) ? $data['created-at'] : "";
 
         return Wedding::join('places', 'places.id', '=', 'weddings.place_id')
                         ->selectRaw('
