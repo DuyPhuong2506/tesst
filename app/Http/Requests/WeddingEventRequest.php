@@ -17,7 +17,7 @@ class WeddingEventRequest extends ApiRequest
     {
         return [
             'event_name'=>'required|max:100',
-            'date'=>'required|date',
+            'date'=>'required|date_format:H:i',
             'welcome_start'=>'required|date_format:H:i',
             'welcome_end'=>'required|date_format:H:i',
             'wedding_start'=>'required|date_format:H:i',

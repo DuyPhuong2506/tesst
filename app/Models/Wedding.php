@@ -27,4 +27,9 @@ class Wedding extends Model
     public function eventTimes(){
         return $this->hasMany(EventTimes::class, 'event_id');
     }
+
+    public function place()
+    {
+        return $this->belongsTo(Place::class, 'place_id');
+    }
 }
