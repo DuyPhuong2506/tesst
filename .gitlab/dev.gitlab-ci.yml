@@ -9,6 +9,7 @@ deploy-develop:
     - ssh $CI_DEV_SSH_USER@$CI_DEV_ADMIN_IP "cd /srv/WeddingOnline-api/ && php artisan cache:clear"
     - ssh $CI_DEV_SSH_USER@$CI_DEV_ADMIN_IP "cd /srv/WeddingOnline-api/ && php artisan config:clear"
     - ssh $CI_DEV_SSH_USER@$CI_DEV_ADMIN_IP "cd /srv/WeddingOnline-api/ && php artisan key:generate"
+    - composer install
   cache:
     paths:
       - ./vendor
