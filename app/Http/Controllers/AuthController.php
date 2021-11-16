@@ -53,7 +53,7 @@ class AuthController extends Controller
         $token = null;
         try {
             if (!$token = JWTAuth::attempt($credentials)) {
-                return $this->respondError(Response::HTTP_BAD_REQUEST, 'Email or Password is not correct ! Try again');
+                return $this->respondError(Response::HTTP_BAD_REQUEST, __('messages.login.login_fail'));
             }
         } catch (JWTAuthException $e) {
             return $this->respondError(Response::HTTP_BAD_REQUEST, 'failed_to_create_token');
