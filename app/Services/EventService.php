@@ -16,6 +16,44 @@ class EventService
         return Wedding::with(['place'])->get();
     }
 
+    public function filter($data)
+    {
+        $events = Wedding::join('places', 'places.id', '=', 'weddings.place_id')
+                        ->select(
+                            'event_name', 
+                            'date', 
+                            'weddings.created_at', 
+                            'places.name'
+                        );
+
+        if(isset($data['keyword'])){
+            $keyword = $data['keyword'];
+            $events = $events->whereRaw("
+                name LIKE '%$keyword%'
+                OR event_name LIKE '%$keyword%'
+            ");
+        }
+
+        if(isset($data['order_event_date'])){
+            if($data['order_event_date'] == 0){
+                $events = $events->orderByRaw('date ASC');
+            }else{
+                $events = $events->orderByRaw('date DESC');
+            }
+        }
+        
+        if(isset($data['order_created_at'])){
+            if($data['order_created_at'] == 0){
+                $events = $events->orderByRaw('weddings.created_at ASC');
+            }else{
+                $events = $events->orderByRaw('weddings.created_at DESC');
+            }
+        }
+
+        return $events->paginate(config('app.paginate.event'));
+
+    }
+
     public function deleteEventTime($eventId)
     {
         return EventTimes::where('event_id', $eventId)->delete();
