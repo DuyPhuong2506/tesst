@@ -6,52 +6,41 @@ use App\Models\EventTimes;
 use App\Models\Customer;
 use App\Jobs\SendEventEmailJob;
 use App\Constants\Role;
+use App\Constants\Paginate;
 use Carbon\Carbon;
 
 class EventService
 {
 
-    public function eventList()
-    {
-        return Wedding::with(['place'])->get();
-    }
-
-    public function filter($data)
+    public function eventList($data)
     {
         $events = Wedding::join('places', 'places.id', '=', 'weddings.place_id')
-                        ->select(
-                            'event_name', 
-                            'date', 
-                            'weddings.created_at', 
-                            'places.name'
-                        );
+                         ->select('*');
 
-        if(isset($data['keyword'])){
-            $keyword = $data['keyword'];
-            $events = $events->whereRaw("
-                name LIKE '%$keyword%'
-                OR event_name LIKE '%$keyword%'
-            ");
-        }
+        $keyword = (isset($data['keyword'])) ? $data['keyword'] : "";
+        $events->when(isset($keyword), function ($q) use($keyword) {
+            return $q->whereRaw("name LIKE '%$keyword%' OR event_name LIKE '%$keyword%'");
+        });
 
         if(isset($data['order_event_date'])){
-            if($data['order_event_date'] == 0){
-                $events = $events->orderByRaw('date ASC');
-            }else{
-                $events = $events->orderByRaw('date DESC');
-            }
+            $events->when($data['order_event_date'] == 'desc', function ($q){
+                return $q->orderBy('date', 'desc');
+            });
+            $events->when($data['order_event_date'] == 'asc', function ($q){
+                return $q->orderBy('date', 'asc');
+            });
         }
-        
+
         if(isset($data['order_created_at'])){
-            if($data['order_created_at'] == 0){
-                $events = $events->orderByRaw('weddings.created_at ASC');
-            }else{
-                $events = $events->orderByRaw('weddings.created_at DESC');
-            }
-        }
+            $events->when($data['order_created_at'] == 'asc', function ($q){
+                return $q->orderBy('weddings.created_at', 'asc');
+            });
+            $events->when($data['order_created_at'] == 'desc', function ($q){
+                return $q->orderBy('weddings.created_at', 'desc');
+            });
+        }        
 
-        return $events->paginate(config('app.paginate.event'));
-
+        return $events->paginate(Paginate::EVENT_LIST);
     }
 
     public function deleteEventTime($eventId)

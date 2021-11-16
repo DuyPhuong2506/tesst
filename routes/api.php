@@ -31,7 +31,6 @@ Route::group(['middleware' => ['jwtAuth']], function () {
     Route::post('change-password-login', 'UsersController@updatePasswordLogin');
 
     /**Wedding event API**/
-    Route::get('event/filter', 'EventsController@filter');
     Route::resource('event','EventsController');
 
     /**My Page - Detail Account**/

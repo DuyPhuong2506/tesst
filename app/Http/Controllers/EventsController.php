@@ -8,7 +8,6 @@ use App\Services\EventService;
 use App\Http\Requests\WeddingEventRequest;
 use App\Http\Requests\UpdateEventRequest;
 use App\Http\Requests\EventIDRequest;
-use App\Http\Requests\EventFilterRequest;
 
 class EventsController extends Controller
 {
@@ -19,20 +18,10 @@ class EventsController extends Controller
         $this->eventService = $eventService;
     }
 
-    public function index()
-    {
-        $events = $this->eventService->eventList();
-        if($events){
-            return $this->respondSuccess($events);
-        }
-
-        return $this->respondError(Response::HTTP_BAD_REQUEST, 'Failed to get event list !');
-    }
-
-    public function filter(EventFilterRequest $request)
+    public function index(Request $request)
     {
         $requestData = $request->all();
-        $responseData = $this->eventService->filter($requestData);
+        $responseData = $this->eventService->eventList($requestData);
         
         if($responseData){
             return $this->respondSuccess($responseData);
