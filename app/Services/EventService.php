@@ -8,6 +8,7 @@ use App\Jobs\SendEventEmailJob;
 use App\Constants\Role;
 use App\Constants\Event;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 
 class EventService
 {
@@ -15,20 +16,12 @@ class EventService
     public function eventList($data)
     {
 
-        $keyword = (isset($data['keyword'])) ? $data['keyword'] : "";
+        $keyword = (isset($data['keyword'])) ? $data['keyword'] : null;
         $orderEventDate = (isset($data['event-date'])) ? $data['event-date'] : "";
         $orderCreatedAt = (isset($data['created-at'])) ? $data['created-at'] : "";
 
-        return Wedding::join('places', 'places.id', '=', 'weddings.place_id')
-                        ->selectRaw('
-                            weddings.id as id,
-                            weddings.created_at,
-                            event_name,
-                            name as place_name,
-                            groom_name,
-                            bride_name,
-                            date    
-                        ')
+        return Wedding::whereHas('place')
+                        ->selectRaw('*')
                         ->when(isset($keyword), function ($q) use($keyword) {
                             return $q->whereRaw("name LIKE '%$keyword%' OR event_name LIKE '%$keyword%'");
                         })
