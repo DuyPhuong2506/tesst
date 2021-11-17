@@ -100,19 +100,6 @@ class UsersController extends Controller
         return $this->respondError(Response::HTTP_BAD_REQUEST, 'Failed to update password !');
     }
 
-    public function updatePasswordLogin(ChangePasswordLogin $request)
-    {
-        $email = auth()->userOrFail()->email;
-        $password = Hash::make($request->password);
-        if($this->userService->updatePasswordLogin($password, $email)){
-            return $this->respondSuccess([
-                'message' => "Password has been changed !"
-            ]);
-        }
-
-        return $this->respondError(Response::HTTP_BAD_REQUEST, 'Failed to update password !');
-    }
-
     public function checkExpiredToken(EmailTokenRequest $request)
     {
         if($this->userService->checkExpiredToken($request->token)){

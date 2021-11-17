@@ -27,19 +27,31 @@ Route::post('check-token-exist','UsersController@checkExistToken');
 
 Route::group(['middleware' => ['jwtAuth']], function () {
 
-    /**First login and change password**/
-    Route::post('change-password-login', 'UsersController@updatePasswordLogin');
-
-    /**Wedding event API**/
-    Route::resource('event','EventsController');
-
-    /**My Page - Detail Account**/
-    Route::prefix('users')->group(function () {
-        Route::get('/get-me','UsersController@getMe');
-        Route::put('/super-admin/email/update', 'UsersController@updateSupperAdminEmail');
-        Route::put('/password-verify/update', 'UsersController@updatePasswordWithVerify');
-        Route::post('/super-admin/invite-admin-staff', 'UsersController@inviteNewAdminStaff');
-        Route::put('/staff-admin/create-or-update', 'UsersController@upadateStaffAdmin');
+    /* Role Admin (STAFF ADMIN & SUPER_ADMIN)*/
+    Route::group(['middleware' => 'auth.admin'], function(){
+        Route::prefix('users')->group(function () {
+            Route::get('/get-me','UsersController@getMe');
+            Route::put('/password-verify/update', 'UsersController@updatePasswordWithVerify');
+            Route::put('/staff-admin/create-or-update', 'UsersController@upadateStaffAdmin');
+        });
+    });
+    /* Role Staff Admin */
+    Route::group(['middleware' => 'auth.admin_staff'], function(){
+        /*Wedding Event*/
+        Route::resource('event','EventsController');
+        /*My Page - Detail Account*/
+        Route::prefix('users')->group(function () {
+            Route::get('/get-me','UsersController@getMe');
+            Route::put('/password-verify/update', 'UsersController@updatePasswordWithVerify');
+            Route::put('/staff-admin/create-or-update', 'UsersController@upadateStaffAdmin');
+        });
+    });
+    /* Role Super Admin */
+    Route::group(['middleware' => 'auth.super_admin'], function(){
+        Route::prefix('users')->group(function () {
+            Route::put('/super-admin/email/update', 'UsersController@updateSupperAdminEmail');
+            Route::post('/super-admin/invite-admin-staff', 'UsersController@inviteNewAdminStaff');
+        });
     });
 
     Route::post('auth/logout', 'AuthController@logout');
@@ -53,7 +65,6 @@ Route::group(['middleware' => ['jwtAuth']], function () {
     Route::get('staff','UsersController@getListStaff');
     Route::get('staff/{user_id}','UsersController@getStaff');
     Route::delete('staff/{user_id}','UsersController@destroyStaff');
-
    
 });
 Route::get('agora/get-token','AgoraController@generateToken')->middleware('cors');
