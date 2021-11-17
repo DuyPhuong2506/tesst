@@ -70,9 +70,9 @@ class UsersController extends Controller
     public function destroyStaff($id)
     {
         $user = $this->userService->destroyStaff($id);
-        if ($user) return $this->respondSuccess('staff is deleted');
+        if ($user) return $this->respondSuccess(['message', __('messages.admin_staff.delete_success')]);
 
-        return $this->respondError(Response::HTTP_NOT_IMPLEMENTED, 'staff cannot delete');
+        return $this->respondError(Response::HTTP_NOT_IMPLEMENTED, __('messages.admin_staff.delete_fail'));
     }
 
     public function sendEmailResetPassword(EmailRequest $request)

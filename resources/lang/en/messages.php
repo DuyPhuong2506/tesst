@@ -19,6 +19,10 @@ return [
     'place' => [
         'delete_success' => 'place delete success',
         'delete_fail' => 'place delete fail',
+    ],
+    'admin_staff' => [
+        'delete_success' => 'Admin staff delete success',
+        'delete_fail' => 'Admin staff delete fail',
     ]
 
 ];

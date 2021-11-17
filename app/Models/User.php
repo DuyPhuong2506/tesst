@@ -4,9 +4,12 @@ namespace App\Models;
 
 use Illuminate\Notifications\Notifiable;
 use App\Constants\Role;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class User extends AuthJWT
 {
+    use SoftDeletes;
+    
     protected $fillable = [
         'username', 
         'email', 
