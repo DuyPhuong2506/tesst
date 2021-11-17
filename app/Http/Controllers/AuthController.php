@@ -61,7 +61,8 @@ class AuthController extends Controller
 
         if(Auth::user()->role === Role::SUPER_ADMIN){
             Auth::user()->update([
-                'is_first_login' => Auth::user()->is_first_login + 1
+                'is_first_login' => Auth::user()->is_first_login + 1,
+                'lasted_login' => Carbon::now()
             ]);
         }
         

@@ -46,11 +46,15 @@ return [
         'password_success' => 'Update password success',
         'password_fail' => 'Update password fail',
         'token_success' => 'Token success',
-        'token_fail' => 'Token fail'
+        'token_fail' => 'Token fail',
+        'password_verify_fail' => 'Old password is not correct !'
     ],
     'mail' => [
         'send_success' => 'Mail send success',
         'send_fail' => 'Mail send fail'
+    ],
+    'admin_staff' => [
+        'delete_success' => 'Admin staff delete success',
+        'delete_fail' => 'Admin staff delete fail',
     ]
-
 ];

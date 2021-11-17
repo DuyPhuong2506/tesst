@@ -2,8 +2,7 @@ deploy-master:
   stage: deploy
   script:
     - cat "$PRO_ENV_FILE" > ".env"
-    - mkdir -p storage/app/public/firebase
-    - cat "$CI_PRO_FIREBASE" > "storage/app/public/firebase/firebase_credentials-g71en-173da651a0.json"
+    - composer install
     - chmod +x .gitlab/deploy-master.sh
     - sh .gitlab/deploy-master.sh
     - tar -cf prod-api-matsueku.tar ../WeddingOnline-api

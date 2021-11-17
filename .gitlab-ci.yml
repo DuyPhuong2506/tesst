@@ -9,10 +9,10 @@ build-dependence:
   stage: build
   script:
     - echo $CI_PROJECT_DIR
-#    - rm -rf ./vendor
-#    - rm -rf composer.lock
+    - rm -rf ./vendor
+    - rm -rf composer.lock
     - composer install
-#    - composer update
+    - composer update
   cache:
     paths:
       - ./vendor
