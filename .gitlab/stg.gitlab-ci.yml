@@ -2,14 +2,12 @@ deploy-staging:
   stage: deploy
   script:
     - cat "$STG_ENV_FILE" > ".env"
-    - mkdir -p storage/app/public/firebase
-    - cat "$CI_STG_FIREBASE" > "storage/app/public/firebase/firebase_credentials-g71en-173da651a0.json"
-    - rsync --delete -hrz --delete -e "ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" $CI_PROJECT_DIR/ centos@10.0.1.213:/srv/WeddingOnline-api
-    - rsync --delete -hrz --delete -e "ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" $CI_PROJECT_DIR/ centos@10.0.1.96:/srv/WeddingOnline-api
-    - ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null centos@10.0.1.213 "cd /srv/WeddingOnline-api/ && php artisan cache:clear"
-    - ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null centos@10.0.1.96 "cd /srv/WeddingOnline-api/ && php artisan cache:clear"
-    - ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null centos@10.0.1.213 "cd /srv/WeddingOnline-api/ && php artisan config:clear"
-    - ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null centos@10.0.1.96 "cd /srv/WeddingOnline-api/ && php artisan config:clear"
+    - composer install
+    - rsync --delete -hrzav --exclude='storage' $CI_PROJECT_DIR/ $CI_STG_SSH_USER@$CI_STG_ADMIN_IP:/srv/WeddingOnline-api/
+    - ssh $CI_STG_SSH_USER@$CI_STG_ADMIN_IP "sudo find /srv/WeddingOnline-api/ -type d -exec chmod 775 {} \; && sudo find /srv/WeddingOnline-api/ -type f -exec chmod 664 {} \;"
+    - ssh $CI_STG_SSH_USER@$CI_STG_ADMIN_IP "cd /srv/WeddingOnline-api/ && php artisan cache:clear"
+    - ssh $CI_STG_SSH_USER@$CI_STG_ADMIN_IP "cd /srv/WeddingOnline-api/ && php artisan config:clear"
+    - ssh $CI_STG_SSH_USER@$CI_STG_ADMIN_IP "cd /srv/WeddingOnline-api/ && php artisan key:generate"
 
   cache:
     paths:
@@ -23,7 +21,7 @@ deploy-staging:
 migrate-staging:
   stage: migration
   script:
-    - ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null centos@10.0.1.213 "cd /srv/WeddingOnline-api/ && yes | php artisan migrate"
+    - ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $CI_STG_SSH_USER@$CI_STG_ADMIN_IP "cd /srv/WeddingOnline-api/ && yes | php artisan migrate"
   when: manual
   only:
     - staging
@@ -32,7 +30,16 @@ migrate-staging:
 seed-staging:
   stage: seed
   script:
-    - ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null centos@10.0.1.213 "cd /srv/WeddingOnline-api/ && yes | php artisan db:seed"
+    - ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $CI_STG_SSH_USER@$CI_STG_ADMIN_IP "cd /srv/WeddingOnline-api/ && yes | php artisan db:seed"
+  when: manual
+  only:
+    - staging
+  tags:
+    - DEV_SHELL
+rollback-db-staging:
+  stage: seed
+  script:
+    - ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $CI_STG_SSH_USER@$CI_STG_ADMIN_IP "cd /srv/WeddingOnline-api/ && yes | php artisan migrate:rollback"
   when: manual
   only:
     - staging
