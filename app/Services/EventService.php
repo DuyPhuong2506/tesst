@@ -22,8 +22,10 @@ class EventService
         return Wedding::with(['place' => function($q){
                             $q->select('id', 'name');
                         }])
-                        ->whereHas('place', function($q) use($keyword){
-                            $q->where("name", "LIKE", '%'.$keyword.'%');
+                        ->where(function($q) use($keyword){
+                            $q->whereHas('place', function($q) use($keyword){
+                                $q->where("name", "LIKE", '%'.$keyword.'%')->where('status', STATUS_TRUE);
+                            })->orWhere('place_id', null);
                         })
                         ->when(isset($keyword), function ($q) use($keyword) {
                             return $q->orWhereRaw("event_name LIKE '%$keyword%'");
