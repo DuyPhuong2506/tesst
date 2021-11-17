@@ -34,6 +34,7 @@ Route::group(['middleware' => ['jwtAuth']], function () {
             Route::put('/password-verify/update', 'UsersController@updatePasswordWithVerify');
         });
     });
+    
     /* Role Staff Admin */
     Route::group(['middleware' => 'auth.admin_staff'], function(){
         Route::resource('event','EventsController');
@@ -41,6 +42,7 @@ Route::group(['middleware' => ['jwtAuth']], function () {
             Route::put('/staff-admin/create-or-update', 'UsersController@upadateStaffAdmin');
         });
     });
+
     /* Role Super Admin */
     Route::group(['middleware' => 'auth.super_admin'], function(){
         Route::prefix('users')->group(function () {
