@@ -38,7 +38,13 @@ class UserService
                 $q->orderBy($orderBy[0], $orderBy[1]);
             })
             ->when(!empty($keyword), function($q) use ($keyword) {
-                $q->where('email', 'like', '%'.$keyword.'%');
+                $q->where(function($q) use ($keyword){
+                    $q->where('email', 'like', '%'.$keyword.'%')
+                        ->orWhereHas('restaurant', function($q) use ($keyword) {
+                            $q->where('name', 'like', '%'.$keyword.'%')
+                                ->orWhere('company_name', 'like', '%'.$keyword.'%');
+                        });
+                });
             })
             ->where(function($q) {
                 $q->whereHas('company' ,function($q){
@@ -47,6 +53,9 @@ class UserService
             })
             ->with(['company' => function($q){
                 $q->select('id', 'name', 'description');
+            }])
+            ->with(['restaurant' => function($q){
+                $q->select('id', 'name', 'company_name');
             }])
             ->orderBy('created_at', 'desc')
             ->paginate($paginate);
