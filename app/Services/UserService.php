@@ -31,7 +31,8 @@ class UserService
     {
         $orderBy = isset($request['order_by']) ? explode('|', $request['order_by']) : [];
         $keyword = !empty($request['keyword']) ? $request['keyword'] : null;
-        
+        $paginate = !empty($request['paginate']) ? $request['paginate'] : PAGINATE;
+
         return User::staff()
             ->when(count($orderBy) > 1, function($q) use ($orderBy) {
                 $q->orderBy($orderBy[0], $orderBy[1]);
@@ -48,7 +49,7 @@ class UserService
                 $q->select('id', 'name', 'description');
             }])
             ->orderBy('created_at', 'desc')
-            ->paginate(PAGINATE);
+            ->paginate($paginate);
     }
 
     public function getStaff($staff_id)
