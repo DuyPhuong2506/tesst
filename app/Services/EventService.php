@@ -84,7 +84,6 @@ class EventService
             ]     
         ];
         $this->makeCouple($couple, $event->id);
-        $event->eventTimes()->createMany($data['event_times']);
 
         return $this->detailEvent($event->id);
     }
