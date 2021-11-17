@@ -37,9 +37,32 @@ class EventService
                         ->paginate($paginate);
     }
 
-    public function deleteEventTime($eventTimeId)
+    public function createTimeTable($data)
     {
-        return EventTimes::find($eventTimeId)->delete();
+        $data = EventTimes::create($data);
+        if($data){
+            return $data;
+        }
+        
+        return false;
+    }
+
+    public function deleteTimeTable($id)
+    {
+        return EventTimes::where('id', $id)->delete();
+    }
+
+    public function updateThankMsg($msg)
+    {
+        $data = Wedding::where('id', $msg['event_id'])->update([
+            'thank_you_message' => $msg['thank_you_message']
+        ]);
+
+        if($data){
+            return $data;
+        }
+
+        return false;
     }
 
     public function makeCouple($couple, $weddingEventId)

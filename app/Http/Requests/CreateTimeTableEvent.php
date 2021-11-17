@@ -9,7 +9,7 @@ class CreateTimeTableEvent extends ApiRequest
     public function rules()
     {
         return [
-            'event_id' => 'required|exist:weddings,id',
+            'event_id' => 'required|exists:weddings,id',
             'start' => 'required|date_format:H:i',
             'end' => 'required|date_format:H:i',
             'description' => 'required|max:100|string'

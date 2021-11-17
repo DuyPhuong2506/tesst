@@ -27,7 +27,7 @@ class WeddingEventRequest extends ApiRequest
             'place_id' => 'required|exists:places,id',
             'table_map_image' => 'string|max:100',
             'greeting_message' => 'string|max:100',
-            'thank_you_message' => 'string|max:100',
+            'thank_you_message' => 'string|max:500',
             'groom_name' => 'required|string|max:30',
             'groom_email' => 'required|string|email',
             'bride_name' => 'required|string|max:30',

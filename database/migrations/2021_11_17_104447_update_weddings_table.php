@@ -34,7 +34,7 @@ class UpdateWeddingsTable extends Migration
             $table->tinyInteger('is_close')->nullable()->default(null);
             $table->string('table_map_image')->nullable()->default(null);
             $table->string('greeting_message')->nullable()->default(null);
-            $table->string('thank_you_message')->nullable()->default(null);
+            $table->text('thank_you_message')->nullable()->default(null);
         });
     }
 
