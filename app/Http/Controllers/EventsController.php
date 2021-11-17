@@ -18,14 +18,18 @@ class EventsController extends Controller
         $this->eventService = $eventService;
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $events = $this->eventService->eventList();
-        if($events){
-            return $this->respondSuccess($events);
+        $requestData = $request->all();
+        $responseData = $this->eventService->eventList($requestData);
+        
+        if($responseData){
+            return $this->respondSuccess($responseData);
         }
 
-        return $this->respondError(Response::HTTP_BAD_REQUEST, 'Failed to get event list !');
+        return $this->respondError(
+            Response::HTTP_BAD_REQUEST, __('messages.event.list_fail')
+        );
     }
 
     public function store(WeddingEventRequest $request)
@@ -36,7 +40,7 @@ class EventsController extends Controller
             return $this->respondSuccess($eventData);
         }
 
-        return $this->respondError(Response::HTTP_BAD_REQUEST, 'Failed to store !');
+        return $this->respondError(Response::HTTP_BAD_REQUEST, __('messages.event.create_fail'));
     }
 
     public function show($id)
@@ -46,7 +50,7 @@ class EventsController extends Controller
             return $this->respondSuccess($data);
         }
 
-        return $this->respondError(Response::HTTP_NOT_FOUND, 'Show detail event failed !');
+        return $this->respondError(Response::HTTP_NOT_FOUND, __('messages.event.detail_fail'));
     }
 
     public function update(UpdateEventRequest $request, $id)
@@ -58,7 +62,7 @@ class EventsController extends Controller
             ]);
         }
         
-        return $this->respondError(Response::HTTP_BAD_REQUEST, 'Failed to update event !');
+        return $this->respondError(Response::HTTP_BAD_REQUEST, __('messages.event.update_fail'));
     }
 
 }

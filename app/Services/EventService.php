@@ -6,14 +6,35 @@ use App\Models\EventTimes;
 use App\Models\Customer;
 use App\Jobs\SendEventEmailJob;
 use App\Constants\Role;
+use App\Constants\Event;
 use Carbon\Carbon;
 
 class EventService
 {
 
-    public function eventList()
+    public function eventList($request)
     {
-        return Wedding::with(['place'])->get();
+
+        $keyword = (isset($request['keyword'])) ? $request['keyword'] : NULL;
+        $orderBy = (isset($request['order_by'])) ? explode('|', $request['order_by']) : [];
+        $paginate = (isset($request['paginate'])) ? $request['paginate'] : Event::PAGINATE;
+
+        return Wedding::with(['place' => function($q){
+                            $q->select('id', 'name');
+                        }])
+                        ->where(function($q) use($keyword){
+                            $q->whereHas('place', function($q) use($keyword){
+                                $q->where("name", "LIKE", '%'.$keyword.'%')->where('status', STATUS_TRUE);
+                            })->orWhere('place_id', null);
+                        })
+                        ->when(isset($keyword), function ($q) use($keyword) {
+                            return $q->orWhereRaw("event_name LIKE '%$keyword%'");
+                        })
+                        ->when(count($orderBy) > 0, function ($q) use($orderBy){
+                            return $q->orderBy($orderBy[0], $orderBy[1]);
+                        })
+                        ->orderBy('created_at', 'desc')
+                        ->paginate($paginate);
     }
 
     public function deleteEventTime($eventId)
