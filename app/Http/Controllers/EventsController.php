@@ -9,6 +9,7 @@ use App\Http\Requests\WeddingEventRequest;
 use App\Http\Requests\EventIDRequest;
 use App\Http\Requests\CreateTimeTableEvent;
 use App\Http\Requests\UpdateThankMsg;
+use App\Http\Requests\UpdateEventRequest;
 
 class EventsController extends Controller
 {
@@ -54,7 +55,7 @@ class EventsController extends Controller
         return $this->respondError(Response::HTTP_NOT_FOUND, __('messages.event.detail_fail'));
     }
 
-    public function update(UpdateEventRequest $request, $id)
+    public function update(UpdateEventRequest $request)
     {
         $data = $request->all();
         if($this->eventService->updateEvent($data)){

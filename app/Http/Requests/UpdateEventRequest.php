@@ -17,22 +17,10 @@ class UpdateEventRequest extends ApiRequest
     {
         return [
             'id'=>'required|exists:weddings,id',
-            'title' => 'required|max:100|string',
-            'date' => 'required|date_format:Y-m-d H:i',
-            'pic_name' => 'required|string|max:100',
-            'ceremony_reception_time' => 'required|regex:/(\d+\-\d+)/',
-            'ceremony_time' => 'required|regex:/(\d+\-\d+)/',
-            'party_reception_time' => 'required|regex:/(\d+\-\d+)/',
-            'party_time' => 'required|regex:/(\d+\-\d+)/',
-            'is_close' => 'boolean',
-            'place_id' => 'required|exists:places,id',
-            'table_map_image' => 'string|max:100',
-            'greeting_message' => 'string|max:100',
-            'thank_you_message' => 'string|max:100',
-            'groom_name' => 'required|string|max:30',
-            'groom_email' => 'required|string|email',
-            'bride_name' => 'required|string|max:30',
-            'bride_email' => 'required|string|email'
+            'thank_you_message' => 'string|max:400',
+            'event_times.*.start' => 'required|date_format:H:i',
+            'event_times.*.end' => 'required|date_format:H:i',
+            'event_times.*.description' => 'required|string|max:200'
         ];
     }
 }
