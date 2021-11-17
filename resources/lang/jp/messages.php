@@ -51,6 +51,9 @@ return [
     'mail' => [
         'send_success' => 'Mail send success',
         'send_fail' => 'Mail send fail'
+    ],
+    'admin_staff' => [
+        'delete_success' => 'Admin staff delete success',
+        'delete_fail' => 'Admin staff delete fail',
     ]
-
 ];
