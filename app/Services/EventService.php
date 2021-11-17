@@ -8,39 +8,31 @@ use App\Jobs\SendEventEmailJob;
 use App\Constants\Role;
 use App\Constants\Event;
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Builder;
-use DB;
 
 class EventService
 {
 
-    public function eventList($data)
+    public function eventList($request)
     {
 
-        $keyword = (isset($data['keyword'])) ? $data['keyword'] : NULL;
-        $sortEventDate = (isset($data['sort_event_date'])) ? $data['sort_event_date'] : "";
-        $sortCreatedAt = (isset($data['sort_created_at'])) ? $data['sort_created_at'] : "";
+        $keyword = (isset($request['keyword'])) ? $request['keyword'] : NULL;
+        $orderBy = (isset($request['order_by'])) ? explode('|', $request['order_by']) : [];
+        $paginate = (isset($request['paginate'])) ? $request['paginate'] : Event::PAGINATE;
 
-        return Wedding::with('place')
-                        ->whereHas('place', function(Builder $q) use($keyword){
-                            $q->where("name", "LIKE", DB::raw("'%$keyword%'"));
+        return Wedding::with(['place' => function($q){
+                            $q->select('id', 'name');
+                        }])
+                        ->whereHas('place', function($q) use($keyword){
+                            $q->where("name", "LIKE", '%'.$keyword.'%');
                         })
                         ->when(isset($keyword), function ($q) use($keyword) {
                             return $q->orWhereRaw("event_name LIKE '%$keyword%'");
                         })
-                        ->when($sortEventDate == 'asc', function ($q){
-                            return $q->orderBy("date", 'asc');
+                        ->when(count($orderBy) > 0, function ($q) use($orderBy){
+                            return $q->orderBy($orderBy[0], $orderBy[1]);
                         })
-                        ->when($sortEventDate == 'desc', function ($q){
-                            return $q->orderBy("date", 'desc');
-                        })
-                        ->when($sortCreatedAt == 'asc', function ($q){
-                            return $q->orderBy("weddings.created_at", 'asc');
-                        })
-                        ->when($sortCreatedAt == 'desc', function ($q){
-                            return $q->orderBy("weddings.created_at", 'desc');
-                        })
-                        ->paginate(Event::PAGINATE);
+                        ->orderBy('created_at', 'desc')
+                        ->paginate($paginate);
     }
 
     public function deleteEventTime($eventId)
