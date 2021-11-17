@@ -37,15 +37,15 @@ class EventService
                         ->paginate($paginate);
     }
 
-    public function deleteEventTime($eventId)
+    public function deleteEventTime($eventTimeId)
     {
-        return EventTimes::where('event_id', $eventId)->delete();
+        return EventTimes::find($eventTimeId)->delete();
     }
 
-    public function makeCouple($coupleEmail, $weddingEventId)
+    public function makeCouple($couple, $weddingEventId)
     {
         $item = [];
-        foreach ($coupleEmail as $email)
+        foreach ($couple as $value)
         {
             $username = random_str_az(8).random_str_number(4);
             $password = random_str_az(8).random_str_number(4);
@@ -53,65 +53,50 @@ class EventService
             $coupleContent = [
                 'username' => $username,
                 'password' => $password,
-                'email'    => $email,
+                'email'    => $value['email'],
                 'wedding_id' => $weddingEventId,
-                'role' => Role::COUPLE,
+                'role' => $value['role'],
                 'updated_at' => Carbon::now(),
-                'created_at' => Carbon::now()
+                'created_at' => Carbon::now(),
+                'full_name' => $value['full_name']
             ];
             array_push($item, $coupleContent);
-            $sendEmailJob = new SendEventEmailJob($email, $coupleContent);
+            $sendEmailJob = new SendEventEmailJob($value['email'], $coupleContent);
             dispatch($sendEmailJob);
         }
-
         Customer::insert($item);
     }
 
     public function createEvent($data)
     {
         $event = Wedding::create($data);
-        $event->eventTimes()->createMany($data['event_times']);
-
-        #Send mail to couple
-        $coupleEmail = [
-            $data['groom_email'],
-            $data['bride_email']
+        #Make couple
+        $couple = [
+            [
+                'email' => $data['groom_email'], 
+                'full_name' => $data['groom_name'],
+                'role' => Role::GROOM
+            ],
+            [
+                'email' => $data['bride_email'],
+                'full_name' => $data['bride_name'],
+                'role' => Role::BRIDE
+            ]     
         ];
-    
-        $this->makeCouple($coupleEmail, $event->id);
+        $this->makeCouple($couple, $event->id);
+        $event->eventTimes()->createMany($data['event_times']);
 
         return $this->detailEvent($event->id);
     }
 
     public function detailEvent($id)
     {
-        $event = Wedding::where('id', $id)->with('eventTimes')->first();
+        $event = Wedding::where('id', $id)->with(['eventTimes', 'customer'])->first();
         if($event){
             return $event;
         }
         
         return null;
-    }
-
-    public function updateEvent($data)
-    {
-        $eventId = $data['id'];
-        $timeEvent = $data['event_times'];
-        unset($data['event_times']);
-        $this->deleteEventTime($eventId);
-        if(count($timeEvent) > 0){
-            $event = Wedding::find($eventId);
-            $event->update($data);
-            $event->eventTimes()->createMany($timeEvent);
-            
-            return true;
-        }else{
-            Wedding::where('id', $data['id'])->update($data);
-
-            return true;
-        }
-
-        return false;
     }
 
 }

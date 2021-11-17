@@ -37,6 +37,7 @@ Route::group(['middleware' => ['jwtAuth']], function () {
     
     /* Role Staff Admin */
     Route::group(['middleware' => 'auth.admin_staff'], function(){
+        Route::post('event/create-time-table', 'EventsController@createTimeTable');
         Route::resource('event','EventsController');
         Route::prefix('users')->group(function () {
             Route::put('/staff-admin/create-or-update', 'UsersController@upadateStaffAdmin');

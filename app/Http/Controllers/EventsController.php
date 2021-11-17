@@ -9,6 +9,7 @@ use App\Http\Requests\WeddingEventRequest;
 use App\Http\Requests\UpdateEventRequest;
 use App\Http\Requests\EventIDRequest;
 
+
 class EventsController extends Controller
 {
     protected $eventService;
@@ -63,6 +64,11 @@ class EventsController extends Controller
         }
         
         return $this->respondError(Response::HTTP_BAD_REQUEST, __('messages.event.update_fail'));
+    }
+
+    public function createTimeTable(R $request)
+    {
+        return "1";
     }
 
 }

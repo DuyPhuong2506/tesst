@@ -8,23 +8,24 @@ class Wedding extends Model
 {
     protected $fillable = [
         'id',
-        'event_name',
+        'title',
         'date',
-        'welcome_start',
-        'welcome_end',
-        'wedding_start',
-        'wedding_end',
-        'reception_start',
-        'reception_end',
+        'pic_name',
+        'ceremony_reception_time',
+        'ceremony_time',
+        'party_reception_time',
+        'party_time',
+        'is_close',
         'place_id',
-        'groom_name',
-        'groom_email',
-        'bride_name',
-        'bride_email'
+        'table_map_image',
+        'greeting_message',
+        'thank_you_message'
     ];
+    
     protected $table = 'weddings';
 
-    public function eventTimes(){
+    public function eventTimes()
+    {
         return $this->hasMany(EventTimes::class, 'event_id');
     }
 
@@ -32,4 +33,9 @@ class Wedding extends Model
     {
         return $this->belongsTo(Place::class, 'place_id');
     }
+
+    public function customer()
+    {
+        return $this->hasMany(Customer::class, 'wedding_id', 'id');
+    } 
 }

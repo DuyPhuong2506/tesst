@@ -14,4 +14,9 @@ class Customer extends AuthJWT
         'address'
     ];
     protected $table = 'customers';
+
+    public function wedding()
+    {
+        return $this->belongsTo(Wedding::class, 'wedding_id');
+    }
 }
