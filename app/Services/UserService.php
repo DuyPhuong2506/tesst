@@ -27,9 +27,18 @@ class UserService
         return $detail;
     }
 
-    public function getAllByRestaurant()
+    public function getAllByRestaurant($request)
     {
+        $orderBy = isset($request['order_by']) ? explode('|', $request['order_by']) : [];
+        $keyword = !empty($request['keyword']) ? $request['keyword'] : null;
+        
         return User::staff()
+            ->when(count($orderBy) > 1, function($q) use ($orderBy) {
+                $q->orderBy($orderBy[0], $orderBy[1]);
+            })
+            ->when(!empty($keyword), function($q) use ($keyword) {
+                $q->where('email', 'like', '%'.$keyword.'%');
+            })
             ->where(function($q) {
                 $q->whereHas('company' ,function($q){
                     $q->whereIsActive(STATUS_TRUE);
@@ -38,7 +47,8 @@ class UserService
             ->with(['company' => function($q){
                 $q->select('id', 'name', 'description');
             }])
-            ->get();
+            ->orderBy('created_at', 'desc')
+            ->paginate(PAGINATE);
     }
 
     public function getStaff($staff_id)
