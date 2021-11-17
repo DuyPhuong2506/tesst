@@ -18,8 +18,8 @@ class EventService
     {
 
         $keyword = (isset($data['keyword'])) ? $data['keyword'] : NULL;
-        $orderEventDate = (isset($data['event-date'])) ? $data['event-date'] : "";
-        $orderCreatedAt = (isset($data['created-at'])) ? $data['created-at'] : "";
+        $sortEventDate = (isset($data['sort_event_date'])) ? $data['sort_event_date'] : "";
+        $sortCreatedAt = (isset($data['sort_created_at'])) ? $data['sort_created_at'] : "";
 
         return Wedding::with('place')
                         ->whereHas('place', function(Builder $q) use($keyword){
@@ -28,16 +28,16 @@ class EventService
                         ->when(isset($keyword), function ($q) use($keyword) {
                             return $q->orWhereRaw("event_name LIKE '%$keyword%'");
                         })
-                        ->when($orderEventDate == 'asc', function ($q){
+                        ->when($sortEventDate == 'asc', function ($q){
                             return $q->orderBy("date", 'asc');
                         })
-                        ->when($orderEventDate == 'desc', function ($q){
+                        ->when($sortEventDate == 'desc', function ($q){
                             return $q->orderBy("date", 'desc');
                         })
-                        ->when($orderCreatedAt == 'asc', function ($q){
+                        ->when($sortCreatedAt == 'asc', function ($q){
                             return $q->orderBy("weddings.created_at", 'asc');
                         })
-                        ->when($orderCreatedAt == 'desc', function ($q){
+                        ->when($sortCreatedAt == 'desc', function ($q){
                             return $q->orderBy("weddings.created_at", 'desc');
                         })
                         ->paginate(Event::PAGINATE);
