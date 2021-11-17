@@ -9,6 +9,7 @@ use App\Constants\Role;
 use App\Constants\Event;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
+use DB;
 
 class EventService
 {
@@ -22,7 +23,7 @@ class EventService
 
         return Wedding::with('place')
                         ->whereHas('place', function(Builder $q) use($keyword){
-                            $q->whereRaw("name like '%$keyword'");
+                            $q->where("name", "LIKE", DB::raw("'%$keyword%'"));
                         })
                         ->when(isset($keyword), function ($q) use($keyword) {
                             return $q->orWhereRaw("event_name LIKE '%$keyword%'");

@@ -28,7 +28,7 @@ class EventsController extends Controller
         }
 
         return $this->respondError(
-            Response::HTTP_BAD_REQUEST, 'Failed to get event list !'
+            Response::HTTP_BAD_REQUEST, __('messages.event.list_fail')
         );
     }
 
@@ -40,7 +40,7 @@ class EventsController extends Controller
             return $this->respondSuccess($eventData);
         }
 
-        return $this->respondError(Response::HTTP_BAD_REQUEST, 'Failed to store !');
+        return $this->respondError(Response::HTTP_BAD_REQUEST, __('messages.event.create_fail'));
     }
 
     public function show($id)
@@ -50,7 +50,7 @@ class EventsController extends Controller
             return $this->respondSuccess($data);
         }
 
-        return $this->respondError(Response::HTTP_NOT_FOUND, 'Show detail event failed !');
+        return $this->respondError(Response::HTTP_NOT_FOUND, __('messages.event.detail_fail'));
     }
 
     public function update(UpdateEventRequest $request, $id)
@@ -62,7 +62,7 @@ class EventsController extends Controller
             ]);
         }
         
-        return $this->respondError(Response::HTTP_BAD_REQUEST, 'Failed to update event !');
+        return $this->respondError(Response::HTTP_BAD_REQUEST, __('messages.event.update_fail'));
     }
 
 }
