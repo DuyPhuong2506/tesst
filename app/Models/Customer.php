@@ -11,8 +11,10 @@ class Customer extends AuthJWT
         'wedding_id', 
         'role',
         'phone',
-        'address'
+        'address',
+        'full_name'
     ];
+    
     protected $table = 'customers';
 
     public function wedding()
