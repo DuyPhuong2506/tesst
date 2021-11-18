@@ -14,6 +14,10 @@ class Customer extends AuthJWT
         'address',
         'full_name'
     ];
+
+    protected $hidden = [
+        'password', 'remember_token',
+    ];
     
     protected $table = 'customers';
 

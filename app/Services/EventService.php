@@ -19,9 +19,7 @@ class EventService
         $orderBy = (isset($request['order_by'])) ? explode('|', $request['order_by']) : [];
         $paginate = (isset($request['paginate'])) ? $request['paginate'] : Event::PAGINATE;
 
-        return Wedding::with(['customer' => function($q){
-                            $q->select('username');
-                        }])
+        return Wedding::with(['customer', 'place'])
                         ->where(function($q) use($keyword){
                             $q->whereHas('place', function($q) use($keyword){
                                 $q->where("name", "LIKE", '%'.$keyword.'%')->where('status', STATUS_TRUE);
