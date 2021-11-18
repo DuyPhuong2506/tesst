@@ -16,19 +16,22 @@ class WeddingEventRequest extends ApiRequest
     public function rules()
     {
         return [
-            'event_name'=>'required|max:100|string',
-            'date'=>'required|date_format:Y-m-d H:i',
-            'welcome_start'=>'required|date_format:H:i',
-            'welcome_end'=>'required|date_format:H:i',
-            'wedding_start'=>'required|date_format:H:i',
-            'wedding_end'=>'required|date_format:H:i',
-            'reception_start'=>'required|date_format:H:i',
-            'reception_end'=>'required|date_format:H:i',
-            'place_id'=>'required|exists:places,id',
-            'groom_name'=>'required|max:30|min:2|string',
-            'groom_email'=>'email|max:30|string',
-            'bride_name'=>'required|max:30|min:2|string',
-            'bride_email'=>'email|max:30|string',
+            'title' => 'required|max:100|string',
+            'date' => 'required|date_format:Y-m-d H:i',
+            'pic_name' => 'required|string|max:100',
+            'ceremony_reception_time' => 'required|regex:/(\d+\-\d+)/',
+            'ceremony_time' => 'required|regex:/(\d+\-\d+)/',
+            'party_reception_time' => 'required|regex:/(\d+\-\d+)/',
+            'party_time' => 'required|regex:/(\d+\-\d+)/',
+            'is_close' => 'boolean',
+            'place_id' => 'required|exists:places,id',
+            'table_map_image' => 'string|max:100',
+            'greeting_message' => 'string|max:100',
+            'thank_you_message' => 'string|max:500',
+            'groom_name' => 'required|string|max:30',
+            'groom_email' => 'required|string|email',
+            'bride_name' => 'required|string|max:30',
+            'bride_email' => 'required|string|email'
         ];
     }
 }

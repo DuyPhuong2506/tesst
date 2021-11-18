@@ -37,7 +37,13 @@ Route::group(['middleware' => ['jwtAuth']], function () {
     
     /* Role Staff Admin */
     Route::group(['middleware' => 'auth.admin_staff'], function(){
+        Route::prefix('event')->group(function () {
+            Route::post('/create-time-table', 'EventsController@createTimeTable');
+            Route::get('/delete-time-table/{id}', 'EventsController@deleteTimeTable');
+            Route::post('/update-thank-msg', 'EventsController@updateThankMsg');
+        });
         Route::resource('event','EventsController');
+
         Route::prefix('users')->group(function () {
             Route::put('/staff-admin/create-or-update', 'UsersController@upadateStaffAdmin');
         });

@@ -6,8 +6,10 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Services\EventService;
 use App\Http\Requests\WeddingEventRequest;
-use App\Http\Requests\UpdateEventRequest;
 use App\Http\Requests\EventIDRequest;
+use App\Http\Requests\CreateTimeTableEvent;
+use App\Http\Requests\UpdateThankMsg;
+use App\Http\Requests\UpdateEventRequest;
 
 class EventsController extends Controller
 {
@@ -53,7 +55,7 @@ class EventsController extends Controller
         return $this->respondError(Response::HTTP_NOT_FOUND, __('messages.event.detail_fail'));
     }
 
-    public function update(UpdateEventRequest $request, $id)
+    public function update(UpdateEventRequest $request)
     {
         $data = $request->all();
         if($this->eventService->updateEvent($data)){
@@ -62,6 +64,39 @@ class EventsController extends Controller
             ]);
         }
         
+        return $this->respondError(Response::HTTP_BAD_REQUEST, __('messages.event.update_fail'));
+    }
+
+    public function createTimeTable(CreateTimeTableEvent $request)
+    {
+        $data = $this->eventService->createTimeTable($request->all());
+        if($data){
+            return $this->respondSuccess($data);
+        }
+
+        return $this->respondError(Response::HTTP_BAD_REQUEST, __('messages.event.create_fail'));
+    }
+
+    public function deleteTimeTable($id)
+    {
+        if($this->eventService->deleteTimeTable($id)){
+            return $this->respondSuccess([
+                'message' => __('messages.event.delete_success')
+            ]); 
+        }
+
+        return $this->respondError(Response::HTTP_BAD_REQUEST, __('messages.event.delete_fail'));
+    }
+
+    public function updateThankMsg(UpdateThankMsg $request)
+    {
+        $data = $this->eventService->updateThankMsg($request->all());
+        if($data){
+            return $this->respondSuccess([
+                'message' => __('messages.event.update_success'),
+            ]); 
+        }
+
         return $this->respondError(Response::HTTP_BAD_REQUEST, __('messages.event.update_fail'));
     }
 
