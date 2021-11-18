@@ -45,6 +45,28 @@ class UpdateWeddingsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('weddings');
+        Schema::table('weddings', function (Blueprint $table) {
+            $table->string('event_name', 200);
+            $table->time('welcome_start')->nullable();
+            $table->time('welcome_end')->nullable();
+            $table->time('wedding_start')->nullable();
+            $table->time('wedding_end')->nullable();
+            $table->time('reception_start')->nullable();
+            $table->time('reception_end')->nullable();
+            $table->string('groom_name')->nullable();
+            $table->string('groom_email')->nullable();
+            $table->string('bride_name')->nullable();
+            $table->string('bride_email')->nullable();
+            $table->dropColumn('title');
+            $table->dropColumn('pic_name');
+            $table->dropColumn('ceremony_reception_time');
+            $table->dropColumn('ceremony_time');
+            $table->dropColumn('party_reception_time');
+            $table->dropColumn('party_time');
+            $table->dropColumn('is_close');
+            $table->dropColumn('table_map_image');
+            $table->dropColumn('greeting_message');
+            $table->dropColumn('thank_you_message');
+        });
     }
 }
