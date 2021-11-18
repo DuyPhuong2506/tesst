@@ -26,7 +26,7 @@ class EventService
                             })->orWhere('place_id', null);
                         })
                         ->when(isset($keyword), function ($q) use($keyword) {
-                            return $q->orWhereRaw("event_name LIKE '%$keyword%'");
+                            return $q->orWhereRaw("title LIKE '%$keyword%'");
                         })
                         ->when(count($orderBy) > 0, function ($q) use($orderBy){
                             return $q->orderBy($orderBy[0], $orderBy[1]);
