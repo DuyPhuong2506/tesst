@@ -176,56 +176,56 @@ class PlaceService
     {
         $file_paths = [];
         $pre_signed = [];
-        foreach($request->file_cameras as $file_info) {
-            $file = explode('.', $file_info);
-            $extensionFile = $file[1];
-            $nameFile = $file[0];
-            $client = Storage::disk('s3')->getDriver()->getAdapter()->getClient();
-            $fileName = \Str::random(10) . '_' . $file_info;
-            $filePath = 'cameras/' . $fileName;
-            
-    
-            $command = $client->getCommand('PutObject', [
-                'Bucket' => config('filesystems.disks.s3.bucket'),
-                'Key' => $filePath,
-            ]);
-    
-            $request = $client->createPresignedRequest($command, '+20 minutes');
-    
-            $filePathArray = [
-                'image_path' => $filePath,
-                'full_link_image' => Storage::disk('s3')->url($filePath),
-                'image_path_thumb' => null,
-                'full_link_image_thumb' => null,
-                'extension' =>  $extensionFile,
-            ];
-    
-            $preSignedArray = [
-                'pre_signed' => (string) $request->getUri(),
-                'pre_signed_thumb' => null,
-            ];
-    
-            if(in_array($extensionFile, ['png', 'jpg', 'jpeg'])){
-                // handle image thumbnail
-                $fileNameThumbnail = \Str::random(10) . '_thumbnail_' . $file_info;
-                $filePathThumbnail = 'cameras/' . $fileNameThumbnail;
+        if(isset($request->file_cameras)){
+            foreach($request->file_cameras as $file_info) {
+                $file = explode('.', $file_info);
+                $extensionFile = $file[1];
+                $nameFile = $file[0];
+                $client = Storage::disk('s3')->getDriver()->getAdapter()->getClient();
+                $fileName = \Str::random(10) . '_' . $file_info;
+                $filePath = 'cameras/' . $fileName;
                 
-    
+        
                 $command = $client->getCommand('PutObject', [
                     'Bucket' => config('filesystems.disks.s3.bucket'),
-                    'Key' => $filePathThumbnail,
+                    'Key' => $filePath,
                 ]);
         
-                $requestThumbnail = $client->createPresignedRequest($command, '+20 minutes');
-    
-                $filePathArray['image_path_thumb'] = $filePathThumbnail;
-                $filePathArray['full_link_image_thumb'] = Storage::disk('s3')->url($filePathThumbnail);
-                $preSignedArray['pre_signed_thumb'] = (string) $requestThumbnail->getUri();
+                $request = $client->createPresignedRequest($command, '+20 minutes');
+        
+                $filePathArray = [
+                    'image_path' => $filePath,
+                    'full_link_image' => Storage::disk('s3')->url($filePath),
+                    'image_path_thumb' => null,
+                    'full_link_image_thumb' => null,
+                    'extension' =>  $extensionFile,
+                ];
+        
+                $preSignedArray = [
+                    'pre_signed' => (string) $request->getUri(),
+                    'pre_signed_thumb' => null,
+                ];
+        
+                if(in_array($extensionFile, ['png', 'jpg', 'jpeg'])){
+                    // handle image thumbnail
+                    $fileNameThumbnail = \Str::random(10) . '_thumbnail_' . $file_info;
+                    $filePathThumbnail = 'cameras/' . $fileNameThumbnail;
+                    
+        
+                    $command = $client->getCommand('PutObject', [
+                        'Bucket' => config('filesystems.disks.s3.bucket'),
+                        'Key' => $filePathThumbnail,
+                    ]);
+            
+                    $requestThumbnail = $client->createPresignedRequest($command, '+20 minutes');
+        
+                    $filePathArray['image_path_thumb'] = $filePathThumbnail;
+                    $filePathArray['full_link_image_thumb'] = Storage::disk('s3')->url($filePathThumbnail);
+                    $preSignedArray['pre_signed_thumb'] = (string) $requestThumbnail->getUri();
+                }
+                array_push($file_paths, $filePathArray);
+                array_push($pre_signed, $preSignedArray);
             }
-           
-    
-            array_push($file_paths, $filePathArray);
-            array_push($pre_signed, $preSignedArray);
         }
 
         return  [
