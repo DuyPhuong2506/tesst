@@ -184,8 +184,6 @@ class PlaceService
                 $client = Storage::disk('s3')->getDriver()->getAdapter()->getClient();
                 $fileName = \Str::random(10) . '_' . $file_info;
                 $filePath = 'cameras/' . $fileName;
-                
-        
                 $command = $client->getCommand('PutObject', [
                     'Bucket' => config('filesystems.disks.s3.bucket'),
                     'Key' => $filePath,
