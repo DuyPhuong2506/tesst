@@ -155,7 +155,7 @@ class PlaceService
         $keyword = !empty($request['keyword']) ? $request['keyword'] : null;
         $paginate = !empty($request['paginate']) ? $request['paginate'] : PAGINATE;
 
-        $place = Place::with(['tablePositions', 'positionCameras'])
+        $place = $this->placeRepo->model->with(['tablePositions', 'positionCameras'])
             ->when(!empty($keyword), function($q) use ($keyword) {
                 $q->where('name', 'like', '%' . $keyword . '%');
             })
