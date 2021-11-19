@@ -133,27 +133,9 @@ class UserService
             
         return false;
     }
-    
-    public function isSoftDeleted($email)
-    {
-        $user = User::withTrashed()
-                    ->where('email', $email)
-                    ->first()
-                    ->trashed();
-
-        if($user == 1){
-            return true;
-        }
-
-        return false;
-    }
 
     public function sendMailToReset($email)
     {
-        if($this->isSoftDeleted($email)){
-            return false;
-        }
-        
         $token = Str::random(100);
         $emailInfo = [
             'token' => $token,
@@ -199,12 +181,6 @@ class UserService
             'app_url' => env('ADMIN_URL'),
             'token' => $token
         ];
-
-        $userExisted =  User::where('email', $email)->exists();
-        $userSoftDeleted = $this->isSoftDeleted($email);
-        if($userSoftDeleted || $userExisted){
-            return false;
-        }
 
         User::create([
             'email' => $email,
