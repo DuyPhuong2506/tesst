@@ -15,7 +15,7 @@ class AddForeignKeyWeddings extends Migration
     {
         Schema::table('weddings', function (Blueprint $table) {
             $table->unsignedBigInteger('place_id')->nullable()->change();
-            $table->foreign('place_id')->references('id')->on('places')->onDelete('cascade');
+            $table->foreign('place_id')->references('id')->on('places')->onDelete('cascade')->change();
         });
     }
 
@@ -27,8 +27,7 @@ class AddForeignKeyWeddings extends Migration
     public function down()
     {
         Schema::table('weddings', function (Blueprint $table) {
-            $table->dropForeign(['place_id']);
-            $table->dropColumn('place_id');
+            $table->foreign('place_id')->references('id')->on('places')->change();
         });
     }
 }
