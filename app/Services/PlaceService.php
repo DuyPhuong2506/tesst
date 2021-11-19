@@ -306,6 +306,10 @@ class PlaceService
     {   
         $dataCamera = $this->storeFileCamera($request);
         $attributes = $request->only('name','restaurant_id', 'image', 'image_thumb');
+        $attributes['status'] = STATUS_FALSE;
+        if(is_numeric($request->status) && $request->status == STATUS_TRUE){
+            $attributes['status'] = STATUS_TRUE;
+        } 
         $place = $this->placeRepo->model->whereId($id)->first();
         if(isset($request->image) && $place->image) {
             $this->removeImageS3($place->image);

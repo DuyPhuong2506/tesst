@@ -15,7 +15,8 @@ class Place extends Model
         'name',
         'restaurant_id',
         'image',
-        'image_thumb'
+        'image_thumb',
+        'status'
     ];
 
     /**
