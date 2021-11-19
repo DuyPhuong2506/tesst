@@ -17,8 +17,12 @@ return [
         'login_fail' => 'Email or Password is not correct ! Try again',
     ],
     'place' => [
-        'delete_success' => 'place delete success',
-        'delete_fail' => 'place delete fail',
+        'create_success' => 'Place create success',
+        'create_fail' => 'Place create fail',
+        'update_success' => 'Place update success',
+        'update_fail' => 'Place update fail',
+        'delete_success' => 'Place delete success',
+        'delete_fail' => 'Place delete fail',
     ],
     'admin_staff' => [
         'delete_success' => 'Admin staff delete success',
