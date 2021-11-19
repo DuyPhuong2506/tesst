@@ -16,7 +16,7 @@ class AddCascadeTimeTable extends Migration
         Schema::table('wedding_timetable', function (Blueprint $table) {
             $table->dropForeign(['event_id']);
             $table->unsignedBigInteger('event_id')->nullable()->change();
-            $table->foreign('event_id')->references('id')->on('weddings')->onDelete('cascade');
+            $table->foreign('event_id')->references('id')->on('weddings')->onDelete('cascade')->change();
         });
     }
 
@@ -28,9 +28,7 @@ class AddCascadeTimeTable extends Migration
     public function down()
     {
         Schema::table('wedding_timetable', function (Blueprint $table) {
-            $table->foreign('event_id')->references('id')->on('weddings');
-            $table->dropForeign(['event_id']);
-            $table->dropColumn('event_id');
+            $table->foreign('event_id')->references('id')->on('weddings')->change();
         });
     }
 }
