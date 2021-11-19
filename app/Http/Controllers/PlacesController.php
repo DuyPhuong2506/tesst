@@ -39,9 +39,9 @@ class PlacesController extends Controller
         }
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $places = $this->placeService->getAll();
+        $places = $this->placeService->getAll($request);
         return $this->respondSuccess($places);
     }
 
