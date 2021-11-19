@@ -19,7 +19,7 @@ return [
     'place' => [
         'create_success' => 'Place create success',
         'create_fail' => 'Place create fail',
-        'update_sucess' => 'Place update success',
+        'update_success' => 'Place update success',
         'update_fail' => 'Place update fail',
         'delete_success' => 'Place delete success',
         'delete_fail' => 'Place delete fail',

@@ -331,12 +331,12 @@ class PlaceService
             }
         }
         if($place) {
-            if(count($request->del_table_positions)){
+            if(isset($request->del_table_positions) &&  count($request->del_table_positions)){
                 $tablePositions = $place->tablePositions()->whereIn('id', $request->del_table_positions)->delete();
             }
             $place->tablePositions()->createMany($dataTable);
 
-            if(count($request->del_position_cameras)){
+            if(isset($request->del_position_cameras) &&  count($request->del_position_cameras)){
                 $positionCameras = $place->positionCameras()->whereIn('id', $request->del_position_cameras)->get();
                     // check delete image
                 foreach($positionCameras as $item){
