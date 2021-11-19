@@ -14,14 +14,13 @@ class UpdatePlaceRequest extends ApiRequest
      */
     public function rules()
     {
+        $id = request()->id;
         return [
             'name' => 'required',
             'restaurant_id' => 'required|exists:\App\Models\Restaurant,id',
+            'image' => 'required|string|max:16300',
             'table_positions.*.amount_chair' => 'required|integer|max:1000',
             'table_positions.*.position' => 'required|string|max:255',
-            'position_cameras.*.image' => 'required|string|max:16300',
-            'position_cameras.*.image_thumb' => 'required|string|max:16300',
-            'position_cameras.*.name' => 'required|string|max:255',
         ];
     }
 }
