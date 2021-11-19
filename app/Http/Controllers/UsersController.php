@@ -179,15 +179,12 @@ class UsersController extends Controller
     public function inviteNewAdminStaff(NewEmailRequest $request)
     {
         $role = Auth::user()->role;
-        $inviterMail = Auth::user()->email;
         $requestEmail = $request->email;
-
-        if($this->userService->inviteNewAdminStaff($requestEmail, $inviterMail)){
+        if($this->userService->inviteNewAdminStaff($requestEmail)){
             return $this->respondSuccess([
                 'message' => __('messages.mail.send_success')
             ]);
         }
-
         return $this->respondError(
             Response::HTTP_BAD_REQUEST, __('messages.mail.send_fail')
         );

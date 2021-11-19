@@ -47,7 +47,8 @@ return [
         'password_fail' => 'Update password fail',
         'token_success' => 'Token success',
         'token_fail' => 'Token fail',
-        'password_verify_fail' => 'Old password is not correct !'
+        'password_verify_fail' => 'Old password is not correct !',
+        'existed' => 'Failed ! User is existed !'
     ],
     'mail' => [
         'send_success' => 'Mail send success',

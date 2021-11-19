@@ -174,28 +174,21 @@ class UserService
 
     }
 
-    public function inviteNewAdminStaff($email, $inviterMail)
+    public function inviteNewAdminStaff($email)
     {
-        if($email === $inviterMail){
-            return false;
-        }
-
         $token = Str::random(100);
         $emailInfo = [
             'app_url' => env('ADMIN_URL'),
             'token' => $token
         ];
 
-        User::updateOrCreate(
-            ['email' => $email],
-            [
-                'email' => $email,
-                'remember_token' => $token,
-                'role' => Role::STAFF_ADMIN,
-                'username' => random_str(20),
-                'password' => random_str(200)
-            ]
-        );
+        User::create([
+            'email' => $email,
+            'remember_token' => $token,
+            'role' => Role::STAFF_ADMIN,
+            'username' => random_str(20),
+            'password' => random_str(200)
+        ]);
 
         Mail::send('mails/admin_staff_invite', $emailInfo, function($msg) use($email){
             $msg->to($email)->subject("Invite Registry Account Admin Staff!");
