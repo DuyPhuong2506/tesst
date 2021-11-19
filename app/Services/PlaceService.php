@@ -149,9 +149,18 @@ class PlaceService
         return $place;
     }
 
-    public function getAll()
+    public function getAll($request)
     {   
-        $place = Place::with(['tablePositions', 'positionCameras'])->orderBy('created_at', 'desc')->paginate(PAGINATE);
+        $orderBy = isset($request['order_by']) ? explode('|', $request['order_by']) : [];
+        $keyword = !empty($request['keyword']) ? $request['keyword'] : null;
+        $paginate = !empty($request['paginate']) ? $request['paginate'] : PAGINATE;
+
+        $place = $this->placeRepo->model->with(['tablePositions', 'positionCameras'])
+            ->when(!empty($keyword), function($q) use ($keyword) {
+                $q->where('name', 'like', '%' . $keyword . '%');
+            })
+            ->orderBy('created_at', 'desc')
+            ->paginate($paginate);
 
         return $place;
     }
