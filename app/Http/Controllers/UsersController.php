@@ -186,7 +186,7 @@ class UsersController extends Controller
             ]);
         }
         return $this->respondError(
-            Response::HTTP_BAD_REQUEST, __('messages.user.existed')
+            Response::HTTP_BAD_REQUEST, __('messages.mail.send_fail')
         );
     }
 
