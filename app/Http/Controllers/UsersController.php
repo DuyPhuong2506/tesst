@@ -178,16 +178,26 @@ class UsersController extends Controller
 
     public function inviteNewAdminStaff(NewEmailRequest $request)
     {
-        $role = Auth::user()->role;
         $requestEmail = $request->email;
-        if($this->userService->inviteNewAdminStaff($requestEmail)){
-            return $this->respondSuccess([
-                'message' => __('messages.mail.send_success')
-            ]);
+        \DB::beginTransaction();
+        try {
+            if($this->userService->inviteNewAdminStaff($requestEmail)){
+                \DB::commit();
+
+                return $this->respondSuccess([
+                    'message' => __('messages.mail.send_success')
+                ]);
+            }
+            \DB::rollback();
+            
+            return $this->respondError(
+                Response::HTTP_BAD_REQUEST, __('messages.mail.send_fail')
+            );
+        } catch (\Exception $e) {
+            \DB::rollback();
+            
+            return $this->respondError(Response::HTTP_BAD_REQUEST, $e->getMessage());
         }
-        return $this->respondError(
-            Response::HTTP_BAD_REQUEST, __('messages.mail.send_fail')
-        );
     }
 
     public function upadateStaffAdmin(UpdateStaffInfoRequest $request)
