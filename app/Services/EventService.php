@@ -90,6 +90,11 @@ class EventService
 
     public function createEvent($data)
     {
+        $data['ceremony_reception_time'] = implode('-', $data['ceremony_reception_time']);
+        $data['ceremony_time'] = implode('-', $data['ceremony_time']);
+        $data['party_reception_time'] = implode('-', $data['party_reception_time']);
+        $data['party_time'] = implode('-', $data['party_time']);
+        
         $event = Wedding::create($data);
         #Make couple
         $couple = [
