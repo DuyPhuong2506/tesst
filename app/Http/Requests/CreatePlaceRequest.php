@@ -17,7 +17,6 @@ class CreatePlaceRequest extends ApiRequest
         return [
             'name' => 'required',
             'restaurant_id' => 'required|exists:\App\Models\Restaurant,id',
-            'image' => 'required|string|max:16300',
             'table_positions.*.amount_chair' => 'required|integer|max:1000',
             'table_positions.*.position' => 'required|string|max:255',
         ];
