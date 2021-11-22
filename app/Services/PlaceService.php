@@ -156,6 +156,11 @@ class PlaceService
         $paginate = !empty($request['paginate']) ? $request['paginate'] : PAGINATE;
 
         $place = $this->placeRepo->model->with(['tablePositions', 'positionCameras'])
+            ->whereHas('restaurant', function($q) {
+                $q->whereHas('user', function($q) {
+                    $q->whereId(auth()->id());
+                });
+            })
             ->when(!empty($keyword), function($q) use ($keyword) {
                 $q->where('name', 'like', '%' . $keyword . '%');
             })
