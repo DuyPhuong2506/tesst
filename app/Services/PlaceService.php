@@ -144,7 +144,7 @@ class PlaceService
 
     public function showDetail($id)
     {   
-        $place = $this->placeRepo->model->whereId($id)->with(['tablePositions', 'positionCameras'])->first();
+        $place = $this->placeRepo->model->whereId($id)->with(['tablePositions'])->first();
 
         return $place;
     }
@@ -155,7 +155,7 @@ class PlaceService
         $keyword = !empty($request['keyword']) ? $request['keyword'] : null;
         $paginate = !empty($request['paginate']) ? $request['paginate'] : PAGINATE;
 
-        $place = $this->placeRepo->model->with(['tablePositions', 'positionCameras'])
+        $place = $this->placeRepo->model->with(['tablePositions'])
             ->whereHas('restaurant', function($q) {
                 $q->whereHas('user', function($q) {
                     $q->whereId(auth()->id());
@@ -333,6 +333,20 @@ class PlaceService
                     'status' => STATUS_TRUE
                 ];
                 array_push($dataTable, $objectTable);
+            }
+        }
+        if(isset($request->update_table_positions) && count($request->update_table_positions)){
+            foreach($request->update_table_positions as $key => $item) {
+                $updateTable = [
+                    'amount_chair' => $item['amount_chair'],
+                    'position' =>   $item['position'],
+                    'customer_id' => auth()->id(),
+                    'status' => STATUS_TRUE
+                ];
+            }
+            $table = $place->tablePositions()->whereId($item['id'])->first();
+            if($table){
+                $table->update($updateTable);
             }
         }
         if($place) {
