@@ -16,7 +16,7 @@ class CustomerLogin extends ApiRequest
     public function rules()
     {
         return [
-            'username' => 'required|string|max:12|min:12|regex:/^[a-zA-Z0-9]+$/',
+            'username' => 'required|string|exists:customers,username|max:12|min:12|regex:/^[a-zA-Z0-9]+$/',
             'password' => 'required|string|max:12|min:12|regex:/^[a-zA-Z0-9]+$/',
         ];
     }
