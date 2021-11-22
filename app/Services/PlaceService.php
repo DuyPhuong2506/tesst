@@ -155,7 +155,7 @@ class PlaceService
         $keyword = !empty($request['keyword']) ? $request['keyword'] : null;
         $paginate = !empty($request['paginate']) ? $request['paginate'] : PAGINATE;
 
-        $place = $this->placeRepo->model->with(['tablePositions'])
+        $places = $this->placeRepo->model->with(['tablePositions'])
             ->whereHas('restaurant', function($q) {
                 $q->whereHas('user', function($q) {
                     $q->whereId(auth()->id());
@@ -164,10 +164,14 @@ class PlaceService
             ->when(!empty($keyword), function($q) use ($keyword) {
                 $q->where('name', 'like', '%' . $keyword . '%');
             })
-            ->orderBy('created_at', 'desc')
-            ->paginate($paginate);
-
-        return $place;
+            ->orderBy('created_at', 'desc');
+            
+        if($paginate != PAGINATE_ALL){
+            $places = $places->paginate($paginate);
+        } else {
+            $places = $places->get();
+        }
+        return $places;
     }
 
     public function removeImageS3($link)
