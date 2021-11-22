@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
+use App\Http\Requests\CustomerLogin;
 use Illuminate\Support\Facades\Auth;
 use App\Constants\Role;
 use JWTAuth;
@@ -36,7 +37,7 @@ class AuthCustomerController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function login(Request $request)
+    public function login(CustomerLogin $request)
     {
         $username = $request->username;
         $password = $request->password;
