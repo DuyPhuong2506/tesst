@@ -33,7 +33,7 @@ class UserService
         $keyword = !empty($request['keyword']) ? $request['keyword'] : null;
         $paginate = !empty($request['paginate']) ? $request['paginate'] : PAGINATE;
 
-        return User::staff()
+        $staffs = User::staff()
             ->when(count($orderBy) > 1, function($q) use ($orderBy) {
                 $q->orderBy($orderBy[0], $orderBy[1]);
             })
@@ -57,8 +57,14 @@ class UserService
             ->with(['restaurant' => function($q){
                 $q->select('id', 'name', 'company_name');
             }])
-            ->orderBy('created_at', 'desc')
-            ->paginate($paginate);
+            ->orderBy('created_at', 'desc');
+
+            if($paginate != PAGINATE_ALL){
+               $staffs = $staffs->paginate($paginate);
+            } else {
+                $staffs = $staffs->get();
+            }
+        return $staffs;
     }
 
     public function getStaff($staff_id)

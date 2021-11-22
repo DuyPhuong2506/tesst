@@ -20,4 +20,12 @@ class Restaurant extends Model
         'company_name'
     ];
     protected $table = 'restaurants';
+
+    /**
+     * Get the post that owns the comment.
+     */
+    public function user()
+    {
+        return $this->hasOne(User::class, 'restaurant_id', 'id');
+    }
 }
