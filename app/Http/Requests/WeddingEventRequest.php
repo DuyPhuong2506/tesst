@@ -35,7 +35,7 @@ class WeddingEventRequest extends ApiRequest
             'party_time.0' => "required|after:party_reception_time.1",
             'party_time.1' => "required|after:party_time.0",
             'is_close' => 'boolean',
-            'place_id' => 'required|exists:places,id',
+            'place_id' => 'required|exists:places,id,status,1',
             'table_map_image' => 'string|max:100',
             'greeting_message' => 'string|max:100',
             'thank_you_message' => 'string|max:500',
