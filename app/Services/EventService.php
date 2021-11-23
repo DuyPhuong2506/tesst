@@ -14,12 +14,18 @@ class EventService
 
     public function eventList($request)
     {
-
         $keyword = (isset($request['keyword'])) ? $request['keyword'] : NULL;
         $orderBy = (isset($request['order_by'])) ? explode('|', $request['order_by']) : [];
         $paginate = (isset($request['paginate'])) ? $request['paginate'] : Event::PAGINATE;
 
         return Wedding::with(['customer', 'place'])
+                        ->whereHas('place', function($q){
+                            $q->whereHas('restaurant', function($q){
+                                $q->whereHas('user', function($q){
+                                    $q->whereId(Auth::user()->id);
+                                });
+                            });
+                        })
                         ->where(function($q) use($keyword){
                             $q->whereHas('place', function($q) use($keyword){
                                 $q->where("name", "LIKE", '%'.$keyword.'%')->where('status', STATUS_TRUE);
