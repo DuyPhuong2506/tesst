@@ -14,7 +14,6 @@ use App\Http\Requests\ChangePasswordLogin;
 use App\Http\Requests\EmailRequest;
 use App\Http\Requests\EmailTokenRequest;
 use App\Http\Requests\UpdateStaffInfoRequest;
-use App\Http\Requests\UpdateEmailRequest;
 use App\Http\Requests\UpdatePasswordVerify;
 use App\Http\Requests\NewEmailRequest;
 use App\Constants\Role;
@@ -122,19 +121,6 @@ class UsersController extends Controller
         }
 
         return $this->respondError(Response::HTTP_BAD_REQUEST, __('messages.user.detail_fail'));
-    }
-
-    public function updateSupperAdminEmail(UpdateEmailRequest $request)
-    {
-        $oldEmail = Auth::user()->email;
-        $newEmail = $request->email;
-        $data = $this->userService->changeEmail($oldEmail, $newEmail);
-
-        if($data){
-            return $this->respondSuccess($data);
-        }   
-
-        return $this->respondError(Response::HTTP_BAD_REQUEST, __('messages.user.update_fail'));
     }
 
     public function updatePasswordWithVerify(UpdatePasswordVerify $request)

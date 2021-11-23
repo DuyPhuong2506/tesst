@@ -166,20 +166,6 @@ class UserService
         return null;
     }
 
-    public function changeEmail($oldEmail, $newEmail)
-    {
-        $user = User::where('email', $oldEmail);
-        
-        if(!$user) return false;
-        
-        $user->update([
-            'email' => $newEmail
-        ]);
-
-        return $newEmail;
-
-    }
-
     public function inviteNewAdminStaff($email)
     {
         $token = Str::random(100);
