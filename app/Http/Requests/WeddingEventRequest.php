@@ -16,7 +16,7 @@ class WeddingEventRequest extends ApiRequest
     public function rules()
     {
         return [
-            'title' => 'required|max:100|string',
+            'title' => 'required|max:200|string',
             'date' => 'required|date_format:Y-m-d H:i',
             'pic_name' => 'required|string|max:100',
             'ceremony_reception_time' => 'array|required',
