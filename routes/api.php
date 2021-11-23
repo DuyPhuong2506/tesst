@@ -52,7 +52,6 @@ Route::group(['middleware' => ['jwtAuth']], function () {
     /* Role Super Admin */
     Route::group(['middleware' => 'auth.super_admin'], function(){
         Route::prefix('users')->group(function () {
-            Route::put('/super-admin/email/update', 'UsersController@updateSupperAdminEmail');
             Route::post('/super-admin/invite-admin-staff', 'UsersController@inviteNewAdminStaff');
         });
     });
