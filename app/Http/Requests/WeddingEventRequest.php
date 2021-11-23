@@ -40,9 +40,9 @@ class WeddingEventRequest extends ApiRequest
             'greeting_message' => 'string|max:100',
             'thank_you_message' => 'string|max:500',
             'groom_name' => 'required|string|max:100',
-            'groom_email' => 'required|max:50|string|email|regex:/^[a-zA-Z0-9@._-]+$/',
+            'groom_email' => 'required|max:50|string|email|regex:/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix',
             'bride_name' => 'required|string|max:100',
-            'bride_email' => 'required|max:50|string|email|regex:/^[a-zA-Z0-9@._-]+$/'
+            'bride_email' => 'required|max:50|string|email|regex:/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix'
         ];
     }
 }
