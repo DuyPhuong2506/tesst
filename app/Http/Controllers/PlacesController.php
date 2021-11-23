@@ -8,7 +8,9 @@ use App\Repositories\PlaceRepository;
 use App\Services\PlaceService;
 use App\Http\Requests\CreatePlaceRequest;
 use App\Http\Requests\UpdatePlaceRequest;
+use App\Http\Requests\UploadPreSignedRequest;
 use App\Models\Place;
+use App\Services\File\Tasks\UploadPreSignedTask;
 
 class PlacesController extends Controller
 {
@@ -87,7 +89,7 @@ class PlacesController extends Controller
         return $this->respondError(Response::HTTP_NOT_IMPLEMENTED, __('messages.place.delete_fail'));
     }
 
-    public function getPreSigned(Request $request)
+    public function getPreSigned(UploadPreSignedRequest $request)
     {
         try {
             $place = $this->placeService->getPreSigned($request);
