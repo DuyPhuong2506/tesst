@@ -165,7 +165,7 @@ class PlaceService
                 $q->where('name', 'like', '%' . $keyword . '%');
             })
             ->orderBy('created_at', 'desc');
-            
+
         if($paginate != PAGINATE_ALL){
             $places = $places->paginate($paginate);
         } else {
@@ -261,7 +261,7 @@ class PlaceService
         $nameFile = $file[0];
         $client = Storage::disk('s3')->getDriver()->getAdapter()->getClient();
         $fileName = \Str::random(10) . '_' . $file_info;
-        $filePath = 'cameras/' . $fileName;
+        $filePath = 'places/' . $fileName;
         
 
         $command = $client->getCommand('PutObject', [
@@ -287,7 +287,7 @@ class PlaceService
         if(in_array($extensionFile, ['png', 'jpg', 'jpeg'])){
             // handle image thumbnail
             $fileNameThumbnail = \Str::random(10) . '_thumbnail_' . $file_info;
-            $filePathThumbnail = 'cameras/' . $fileNameThumbnail;
+            $filePathThumbnail = 'places/' . $fileNameThumbnail;
             
 
             $command = $client->getCommand('PutObject', [
