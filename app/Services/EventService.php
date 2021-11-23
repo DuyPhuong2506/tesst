@@ -6,8 +6,9 @@ use App\Models\EventTimes;
 use App\Models\Customer;
 use App\Jobs\SendEventEmailJob;
 use App\Constants\Role;
-use App\Constants\Event;
+use App\Constants\EventConstance;
 use Carbon\Carbon;
+use Auth;
 
 class EventService
 {
@@ -16,7 +17,7 @@ class EventService
     {
         $keyword = (isset($request['keyword'])) ? $request['keyword'] : NULL;
         $orderBy = (isset($request['order_by'])) ? explode('|', $request['order_by']) : [];
-        $paginate = (isset($request['paginate'])) ? $request['paginate'] : Event::PAGINATE;
+        $paginate = (isset($request['paginate'])) ? $request['paginate'] : EventConstance::PAGINATE;
 
         return Wedding::with(['customer', 'place'])
                         ->whereHas('place', function($q){

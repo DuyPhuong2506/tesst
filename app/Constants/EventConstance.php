@@ -1,7 +1,7 @@
 <?php
 namespace App\Constants;
 
-class Event
+class EventConstance
 {
     const PAGINATE = 10;
 }
