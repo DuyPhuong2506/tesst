@@ -19,25 +19,24 @@ class EventService
         $orderBy = (isset($request['order_by'])) ? explode('|', $request['order_by']) : [];
         $paginate = (isset($request['paginate'])) ? $request['paginate'] : EventConstant::PAGINATE;
 
-        return Wedding::with(['customer', 'place'])
-                        ->whereHas('place', function($q){
+        return Wedding::whereHas('place', function($q){
                             $q->whereHas('restaurant', function($q){
                                 $q->whereHas('user', function($q){
                                     $q->whereId(Auth::user()->id);
                                 });
                             });
                         })
-                        ->where(function($q) use($keyword){
+                        ->when(isset($keyword), function($q) use($keyword){
                             $q->whereHas('place', function($q) use($keyword){
-                                $q->where("name", "LIKE", '%'.$keyword.'%')->where('status', STATUS_TRUE);
+                                $q->where("name", "like", '%'.$keyword.'%')
+                                  ->where('status', STATUS_TRUE)
+                                  ->orWhere("title", "like", '%'.$keyword.'%');
                             })->orWhere('place_id', null);
-                        })
-                        ->when(isset($keyword), function ($q) use($keyword) {
-                            return $q->orWhere("title", "LIKE", '%'.$keyword.'%');
                         })
                         ->when(count($orderBy) > 0, function ($q) use($orderBy){
                             return $q->orderBy($orderBy[0], $orderBy[1]);
                         })
+                        ->with(['place', 'customer'])
                         ->orderBy('created_at', 'desc')
                         ->paginate($paginate);
     }
