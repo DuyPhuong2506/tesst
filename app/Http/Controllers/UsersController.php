@@ -141,8 +141,8 @@ class UsersController extends Controller
             ]);
         }
         else if($status === false){
-            return $this->respondError(Response::HTTP_BAD_REQUEST, [
-                "password" => [__('messages.user.password_verify_fail')]
+            return $this->respondError(Response::HTTP_UNPROCESSABLE_ENTITY, [
+                "verify_password" => [__('messages.user.password_verify_fail')]
             ]);
         }
             

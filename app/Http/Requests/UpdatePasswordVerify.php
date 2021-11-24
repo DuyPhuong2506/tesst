@@ -17,7 +17,8 @@ class UpdatePasswordVerify extends ApiRequest
     {
         return [
             'verify_password' => 'required|min:8|max:255|regex:/^[a-zA-Z0-9]+$/',
-            'password' => 'required|confirmed|min:8|max:255|regex:/^[a-zA-Z0-9]+$/'
+            'password' => 'required|min:8|max:255|regex:/^[a-zA-Z0-9]+$/',
+            'password_confirmation' => 'required|same:password'
         ];
     }
 }
