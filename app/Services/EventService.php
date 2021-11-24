@@ -152,7 +152,7 @@ class EventService
         return null;
     }
 
-    public function eventLiveStream($eventId)
+    public function getWeddingEventLivestream($eventId)
     {
         $eventLT = Wedding::whereHas('customer', function($q){
                                 $q->whereHas('tablePosition', function($q){
