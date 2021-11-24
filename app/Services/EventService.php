@@ -28,15 +28,15 @@ class EventService
                         })
                         ->when(isset($keyword), function($q) use($keyword){
                             $q->whereHas('place', function($q) use($keyword){
-                                $q->where("name", "LIKE", '%'.$keyword.'%')
+                                $q->where("name", "like", '%'.$keyword.'%')
                                   ->where('status', STATUS_TRUE)
-                                  ->orWhere("title", "LIKE", '%'.$keyword.'%');
+                                  ->orWhere("title", "like", '%'.$keyword.'%');
                             })->orWhere('place_id', null);
                         })
                         ->when(count($orderBy) > 0, function ($q) use($orderBy){
                             return $q->orderBy($orderBy[0], $orderBy[1]);
                         })
-                        ->with(['place', 'customer'])
+                        #->with(['place', 'customer'])
                         ->orderBy('created_at', 'desc')
                         ->paginate($paginate);
     }
