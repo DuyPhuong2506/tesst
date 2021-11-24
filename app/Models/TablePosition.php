@@ -12,4 +12,9 @@ class TablePosition extends Model
         'customer_id',
         'status'
     ];
+
+    public function customer()
+    {
+        return $this->hasMany(Customer::class, 'table_position_id', 'id');
+    }
 }
