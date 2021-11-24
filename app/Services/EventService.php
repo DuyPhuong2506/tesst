@@ -167,6 +167,7 @@ class EventService
                                             }]);
                                     }]);
                             }])
+                            ->whereId($eventId)
                             ->with(['eventTimes'])
                             ->get();
         
