@@ -162,19 +162,21 @@ class EventService
                             ->with(['place' => function($q){
                                 $q->select('id', 'name')
                                   ->with(['tablePositions' => function($q){
-                                        $q->with(['customer' => function($q){
-                                                $q->where('role', Role::GUEST);
+                                        $q->select('place_id', 'id', 'position')
+                                          ->with(['customers' => function($q){
+                                                $q->select('table_position_id', 'full_name')
+                                                  ->where('role', Role::GUEST);
                                             }]);
                                     }]);
                             }])
-                            ->whereId($eventId)
                             ->with(['eventTimes'])
+                            ->whereId($eventId)
                             ->get();
         
         if(count($eventLT) > 0){
             return $eventLT;
         }
 
-        return null;
+        return [];
     }
 }
