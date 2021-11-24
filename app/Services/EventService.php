@@ -144,18 +144,13 @@ class EventService
 
     public function detailEvent($eventId)
     {
-        $event = Wedding::where('id', $eventId)->with(['eventTimes', 'customer'])->first();
-        if($event){
-            return $event;
-        }
-        
-        return null;
+        return Wedding::where('id', $eventId)->with(['eventTimes', 'customer'])->first();
     }
 
     public function getWeddingEventLivestream($eventId)
     {
-        $eventLT = Wedding::whereHas('customer', function($q){
-                                $q->whereHas('tablePosition', function($q){
+        return Wedding::whereHas('place', function($q){
+                                $q->whereHas('tablePositions', function($q){
                                     $q->where('status', STATUS_TRUE);
                                 });
                             })
@@ -169,14 +164,8 @@ class EventService
                                             }]);
                                     }]);
                             }])
-                            ->with(['eventTimes'])
+                            #->with(['eventTimes'])
                             ->whereId($eventId)
                             ->get();
-        
-        if(count($eventLT) > 0){
-            return $eventLT;
-        }
-
-        return [];
     }
 }
