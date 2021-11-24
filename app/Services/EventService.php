@@ -177,5 +177,4 @@ class EventService
 
         return null;
     }
-
 }
