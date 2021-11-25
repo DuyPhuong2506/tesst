@@ -166,6 +166,6 @@ class EventService
                             }])
                             ->with(['eventTimes'])
                             ->whereId($eventId)
-                            ->get();
+                            ->first();
     }
 }
