@@ -150,21 +150,21 @@ class EventService
     public function getWeddingEventLivestream($eventId)
     {
         return Wedding::whereHas('place', function($q){
-                                $q->whereHas('tablePositions');
-                            })
-                            ->with(['place' => function($q){
-                                $q->select('id', 'name')
-                                  ->with(['tablePositions' => function($q){
-                                        $q->select('place_id', 'id', 'position')
-                                          ->where('status', STATUS_TRUE)
-                                          ->with(['customers' => function($q){
-                                                $q->select('table_position_id', 'full_name')
-                                                  ->where('role', Role::GUEST);
-                                            }]);
-                                    }]);
-                            }])
-                            ->with(['eventTimes'])
-                            ->whereId($eventId)
-                            ->first();
+                            $q->whereHas('tablePositions');
+                        })
+                        ->with(['place' => function($q){
+                            $q->select('id', 'name')
+                              ->with(['tablePositions' => function($q){
+                                    $q->select('place_id', 'id', 'position')
+                                      ->where('status', STATUS_TRUE)
+                                      ->with(['customers' => function($q){
+                                            $q->select('table_position_id', 'full_name')
+                                              ->where('role', Role::GUEST);
+                                        }]);
+                                }]);
+                        }])
+                        ->with(['eventTimes'])
+                        ->whereId($eventId)
+                        ->first();
     }
 }
