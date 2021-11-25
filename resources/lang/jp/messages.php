@@ -32,6 +32,7 @@ return [
         'delete_success' => 'Event delete success',
         'delete_fail' => 'Event delete fail',
         'list_fail' => 'Event list fail',
+        'list_null' => 'Event list null',
         'detail_fail' => 'Event detail fail'
     ],
     'user' => [

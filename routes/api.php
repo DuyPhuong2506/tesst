@@ -56,6 +56,12 @@ Route::group(['middleware' => ['jwtAuth']], function () {
         });
     });
 
+    /* Mobile Live Stream - Time table */
+    Route::prefix('event')->group(function () {
+        Route::post('/get-event-live-stream', 'EventsController@getWeddingEventLivestream');
+    });
+    
+
     Route::post('auth/logout', 'AuthController@logout');
     Route::post('admin/create','UsersController@createAdmin');
     Route::resource('places', 'PlacesController');
