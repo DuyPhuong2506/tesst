@@ -23,7 +23,7 @@ class UpdateStaffInfoRequest extends ApiRequest
             'company_name' => 'required|string|max:50',
             'post_code' => 'required|numeric|max:7',
             'address_1' => 'required|max:200',
-            'address_2' => 'required|max:200'
+            'address_2' => 'max:200'
         ];
     }
 }

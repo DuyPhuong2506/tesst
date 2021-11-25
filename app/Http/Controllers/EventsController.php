@@ -10,6 +10,7 @@ use App\Http\Requests\EventIDRequest;
 use App\Http\Requests\CreateTimeTableEvent;
 use App\Http\Requests\UpdateThankMsg;
 use App\Http\Requests\UpdateEventRequest;
+use App\Http\Requests\EventLiveStreamRequest;
 
 class EventsController extends Controller
 {
@@ -98,6 +99,17 @@ class EventsController extends Controller
         }
 
         return $this->respondError(Response::HTTP_BAD_REQUEST, __('messages.event.update_fail'));
+    }
+
+    public function getWeddingEventLivestream(EventLiveStreamRequest $request)
+    {
+        $data = $this->eventService->getWeddingEventLivestream($request->event_id);
+
+        if($data){
+            return $this->respondSuccess($data); 
+        }
+
+        return $this->respondError(Response::HTTP_BAD_REQUEST, __('messages.event.list_null'));
     }
 
 }

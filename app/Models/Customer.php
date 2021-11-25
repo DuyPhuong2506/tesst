@@ -25,4 +25,9 @@ class Customer extends AuthJWT
     {
         return $this->belongsTo(Wedding::class, 'wedding_id');
     }
+
+    public function tablePosition()
+    {
+        return $this->belongsTo(TablePosition::class, 'table_position_id');
+    }
 }
