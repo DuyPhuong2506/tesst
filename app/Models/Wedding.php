@@ -19,7 +19,12 @@ class Wedding extends Model
         'place_id',
         'table_map_image',
         'greeting_message',
-        'thank_you_message'
+        'thank_you_message',
+        'allow_remote',
+        'guest_invitation_response_date',
+        'couple_edit_date',
+        'couple_invitation_edit_date',
+        'ceremony_confirm_date'
     ];
     
     protected $table = 'weddings';
