@@ -90,3 +90,14 @@ if (!function_exists('random_str')) {
         return $str;
     }
 }
+
+if (!function_exists('escape_like')) {
+    function escape_like($value, $char = '\\')
+    {
+        return str_replace(
+            [$char, '%', '_'],
+            [$char.$char, $char.'%', $char.'_'],
+            $value
+        );
+    }
+}
