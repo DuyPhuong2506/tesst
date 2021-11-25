@@ -241,7 +241,6 @@ class UserService
 
         if($user->role === Role::STAFF_ADMIN){
             $user->update([
-                'created_at' => $data['created_at'],
                 'is_first_login' => config('constant', !defined('STATUS_TRUE'))
             ]);
         }
