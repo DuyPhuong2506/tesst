@@ -56,6 +56,15 @@ Route::group(['middleware' => ['jwtAuth']], function () {
         });
     });
 
+    /* Role Couple */
+    Route::group(['middleware' => 'auth.couple'], function(){
+        Route::get('/test', function(){
+            return "running...";
+        });
+    });
+
+    
+
     /* Mobile Live Stream - Time table */
     Route::prefix('event')->group(function () {
         Route::post('/get-event-live-stream', 'EventsController@getWeddingEventLivestream');
@@ -73,6 +82,7 @@ Route::group(['middleware' => ['jwtAuth']], function () {
     Route::get('staff','UsersController@getListStaff');
     Route::get('staff/{user_id}','UsersController@getStaff');
     Route::delete('staff/{user_id}','UsersController@destroyStaff');
+
    
 });
 Route::get('agora/get-token','AgoraController@generateToken')->middleware('cors');
