@@ -214,7 +214,11 @@ class UserService
             'post_code' => $data['post_code'],
             'address_1' => $data['address_1'],
             'address_2' => $data['address_2'],
-            'company_name' => $data['company_name']
+            'company_name' => $data['company_name'],
+            'guest_invitation_response_num' => $data['guest_invitation_response_num'],
+            'couple_edit_num' => $data['couple_edit_num'],
+            'couple_invitation_edit_num' => $data['couple_invitation_edit_num'],
+            'ceremony_confirm_num' => $data['ceremony_confirm_num']
         ];
 
         /*
@@ -237,7 +241,6 @@ class UserService
 
         if($user->role === Role::STAFF_ADMIN){
             $user->update([
-                'created_at' => $data['created_at'],
                 'is_first_login' => config('constant', !defined('STATUS_TRUE'))
             ]);
         }
