@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\Auth;
 use App\Services\UserService;
 use App\Http\Requests\CreateAdminRequest;
 use App\Http\Requests\ChangePasswordRequest;
-use App\Http\Requests\ChangePasswordLogin;
 use App\Http\Requests\EmailRequest;
 use App\Http\Requests\EmailTokenRequest;
 use App\Http\Requests\UpdateStaffInfoRequest;
