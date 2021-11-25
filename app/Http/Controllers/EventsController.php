@@ -109,7 +109,7 @@ class EventsController extends Controller
             return $this->respondSuccess($data); 
         }
 
-        return $this->respondError(Response::HTTP_BAD_REQUEST, __('messages.event.list_fail'));
+        return $this->respondError(Response::HTTP_BAD_REQUEST, __('messages.event.list_null'));
     }
 
 }
