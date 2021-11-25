@@ -15,7 +15,7 @@ class EventService
 
     public function eventList($request)
     {
-        $keyword = (isset($request['keyword'])) ? $request['keyword'] : NULL;
+        $keyword = (isset($request['keyword'])) ? escape_like($request['keyword']) : NULL;
         $orderBy = (isset($request['order_by'])) ? explode('|', $request['order_by']) : [];
         $paginate = (isset($request['paginate'])) ? $request['paginate'] : EventConstant::PAGINATE;
 
