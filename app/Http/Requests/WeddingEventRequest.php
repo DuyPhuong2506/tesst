@@ -30,7 +30,7 @@ class WeddingEventRequest extends ApiRequest
                                     })
                                     ->exists();
                     if($exist){
-                        $fail("Opp! Exist event held in this place on $eventDate");
+                        $fail("Exist event held in this place on $eventDate");
                     }
                 }
             ],
