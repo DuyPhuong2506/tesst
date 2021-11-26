@@ -58,9 +58,7 @@ Route::group(['middleware' => ['jwtAuth']], function () {
 
     /* Role Couple */
     Route::group(['middleware' => 'auth.couple'], function(){
-        Route::get('/test', function(){
-            return "running...";
-        });
+        //
     });
 
     
