@@ -3,21 +3,37 @@
 namespace App\Http\Requests;
 
 use App\Http\Requests\ApiRequest;
+use Carbon\Carbon;
+use App\Models\Wedding;
 
 class WeddingEventRequest extends ApiRequest
 {
    
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array
-     */
+    public $placeID;
+
     public function rules()
     {
+
         return [
             'title' => 'required|max:200|string',
-            'date' => 'required|date_format:Y-m-d H:i|after:today',
+            'date' => [
+                'required', 
+                'date_format:Y-m-d H:i',
+                'after:today',
+                function($attribute, $value, $fail){
+                    $placeId = request()->place_id;
+                    $eventDate = Carbon::parse($value)->format('Y-m-d');
+                    $exist = Wedding::whereDate('date', '=', $eventDate)
+                                    ->whereHas('place', function($q) use($placeId){
+                                        $q->where('id', $placeId);
+                                    })
+                                    ->exists();
+                    if($exist){
+                        $fail("Opp! Exist event held in this place on $eventDate");
+                    }
+                }
+            ],
             'pic_name' => 'required|string|max:100',
 
             'ceremony_reception_time' => 'array|required',
