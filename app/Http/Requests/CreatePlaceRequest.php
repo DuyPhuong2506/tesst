@@ -22,4 +22,20 @@ class CreatePlaceRequest extends ApiRequest
             'table_positions.*.position' => 'required|string|max:20',
         ];
     }
+
+    public function messages()
+    {
+        return [
+            'name.required' => __('messages.place.validation.name.required'),
+            'name.max' => __('messages.place.validation.name.max'),
+            'restaurant_id.required' => __('messages.place.validation.restaurant_id.required'),
+            'restaurant_id.exists' => __('messages.place.validation.restaurant_id.exists'),
+            'table_positions.array' => __('messages.place.validation.table_positions.array'),
+            'table_positions.*.amount_chair.required' => __('messages.place.validation.table_positions.required'),
+            'table_positions.*.amount_chair.integer' => __('messages.place.validation.table_positions.integer'),
+            'table_positions.*.amount_chair.max' => __('messages.place.validation.table_positions.max'),
+            'table_positions.*.position.required' => __('messages.place.validation.table_positions.required'),
+            'table_positions.*.position.max' => __('messages.place.validation.table_positions.max'),
+        ];
+    }
 }

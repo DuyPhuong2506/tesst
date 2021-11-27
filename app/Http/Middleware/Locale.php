@@ -16,7 +16,7 @@ class Locale
      */
     public function handle($request, Closure $next)
     {
-        $language = $request->get('language', 'en');
+        $language = $request->get('language', config('locale'));
         \App::setLocale($language);
 
         return $next($request);

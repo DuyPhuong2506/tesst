@@ -16,8 +16,16 @@ class CustomerLogin extends ApiRequest
     public function rules()
     {
         return [
-            'username' => 'required|string|exists:customers,username|max:12|min:12|regex:/^[a-zA-Z0-9]+$/',
-            'password' => 'required|string|max:12|min:12|regex:/^[a-zA-Z0-9]+$/',
+            'username' => 'required|string',
+            'password' => 'required|string',
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'username.required' => __('messages.couple.validation.username.required'),
+            'password.required' => __('messages.couple.validation.password.required'),
         ];
     }
 }
