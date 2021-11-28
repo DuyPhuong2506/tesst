@@ -1,9 +1,12 @@
 <?php
 
 namespace App\Models;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Customer extends AuthJWT
 {
+    use SoftDeletes;
+    
     protected $fillable = [
         'username', 
         'email', 
@@ -16,7 +19,7 @@ class Customer extends AuthJWT
     ];
 
     protected $hidden = [
-        'password', 'remember_token',
+        'password', 'remember_token', 'deleted_at'
     ];
     
     protected $table = 'customers';

@@ -26,11 +26,13 @@ class Restaurant extends Model
     
     protected $table = 'restaurants';
 
-    /**
-     * Get the post that owns the comment.
-     */
     public function user()
     {
         return $this->hasOne(User::class, 'restaurant_id', 'id');
+    }
+
+    public function places()
+    {
+        return $this->hasMany(Place::class, 'restaurant_id', 'id');
     }
 }

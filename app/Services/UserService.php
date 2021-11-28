@@ -75,7 +75,22 @@ class UserService
     public function destroyStaff($staff_id)
     {
         $user = User::staff()->find($staff_id);
-        if ($user) return $user->delete();
+        if ($user){
+            User::whereId($staff_id)
+                ->with(['restaurant' => function($q){
+                    $q->with(['places' => function($q){
+                        $q->with(['weddings' => function($q){
+                            $q->with(['customers' => function($q){
+                                $q->delete();
+                            }]);
+                        }]);
+                    }]);
+                }])
+                ->first();
+
+            return $user->delete();
+        }
+
         return null;
     }
 
