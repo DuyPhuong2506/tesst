@@ -11,6 +11,7 @@ use App\Http\Requests\CreateTimeTableEvent;
 use App\Http\Requests\UpdateThankMsg;
 use App\Http\Requests\UpdateEventRequest;
 use App\Http\Requests\EventLiveStreamRequest;
+use Auth;
 
 class EventsController extends Controller
 {
@@ -46,9 +47,12 @@ class EventsController extends Controller
         return $this->respondError(Response::HTTP_BAD_REQUEST, __('messages.event.create_fail'));
     }
 
-    public function show($id)
+    public function coupleDetailEvent()
     {
-        $data = $this->eventService->detailEvent($id);
+        $coupleId = Auth::guard('customer')->user()->id;
+        $weddingId = Auth::guard('customer')->user()->wedding_id;
+
+        $data = $this->eventService->coupleDetailEvent($weddingId, $coupleId);
         if($data){
             return $this->respondSuccess($data);
         }

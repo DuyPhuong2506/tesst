@@ -144,7 +144,22 @@ class EventService
 
     public function detailEvent($eventId)
     {
-        return Wedding::where('id', $eventId)->with(['eventTimes', 'customers'])->first();
+        return Wedding::where('id', $eventId)
+                      ->with(['eventTimes', 'customers'])
+                      ->first();
+    }
+
+    public function coupleDetailEvent($weddingId, $coupleId)
+    {
+        return Wedding::where('id', $weddingId)
+                      ->whereHas('customers', function($q) use($coupleId){
+                            $q->where('id', $coupleId);
+                      })
+                      ->with(['eventTimes', 'place'])
+                      ->with(['customers' => function($q){
+                            $q->where('role', Role::GUEST);
+                      }])
+                      ->first();
     }
 
     public function getWeddingEventLivestream($invitationUrl)
