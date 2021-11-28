@@ -39,7 +39,7 @@ class Wedding extends Model
         return $this->belongsTo(Place::class, 'place_id');
     }
 
-    public function customer()
+    public function customers()
     {
         return $this->hasMany(Customer::class, 'wedding_id', 'id');
     } 

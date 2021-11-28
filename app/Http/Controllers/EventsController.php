@@ -103,7 +103,7 @@ class EventsController extends Controller
 
     public function getWeddingEventLivestream(EventLiveStreamRequest $request)
     {
-        $data = $this->eventService->getWeddingEventLivestream($request->event_id);
+        $data = $this->eventService->getWeddingEventLivestream($request->invitation_url);
 
         if($data){
             return $this->respondSuccess($data); 

@@ -36,7 +36,7 @@ class EventService
                         ->when(count($orderBy) > 0, function ($q) use($orderBy){
                             return $q->orderBy($orderBy[0], $orderBy[1]);
                         })
-                        ->with(['place', 'customer'])
+                        ->with(['place', 'customers'])
                         ->orderBy('created_at', 'desc')
                         ->paginate($paginate);
     }
@@ -144,13 +144,13 @@ class EventService
 
     public function detailEvent($eventId)
     {
-        return Wedding::where('id', $eventId)->with(['eventTimes', 'customer'])->first();
+        return Wedding::where('id', $eventId)->with(['eventTimes', 'customers'])->first();
     }
 
-    public function getWeddingEventLivestream($eventId)
+    public function getWeddingEventLivestream($invitationUrl)
     {
-        return Wedding::whereHas('place', function($q){
-                            $q->whereHas('tablePositions');
+        return Wedding::whereHas('customers', function($q) use($invitationUrl){
+                            $q->where('invitation_url', $invitationUrl);
                         })
                         ->with(['place' => function($q){
                             $q->select('id', 'name')
@@ -164,7 +164,6 @@ class EventService
                                 }]);
                         }])
                         ->with(['eventTimes'])
-                        ->whereId($eventId)
                         ->first();
     }
 }
