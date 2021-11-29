@@ -19,13 +19,13 @@ class UpdateStaffInfoRequest extends ApiRequest
             'restaurant_name' => 'required|string|max:50',
             'contact_name' => 'required|string|max:50',
             'contact_email' => 'required|string|email|max:50|regex:/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix',
-            'phone' => 'required|numeric|digits:11',
-            'company_name' => 'required|string|max:20',
+            'phone' => 'required|numeric|digits_between:10,11',
+            'company_name' => 'required|string|max:50',
             'post_code' => 'required|digits:7',
             'address_1' => 'required|string|max:200',
             'address_2' => 'max:200',
-            'guest_invitation_response_num' => 'required|numeric|max:20',
-            'couple_edit_num' => 'required|numeric|max:20'
+            'guest_invitation_response_num' => 'required|numeric|min:1|max:99',
+            'couple_edit_num' => 'required|numeric|min:1|max:99'
         ];
     }
 
@@ -42,7 +42,7 @@ class UpdateStaffInfoRequest extends ApiRequest
             'contact_email.max' => __('messages.mail.validation.email.max'),
             'phone.required' => __('messages.restaurant.validation.phone.required'),
             'phone.numeric' => __('messages.restaurant.validation.phone.numeric'),
-            'phone.digits' => __('messages.restaurant.validation.phone.digits'),
+            'phone.digits_between' => __('messages.restaurant.validation.phone.digits_between'),
             'company_name.required' => __('messages.restaurant.validation.company_name.required'),
             'company_name.max' => __('messages.restaurant.validation.company_name.max'),
             'post_code.required' => __('messages.restaurant.validation.post_code.required'),
@@ -53,9 +53,11 @@ class UpdateStaffInfoRequest extends ApiRequest
             'guest_invitation_response_num.required' => __('messages.restaurant.validation.guest_invitation_response_num.required'),
             'guest_invitation_response_num.numeric' => __('messages.restaurant.validation.guest_invitation_response_num.numeric'),
             'guest_invitation_response_num.max' => __('messages.restaurant.validation.guest_invitation_response_num.max'),
+            'guest_invitation_response_num.min' => __('messages.restaurant.validation.guest_invitation_response_num.min'),
             'couple_edit_num.required' => __('messages.restaurant.validation.couple_edit_num.required'),
             'couple_edit_num.numeric' => __('messages.restaurant.validation.couple_edit_num.numeric'),
             'couple_edit_num.max' => __('messages.restaurant.validation.couple_edit_num.max'),
+            'couple_edit_num.min' => __('messages.restaurant.validation.couple_edit_num.min'),
         ];
     }
 }

@@ -176,7 +176,7 @@ return [
             'phone' => [
                 'required' => '必須項目に入力してください。',
                 'numeric' => '数字を入力してください。',
-                'digits' => ':digits数字以内を入力してください。'
+                'digits_between' => '半角英数字10～11文字を入力してください。'
             ],
             'company_name' => [
                 'required' => '必須項目に入力してください。',
@@ -193,12 +193,14 @@ return [
             'guest_invitation_response_num' => [
                 'required' => '必須項目に入力してください。',
                 'numeric' => 'Must be numeric',
-                'max' => ':max文字列以内を入力してください。'
+                'max' => ':max文字列以内を入力してください。',
+                'min' => ':min文字列以内を入力してください。'
             ],
             'couple_edit_num' => [
                 'required' => '必須項目に入力してください。',
                 'numeric' => 'Must be numeric',
-                'max' => ':max文字列以内を入力してください。'
+                'max' => ':max文字列以内を入力してください。',
+                'min' => ':min文字列以内を入力してください。'
             ]
         ]
     ],
