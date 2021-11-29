@@ -19,4 +19,15 @@ class EmailRequest extends ApiRequest
             'email' => 'required|email|exists:users,email,deleted_at,NULL|max:50|regex:/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix'
         ];
     }
+
+    public function messages()
+    {
+        return [
+            'email.required' => __('messages.mail.validation.email.required'),
+            'email.regex' => __('messages.mail.validation.email.regex'),
+            'email.email' => __('messages.mail.validation.email.regex'),
+            'email.exists' => __('messages.mail.validation.email.exists'),
+            'email.max' => __('messages.mail.validation.email.max'),
+        ];
+    }
 }

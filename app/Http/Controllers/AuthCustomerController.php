@@ -47,10 +47,10 @@ class AuthCustomerController extends Controller
 
         try {
             if(!$token = JWTAuth::fromUser($customer)){
-                return $this->respondError(Response::HTTP_BAD_REQUEST, 'invalid_email_credentials');
+                return $this->respondError(Response::HTTP_BAD_REQUEST, __('messages.login.couple.login_fail'));
             }
         } catch (\Throwable $th) {
-            return $this->respondError(Response::HTTP_BAD_REQUEST, 'failed_to_create_token');
+            return $this->respondError(Response::HTTP_BAD_REQUEST, __('messages.login.couple.login_fail'));
         }
 
         JWTAuth::setToken($token)->toUser();

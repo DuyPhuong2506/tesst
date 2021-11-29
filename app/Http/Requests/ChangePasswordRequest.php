@@ -19,4 +19,17 @@ class ChangePasswordRequest extends ApiRequest
             'password'=>'required|confirmed|min:8|max:255|regex:/^([A-Za-z0-9\d$!^(){}?\[\]<>~%@#&*+=_-]+)$/'
         ];
     }
+
+    public function messages()
+    {
+        return [
+            'token.required' => __('messages.user.validation.token.required'),
+            'token.exists' => __('messages.user.validation.token.exists'),
+            'password.required' => __('messages.user.validation.password.required'),
+            'password.confirmed' => __('messages.user.validation.password.required'),
+            'password.min' => __('messages.user.validation.password.min'),
+            'password.max' => __('messages.user.validation.password.min'),
+            'password.regex' => __('messages.user.validation.password.regex'),
+        ];
+    }
 }

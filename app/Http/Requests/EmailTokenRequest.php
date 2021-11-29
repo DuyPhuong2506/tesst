@@ -19,4 +19,12 @@ class EmailTokenRequest extends ApiRequest
             'token' => 'required|exists:users,remember_token|max:400'
         ];
     }
+
+    public function messages()
+    {
+        return [
+            'token.required' => __('messages.user.validation.token.required'),
+            'token.exists' => __('messages.user.token_fail')
+        ];
+    }
 }
