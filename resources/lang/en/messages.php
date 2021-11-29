@@ -113,6 +113,16 @@ return [
             'allow_remote' => [
                 'required' => 'The couple_name field is required',
                 'boolean' => 'Must be a boolean'
+            ],
+            'guest_invitation_response_date' => [
+                'required' => 'The guest invitation response date is required',
+                'date_format' => 'The guest invitation response date format is invalid',
+                'before_or_equal' => 'The guest invitation response is before the wedding date'
+            ],
+            'couple_edit_date' => [
+                'required' => 'The couple edit date is required',
+                'date_format' => 'The couple edit date format is invalid',
+                'before_or_equal' => 'The guest invitation response is before the wedding date'
             ]
         ]
     ],

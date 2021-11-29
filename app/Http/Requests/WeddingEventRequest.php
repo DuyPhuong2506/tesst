@@ -51,21 +51,16 @@ class WeddingEventRequest extends ApiRequest
             'party_time.0' => "required|after_or_equal:party_reception_time.1",
             'party_time.1' => "required|after:party_time.0",
 
-            'is_close' => 'boolean',
             'place_id' => 'required|exists:places,id,status,1',
-            'table_map_image' => 'string|max:100',
-            'greeting_message' => 'string|max:100',
-            'thank_you_message' => 'string|max:500',
-            'groom_name' => 'required|string|max:100',
+            
+            'groom_name' => 'required|string|max:20',
             'groom_email' => 'required|max:50|string|email|regex:/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix',
-            'bride_name' => 'required|string|max:100',
+            'bride_name' => 'required|string|max:20',
             'bride_email' => 'required|max:50|string|email|regex:/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix',
 
             'allow_remote' => 'required|boolean',
-            'guest_invitation_response_date' => 'required|date_format:Y-m-d|before:date',
-            'couple_edit_date' => 'required|date_format:Y-m-d|before:date',
-            'couple_invitation_edit_date' => 'required|date_format:Y-m-d|before:date',
-            'ceremony_confirm_date' => 'required|date_format:Y-m-d|before:date',
+            'guest_invitation_response_date' => 'required|date_format:Y-m-d|before_or_equal:date',
+            'couple_edit_date' => 'required|date_format:Y-m-d|before_or_equal:date'
         ];
     }
 
@@ -119,11 +114,6 @@ class WeddingEventRequest extends ApiRequest
 
             'place_id.required' => __('messages.event.validation.place.required'),
             'place_id.exists' => __('messages.event.validation.place.exists'),
-
-            'is_close.boolean' => __('messages.event.validation.is_close.boolean'),
-            'table_map_image.max' => __('messages.event.validation.table_map_image.max'),
-            'greeting_message.max' => __('messages.event.validation.greeting_message.max'),
-            'thank_you_message.max' => __('messages.event.validation.thank_you_message.max'),
             
             'groom_name.required' => __('messages.event.validation.couple_name.required'),
             'groom_name.max' => __('messages.event.validation.couple_name.max'),
@@ -141,7 +131,15 @@ class WeddingEventRequest extends ApiRequest
             'bride_email.regex' => __('messages.mail.validation.email.regex'),
 
             'allow_remote.required' => __('messages.mail.validation.email.required'),
-            'allow_remote.boolean' => __('messages.mail.validation.email.boolean'),            
+            'allow_remote.boolean' => __('messages.mail.validation.email.boolean'),
+            
+            'guest_invitation_response_date.required' => __('messages.event.validation.guest_invitation_response_date.required'),
+            'guest_invitation_response_date.date_format' => __('messages.event.validation.guest_invitation_response_date.date_format'),
+            'guest_invitation_response_date.before_or_equal' => __('messages.event.validation.guest_invitation_response_date.before_or_equal'),
+
+            'couple_edit_date.required' => __('messages.event.validation.couple_edit_date.required'),
+            'couple_edit_date.date_format' => __('messages.event.validation.couple_edit_date.date_format'),
+            'couple_edit_date.before_or_equal' => __('messages.event.validation.couple_edit_date.before_or_equal'),
         ];
     }
 }

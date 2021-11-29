@@ -81,7 +81,7 @@ return [
             'date' => [
                 'required' => '必須項目に入力してください。',
                 'date_format' => 'The date format is invalid.',
-                'after' => '今日より前の日を選択してください。',
+                'after' => '今日より後の日付を入力してください。',
                 'was_held' => 'Existed event held in this day and place'
             ],
             'pic_name' => [
@@ -114,6 +114,16 @@ return [
             'allow_remote' => [
                 'required' => '必須項目に入力してください。',
                 'boolean' => 'Must be a boolean'
+            ],
+            'guest_invitation_response_date' => [
+                'required' => '必須項目に入力してください。',
+                'date_format' => 'The guest invitation response date format is invalid',
+                'before_or_equal' => '今日より前の日を選択してください。'
+            ],
+            'couple_edit_date' => [
+                'required' => '必須項目に入力してください。',
+                'date_format' => 'The couple edit date format is invalid',
+                'before_or_equal' => '今日より前の日を選択してください。'
             ]
         ]
     ],
