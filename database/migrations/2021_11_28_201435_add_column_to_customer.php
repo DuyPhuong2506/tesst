@@ -15,6 +15,8 @@ class AddColumnToCustomer extends Migration
     {
         Schema::table('customers', function (Blueprint $table) {
             $table->dateTime('deleted_at')->nullable()->default(null);
+            $table->tinyInteger('join_status')->nullable()->default(null);
+            $table->dateTime('confirm_at')->nullable()->default(null);
         });
     }
 
@@ -27,6 +29,8 @@ class AddColumnToCustomer extends Migration
     {
         Schema::table('customers', function (Blueprint $table) {
             $table->dropColumn('deleted_at');
+            $table->dropColumn('join_status');
+            $table->dropColumn('confirm_at');
         });
     }
 }

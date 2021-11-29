@@ -15,7 +15,9 @@ class Customer extends AuthJWT
         'role',
         'phone',
         'address',
-        'full_name'
+        'full_name',
+        'invitation_url',
+        'table_position_id'
     ];
 
     protected $hidden = [
