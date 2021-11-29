@@ -179,6 +179,16 @@ return [
             'address' => [
                 'required' => '必須項目に入力してください。',
                 'max' => ':max文字列以内を入力してください。'
+            ],
+            'guest_invitation_response_num' => [
+                'required' => '必須項目に入力してください。',
+                'numeric' => 'Must be numeric',
+                'max' => ':max文字列以内を入力してください。'
+            ],
+            'couple_edit_num' => [
+                'required' => '必須項目に入力してください。',
+                'numeric' => 'Must be numeric',
+                'max' => ':max文字列以内を入力してください。'
             ]
         ]
     ],

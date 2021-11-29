@@ -178,6 +178,16 @@ return [
             'address' => [
                 'required' => 'The address field is required',
                 'max' => 'The address can not be greater than :max characters'
+            ],
+            'guest_invitation_response_num' => [
+                'required' => 'The guest_invitation_response_num field is required',
+                'numeric' => 'Must be numeric',
+                'max' => 'Guest_invitation_response_num value can not be greater than :max'
+            ],
+            'couple_edit_num' => [
+                'required' => 'The couple_edit_num field is required',
+                'numeric' => 'Must be numeric',
+                'max' => 'Guest_invitation_response_num value can not be greater than :max'
             ]
         ]
     ],
