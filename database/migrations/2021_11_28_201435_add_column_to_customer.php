@@ -14,7 +14,7 @@ class AddColumnToCustomer extends Migration
     public function up()
     {
         Schema::table('customers', function (Blueprint $table) {
-            $table->dateTime('deleted_at')->nullable()->default(null);
+            $table->timestamp('deleted_at')->nullable()->default(null);
             $table->tinyInteger('join_status')->nullable()->default(null)->after('full_name');
             $table->dateTime('confirmed_at')->nullable()->default(null)->after('full_name');
         });
