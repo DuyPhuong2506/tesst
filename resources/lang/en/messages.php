@@ -80,7 +80,7 @@ return [
             'date' => [
                 'required' => 'The date field is required',
                 'date_format' => 'The date format is invalid.',
-                'after' => 'The time you selected is duplicated',
+                'after' => 'The date you selected must be after today',
                 'was_held' => 'Existed event held in this day and place'
             ],
             'pic_name' => [
