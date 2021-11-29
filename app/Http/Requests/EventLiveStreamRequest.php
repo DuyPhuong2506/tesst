@@ -16,7 +16,7 @@ class EventLiveStreamRequest extends ApiRequest
     public function rules()
     {
         return [
-            'event_id' => 'required|exists:weddings,id'
+            'invitation_url' => 'required|exists:customers,invitation_url'
         ];
     }
 }

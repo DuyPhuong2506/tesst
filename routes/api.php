@@ -58,17 +58,14 @@ Route::group(['middleware' => ['jwtAuth']], function () {
 
     /* Role Couple */
     Route::group(['middleware' => 'auth.couple'], function(){
-        //
+        Route::get('get-event-couple', 'EventsController@coupleDetailEvent');
     });
-
-    
 
     /* Mobile Live Stream - Time table */
     Route::prefix('event')->group(function () {
         Route::post('/get-event-live-stream', 'EventsController@getWeddingEventLivestream');
     });
     
-
     Route::post('auth/logout', 'AuthController@logout');
     Route::post('admin/create','UsersController@createAdmin');
     Route::resource('places', 'PlacesController');
