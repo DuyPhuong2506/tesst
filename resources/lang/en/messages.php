@@ -175,7 +175,7 @@ return [
             'phone' => [
                 'required' => 'The phone field is required',
                 'numeric' => 'The phone is numeric',
-                'digits' => 'The phone is :digits'
+                'digits_between' => 'The phone number must be 10~11 characters'
             ],
             'company_name' => [
                 'required' => 'The company_name field is required',
@@ -192,12 +192,14 @@ return [
             'guest_invitation_response_num' => [
                 'required' => 'The guest_invitation_response_num field is required',
                 'numeric' => 'Must be numeric',
-                'max' => 'Guest_invitation_response_num value can not be greater than :max'
+                'max' => 'Guest_invitation_response_num value can not be greater than :max',
+                'min' => 'Guest_invitation_response_num value can not be greater than :min'
             ],
             'couple_edit_num' => [
                 'required' => 'The couple_edit_num field is required',
                 'numeric' => 'Must be numeric',
-                'max' => 'Guest_invitation_response_num value can not be greater than :max'
+                'max' => 'Guest invitation response num value can not be greater than :max',
+                'min' => 'Guest invitation response num value can not be greater than :min'
             ]
         ]
     ],
