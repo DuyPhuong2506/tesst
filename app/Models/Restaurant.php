@@ -19,9 +19,7 @@ class Restaurant extends Model
         'company_id',
         'company_name',
         'guest_invitation_response_num',
-        'couple_edit_num',
-        'couple_invitation_edit_num',
-        'ceremony_confirm_num'
+        'couple_edit_num'
     ];
     
     protected $table = 'restaurants';

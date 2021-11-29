@@ -24,10 +24,8 @@ class UpdateStaffInfoRequest extends ApiRequest
             'post_code' => 'required|digits:7',
             'address_1' => 'required|string|max:200',
             'address_2' => 'max:200',
-            'guest_invitation_response_num' => 'required|numeric',
-            'couple_edit_num' => 'required|numeric',
-            'couple_invitation_edit_num' => 'required|numeric',
-            'ceremony_confirm_num' => 'required|numeric',
+            'guest_invitation_response_num' => 'required|numeric|max:20',
+            'couple_edit_num' => 'required|numeric|max:20'
         ];
     }
 
@@ -52,6 +50,12 @@ class UpdateStaffInfoRequest extends ApiRequest
             'address_1.required' => __('messages.restaurant.validation.address.required'),
             'address_1.max' => __('messages.restaurant.validation.address.max'),
             'address_2.max' => __('messages.restaurant.validation.address.max'),
+            'guest_invitation_response_num.required' => __('messages.restaurant.validation.guest_invitation_response_num.required'),
+            'guest_invitation_response_num.numeric' => __('messages.restaurant.validation.guest_invitation_response_num.numeric'),
+            'guest_invitation_response_num.max' => __('messages.restaurant.validation.guest_invitation_response_num.max'),
+            'couple_edit_num.required' => __('messages.restaurant.validation.couple_edit_num.required'),
+            'couple_edit_num.numeric' => __('messages.restaurant.validation.couple_edit_num.numeric'),
+            'couple_edit_num.max' => __('messages.restaurant.validation.couple_edit_num.max'),
         ];
     }
 }
