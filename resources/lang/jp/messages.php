@@ -92,7 +92,10 @@ return [
                 'required' => '必須項目に入力してください。',
                 'array' => 'Must be an array.',
                 'date_format' => 'The date format is invalid.',
-                'after' => '時間が重複しています。ご確認してください。'
+                'after' => '時間が重複しています。ご確認してください。',
+                'after_or_equal' => '時間が重複しています。ご確認してください。',
+                'min' => ':min文字列以内を入力してください。',
+                'max' => ':max文字列以内を入力してください。'
             ],
             'place' => [
                 'required' => '必須項目に入力してください。',
@@ -118,12 +121,13 @@ return [
             'guest_invitation_response_date' => [
                 'required' => '必須項目に入力してください。',
                 'date_format' => 'The guest invitation response date format is invalid',
-                'before_or_equal' => '今日より前の日を選択してください。'
+                'before' => '「式日時と席次新郎新婦編集期日より前の日付を選択してください。'
             ],
             'couple_edit_date' => [
                 'required' => '必須項目に入力してください。',
                 'date_format' => 'The couple edit date format is invalid',
-                'before_or_equal' => '今日より前の日を選択してください。'
+                'before' => '「式日時より前の日付とWEB招待状ゲスト返答期日より後の日付を選択してください。',
+                'after' => '「式日時より前の日付とWEB招待状ゲスト返答期日より後の日付を選択してください。'
             ]
         ]
     ],
@@ -211,7 +215,9 @@ return [
                 'required' => '必須項目に入力してください。',
                 'regex' => 'メールアドレスの形式が正しくありません。ご確認してください。',
                 'exists' => '入力したアカウント情報に誤りがあります。正しいメールアドレスとパスワードを入力してください。',
-                'max' => ':max文字列以内を入力してください。'
+                'max' => ':max文字列以内を入力してください。',
+                'unique' => 'メールアドレスが存在しました。',
+                'different' => 'メールアドレスがすでにシステムで使用されています。 別のメールアドレスを入力してください。'
             ]
         ]
     ]
