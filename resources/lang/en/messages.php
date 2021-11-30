@@ -177,17 +177,18 @@ return [
                 'max' => 'The contact_name can not be greater than :max characters',
             ],
             'phone' => [
-                'required' => 'The phone field is required',
-                'numeric' => 'The phone is numeric',
-                'digits_between' => 'The phone number must be 10~11 characters'
+                'required' => 'The phone is required',
+                'numeric' => 'The phone must be numeric',
+                'digits_between' => 'The phone must be 10-11 characters'
             ],
             'company_name' => [
                 'required' => 'The company_name field is required',
                 'max' => 'The company_name can not be greater than :max characters'
             ],
             'post_code' => [
-                'required' => 'The post_code field is required',
-                'digits' => 'The post_code is :digits'
+                'required' => 'The post code is required',
+                'digits' => 'The post code is 7 characters',
+                'numeric' => 'The post code is number characters'
             ],
             'address' => [
                 'required' => 'The address field is required',
