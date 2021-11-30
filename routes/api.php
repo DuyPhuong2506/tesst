@@ -61,6 +61,11 @@ Route::group(['middleware' => ['jwtAuth']], function () {
         Route::get('get-event-couple', 'EventsController@coupleDetailEvent');
     });
 
+    /* Role Couple */
+    Route::group(['middleware' => 'auth.guest'], function(){
+        Route::resource('channel','ChannelsController');
+    });
+
     /* Mobile Live Stream - Time table */
     Route::prefix('event')->group(function () {
         Route::post('/get-event-live-stream', 'EventsController@getWeddingEventLivestream');

@@ -101,3 +101,18 @@ if (!function_exists('escape_like')) {
         );
     }
 }
+
+if (!function_exists('getDateStringRandom')) {
+
+    /**
+     * Convert to array postgres
+     *
+     * @param $file
+     * @param string $directory
+     * @return bool
+     */
+    function getDateStringRandom()
+    {
+        return date("_Y_m_d_H_i_s", time());
+    }
+}
