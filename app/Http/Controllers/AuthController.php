@@ -59,14 +59,18 @@ class AuthController extends Controller
             return $this->respondError(Response::HTTP_BAD_REQUEST, 'failed_to_create_token');
         }
 
-        if(Auth::user()->role === Role::SUPER_ADMIN){
-            Auth::user()->update([
-                'is_first_login' => Auth::user()->is_first_login + 1,
+        $auth = Auth::user();
+        $tempStatus = $auth->is_first_login;
+        if($auth->role === Role::SUPER_ADMIN){
+            $auth->update([
+                'is_first_login' => 1,
                 'lasted_login' => Carbon::now()
             ]);
         }
         
-        return $this->respondSuccess($this->respondWithToken($token));
+        $data = $this->respondWithToken($token);
+        $data['info']['is_first_login'] = $tempStatus;
+        return $this->respondSuccess($data);
     }
 
     /**
