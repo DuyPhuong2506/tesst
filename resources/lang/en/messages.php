@@ -88,10 +88,13 @@ return [
                 'max' => 'The pic_name field can not be greater than :max characters'
             ],
             'time_line' => [
-                'required' => 'The time_line field is required',
+                'required' => 'The time line field is required',
                 'array' => 'Must be an array.',
                 'date_format' => 'The date format is invalid.',
-                'after' => 'The time you selected is duplicated'
+                'after' => 'The time can not be duplicate',
+                'after_or_equal' => 'The time can not be duplicate',
+                'min' => 'The time line 1-2 time item',
+                'max' => 'The time line 1-2 time item'
             ],
             'place' => [
                 'required' => 'The place field is required',
@@ -117,12 +120,13 @@ return [
             'guest_invitation_response_date' => [
                 'required' => 'The guest invitation response date is required',
                 'date_format' => 'The guest invitation response date format is invalid',
-                'before_or_equal' => 'The guest invitation response is before the wedding date'
+                'before' => 'The time must be before couple edit date'
             ],
             'couple_edit_date' => [
                 'required' => 'The couple edit date is required',
                 'date_format' => 'The couple edit date format is invalid',
-                'before_or_equal' => 'The guest invitation response is before the wedding date'
+                'before' => 'The couple edit date must be before wedding date',
+                'after' => 'The couple edit date must be after wedding date the guest invitation response date'
             ]
         ]
     ],
@@ -173,17 +177,18 @@ return [
                 'max' => 'The contact_name can not be greater than :max characters',
             ],
             'phone' => [
-                'required' => 'The phone field is required',
-                'numeric' => 'The phone is numeric',
-                'digits_between' => 'The phone number must be 10~11 characters'
+                'required' => 'The phone is required',
+                'numeric' => 'The phone must be numeric',
+                'digits_between' => 'The phone must be 10-11 characters'
             ],
             'company_name' => [
                 'required' => 'The company_name field is required',
                 'max' => 'The company_name can not be greater than :max characters'
             ],
             'post_code' => [
-                'required' => 'The post_code field is required',
-                'digits' => 'The post_code is :digits'
+                'required' => 'The post code is required',
+                'digits' => 'The post code is 7 characters',
+                'numeric' => 'The post code is number characters'
             ],
             'address' => [
                 'required' => 'The address field is required',
@@ -212,7 +217,9 @@ return [
                 'required' => 'The email field is required',
                 'regex' => 'The email format is invalid',
                 'exists' => 'The email is not exists or disabled',
-                'max' => 'The email can not be greater than :max characters'
+                'max' => 'The email can not be greater than :max characters',
+                'unique' => 'The email is exist',
+                'different' => 'The groom email can not be same bride email'
             ]
         ]
     ]
