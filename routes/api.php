@@ -54,6 +54,12 @@ Route::group(['middleware' => ['jwtAuth']], function () {
         Route::prefix('users')->group(function () {
             Route::post('/super-admin/invite-admin-staff', 'UsersController@inviteNewAdminStaff');
         });
+        
+        /** route staffs */
+        Route::get('restaurants-staffs','UsersController@getStaffAdmin');
+        Route::get('staff','UsersController@getListStaff');
+        Route::get('staff/{user_id}','UsersController@getStaff');
+        Route::delete('staff/{user_id}','UsersController@destroyStaff');
     });
 
     /* Role Couple */
@@ -77,11 +83,6 @@ Route::group(['middleware' => ['jwtAuth']], function () {
     Route::get('places-get-pre-signed', 'PlacesController@getPreSigned')->name('get.getPreSigned');
     Route::resource('restaurants','RestaurantsController');
 
-    /** route staffs */
-    Route::get('restaurants-staffs','UsersController@getStaffAdmin');
-    Route::get('staff','UsersController@getListStaff');
-    Route::get('staff/{user_id}','UsersController@getStaff');
-    Route::delete('staff/{user_id}','UsersController@destroyStaff');
 
    
 });
