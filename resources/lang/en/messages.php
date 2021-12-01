@@ -151,7 +151,8 @@ return [
                 'required' => 'The email field is required',
                 'regex' => 'The email field format is invalid',
                 'max' => 'The email can not be greater than :max characters',
-                'unique' => 'The email can not be use now'
+                'unique' => 'The email can not be use now',
+                'exists' => 'We have sent you an email, please reset your password within 1 hour'
             ],
             'password' => [
                 'required' => 'The password field is required',

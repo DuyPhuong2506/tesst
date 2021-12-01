@@ -26,7 +26,7 @@ class EmailRequest extends ApiRequest
             'email.required' => __('messages.mail.validation.email.required'),
             'email.regex' => __('messages.mail.validation.email.regex'),
             'email.email' => __('messages.mail.validation.email.regex'),
-            'email.exists' => __('messages.mail.validation.email.exists'),
+            'email.exists' => __('messages.user.validation.email.exists'),
             'email.max' => __('messages.mail.validation.email.max'),
         ];
     }
