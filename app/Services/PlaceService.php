@@ -144,6 +144,7 @@ class PlaceService
 
     public function showDetail($id)
     {   
+        if(!is_numeric($id)) return null;
         $place = $this->placeRepo->model->whereId($id)->with(['tablePositions'])->first();
 
         return $place;
