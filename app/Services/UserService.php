@@ -172,7 +172,7 @@ class UserService
 
     public function findDetail($id)
     {
-        $user = User::where('id', '=', $id)
+        $user = User::whereId($id)
             ->with(['company', 'restaurant'])
             ->first();
 
