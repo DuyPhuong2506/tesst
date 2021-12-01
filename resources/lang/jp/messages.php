@@ -72,6 +72,7 @@ return [
         'list_fail' => 'Event list fail',
         'list_null' => 'Event list null',
         'detail_fail' => 'Event detail fail',
+        'not_found' => 'The wedding event not found !',
 
         'validation' => [
             'title' => [
@@ -128,6 +129,10 @@ return [
                 'date_format' => 'The couple edit date format is invalid',
                 'before' => '「式日時より前の日付とWEB招待状ゲスト返答期日より後の日付を選択してください。',
                 'after' => '「式日時より前の日付とWEB招待状ゲスト返答期日より後の日付を選択してください。'
+            ],
+            'invitation_url' => [
+                'required' => 'The event invitation url is required !',
+                'exists' => 'The event invitation url does not exist !'
             ]
         ]
     ],
