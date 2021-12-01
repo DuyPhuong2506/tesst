@@ -71,6 +71,7 @@ return [
         'list_fail' => 'Event list fail',
         'list_null' => 'Event list null',
         'detail_fail' => 'Event detail fail',
+        'not_found' => 'The wedding event not found !',
 
         'validation' => [
             'title' => [
@@ -127,6 +128,10 @@ return [
                 'date_format' => 'The couple edit date format is invalid',
                 'before' => 'The couple edit date must be before wedding date',
                 'after' => 'The couple edit date must be after wedding date the guest invitation response date'
+            ],
+            'invitation_url' => [
+                'required' => 'The event invitation url is required !',
+                'exists' => 'The event invitation url does not exist !'
             ]
         ]
     ],

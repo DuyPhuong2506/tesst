@@ -6,8 +6,6 @@ use App\Http\Requests\ApiRequest;
 
 class EventLiveStreamRequest extends ApiRequest
 {
-   
-
     /**
      * Get the validation rules that apply to the request.
      *
@@ -17,6 +15,14 @@ class EventLiveStreamRequest extends ApiRequest
     {
         return [
             'invitation_url' => 'required|exists:customers,invitation_url'
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'invitation_url.required' => __('messages.event.validation.invitation_url.required'),
+            'invitation_url.exists' => __('messages.event.validation.invitation_url.exists'),
         ];
     }
 }

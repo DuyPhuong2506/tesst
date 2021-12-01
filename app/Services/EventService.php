@@ -4,14 +4,22 @@ namespace App\Services;
 use App\Models\Wedding;
 use App\Models\EventTimes;
 use App\Models\Customer;
+use App\Models\TablePosition;
 use App\Jobs\SendEventEmailJob;
 use App\Constants\Role;
 use App\Constants\EventConstant;
+use App\Repositories\EventRepository;
 use Carbon\Carbon;
 use Auth;
 
 class EventService
 {
+    protected $eventRepo;
+
+    public function __construct(EventRepository $eventRepo)
+    {
+        $this->eventRepo = $eventRepo;
+    }
 
     public function eventList($request)
     {
@@ -19,7 +27,7 @@ class EventService
         $orderBy = (isset($request['order_by'])) ? explode('|', $request['order_by']) : [];
         $paginate = (isset($request['paginate'])) ? $request['paginate'] : EventConstant::PAGINATE;
 
-        return Wedding::whereHas('place', function($q){
+        return $this->eventRepo->model->whereHas('place', function($q){
                             $q->whereHas('restaurant', function($q){
                                 $q->whereHas('user', function($q){
                                     $q->whereId(Auth::user()->id);
@@ -107,7 +115,7 @@ class EventService
                               ? implode('-', $data['party_time'])
                               : $data['party_time'][0];
         
-        $event = Wedding::create($data);
+        $event = $this->eventRepo->model->create($data);
         #Make couple
         $couple = [
             [
@@ -169,22 +177,25 @@ class EventService
     }
 
     public function getWeddingEventLivestream($invitationUrl)
-    {
-        return Wedding::whereHas('customers', function($q) use($invitationUrl){
-                            $q->where('invitation_url', $invitationUrl);
-                        })
-                        ->with(['place' => function($q){
-                            $q->select('id', 'name')
-                              ->with(['tablePositions' => function($q){
-                                    $q->select('place_id', 'id', 'position')
-                                      ->where('status', STATUS_TRUE)
-                                      ->with(['customers' => function($q){
-                                            $q->select('table_position_id', 'full_name')
-                                              ->where('role', Role::GUEST);
-                                        }]);
-                                }]);
-                        }])
-                        ->with(['eventTimes'])
-                        ->first();
+    {   
+        $weddingId = Customer::where('invitation_url', $invitationUrl)
+                             ->select('wedding_id')->first()->wedding_id;
+        return $this->eventRepo->model->whereHas('customers', function($q) use($invitationUrl){
+                        $q->where('invitation_url', $invitationUrl);
+                    })
+                    ->with(['place' => function($q) use($weddingId){
+                        $q->select('id', 'name')
+                          ->with(['tablePositions' => function($q) use($weddingId){
+                                $q->select('place_id', 'id', 'position')
+                                  ->where('status', STATUS_TRUE)
+                                  ->with(['customers' => function($q) use($weddingId){
+                                        $q->select('table_position_id', 'full_name')
+                                          ->where('role', Role::GUEST)
+                                          ->where('wedding_id', $weddingId);
+                            }]);
+                        }]);
+                    }])
+                    ->with(['eventTimes'])
+                    ->first();
     }
 }
