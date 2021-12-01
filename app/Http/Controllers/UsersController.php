@@ -59,10 +59,14 @@ class UsersController extends Controller
 
     public function getStaff($id)
     {
-        $user = $this->userService->getStaff($id);
-        if ($user) return $this->respondSuccess($user);
+        $user = $this->userService->getStaff(escape_like($id));
+        if(!$user || !is_numeric($id)){
+            return $this->respondError(
+                Response::HTTP_NOT_FOUND, __('messages.user.not_found')
+            );
+        }
 
-        return $this->respondError(Response::HTTP_BAD_REQUEST, __('messages.user.detail_fail'));
+        return $this->respondSuccess($user);
     }
 
     public function destroyStaff($id)

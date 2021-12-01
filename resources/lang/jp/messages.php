@@ -146,6 +146,7 @@ return [
         'token_fail' => 'Token fail',
         'password_verify_fail' => 'Old password is not correct !',
         'existed' => 'Failed ! User is existed !',
+        'not_found' => 'このアカウントが存在しません。システム管理者と問い合わせください。',
 
         'validation' => [
             'email' => [
