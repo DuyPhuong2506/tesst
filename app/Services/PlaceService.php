@@ -152,7 +152,7 @@ class PlaceService
     public function getAll($request)
     {   
         $orderBy = isset($request['order_by']) ? explode('|', $request['order_by']) : [];
-        $keyword = !empty($request['keyword']) ? $request['keyword'] : null;
+        $keyword = !empty($request['keyword']) ? escape_like($request['keyword']) : null;
         $paginate = !empty($request['paginate']) ? $request['paginate'] : PAGINATE;
 
         $places = $this->placeRepo->model->with(['tablePositions'])
