@@ -149,7 +149,7 @@ return [
         'password_fail' => 'Update password fail',
         'token_success' => 'Token success',
         'token_fail' => 'Token fail',
-        'password_verify_fail' => 'Old password is not correct !',
+        'password_verify_fail' => '古いパスワードが間違っています。ご確認してください。',
         'existed' => 'Failed ! User is existed !',
         'not_found' => 'このアカウントが存在しません。システム管理者と問い合わせください。',
 
