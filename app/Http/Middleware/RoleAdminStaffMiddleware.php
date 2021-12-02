@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Response;
 use Illuminate\Http\Request;
 use App\Traits\ApiTrait;
@@ -22,7 +23,9 @@ class RoleAdminStaffMiddleware
     public function handle($request, Closure $next)
     {
         $user = JWTAuth::parseToken()->authenticate();
-        if ($user->role == \App\Constants\Role::STAFF_ADMIN) return $next($request);
+        if(Auth::check()){
+            if($user->role == \App\Constants\Role::STAFF_ADMIN) return $next($request);
+        }
         
         return  $this->respondError(Response::HTTP_METHOD_NOT_ALLOWED, 'PERMISSION DENIED, ROLE STAFF');
     }
