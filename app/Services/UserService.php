@@ -95,6 +95,16 @@ class UserService
         return null;
     }
 
+    public function existUser($id)
+    {
+        $user = User::staff()->where('id', $id)->exists();
+        if($user){
+            return true;
+        }
+        
+        return false;
+    }
+    
     public function createRememberMail($email, $token)
     {
         User::where('email',$email)
