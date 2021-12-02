@@ -28,7 +28,7 @@ class NewEmailRequest extends ApiRequest
             'email.regex' => __('messages.user.validation.email.regex'),
             'email.min' => __('messages.user.validation.email.min'),
             'email.max' => __('messages.user.validation.email.max'),
-            'email.unique' => __('messages.user.validation.email.unique'),
+            'email.unique' => __('messages.mail.validation.email.unique'),
         ];
     }
 }
