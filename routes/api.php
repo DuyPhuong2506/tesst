@@ -47,6 +47,8 @@ Route::group(['middleware' => ['jwtAuth']], function () {
         Route::prefix('users')->group(function () {
             Route::put('/staff-admin/create-or-update', 'UsersController@upadateStaffAdmin');
         });
+
+        Route::resource('places', 'PlacesController');
     });
 
     /* Role Super Admin */
@@ -67,7 +69,7 @@ Route::group(['middleware' => ['jwtAuth']], function () {
         Route::get('get-event-couple', 'EventsController@coupleDetailEvent');
     });
 
-    /* Role Couple */
+    /* Role Guest */
     Route::group(['middleware' => 'auth.guest'], function(){
         Route::resource('channel','ChannelsController');
     });
@@ -79,10 +81,8 @@ Route::group(['middleware' => ['jwtAuth']], function () {
     
     Route::post('auth/logout', 'AuthController@logout');
     Route::post('admin/create','UsersController@createAdmin');
-    Route::resource('places', 'PlacesController');
     Route::get('places-get-pre-signed', 'PlacesController@getPreSigned')->name('get.getPreSigned');
     Route::resource('restaurants','RestaurantsController');
-
 
    
 });
