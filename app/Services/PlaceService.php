@@ -145,7 +145,11 @@ class PlaceService
     public function showDetail($id)
     {   
         if(!is_numeric($id)) return null;
-        $place = $this->placeRepo->model->whereId($id)->with(['tablePositions'])->first();
+        $place = null;
+
+        if(auth()->user()->restaurant_id) {
+            $place = $this->placeRepo->model->whereId($id)->whereRestaurantId(auth()->user()->restaurant_id)->with(['tablePositions'])->first();
+        }
 
         return $place;
     }
