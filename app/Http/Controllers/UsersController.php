@@ -74,8 +74,14 @@ class UsersController extends Controller
         $user = $this->userService->destroyStaff($id);
         if ($user) return $this->respondSuccess(['message', __('messages.admin_staff.delete_success')]);
 
+        if(!$this->userService->existUser($id)){
+            return $this->respondError(
+                Response::HTTP_NOT_FOUND, __('messages.user.not_found')
+            );
+        }
+
         return $this->respondError(
-            Response::HTTP_NOT_FOUND, __('messages.user.not_found')
+            Response::HTTP_NOT_IMPLEMENTED, __('messages.user.delete_fail')
         );
     }
 
