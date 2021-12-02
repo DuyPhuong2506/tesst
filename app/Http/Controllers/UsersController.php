@@ -81,7 +81,7 @@ class UsersController extends Controller
         }
 
         return $this->respondError(
-            Response::HTTP_NOT_IMPLEMENTED, __('messages.user.delete_fail')
+            Response::HTTP_BAD_REQUEST, __('messages.user.delete_fail')
         );
     }
 
