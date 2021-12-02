@@ -5,6 +5,7 @@ use App\Models\User;
 use App\Constants\Role;
 use App\Models\Company;
 use App\Models\Restaurant;
+use App\Jobs\SendMailResetPasswordJob;
 use Mail;
 use Hash;
 use Str;
@@ -163,10 +164,9 @@ class UserService
             'app_url' => env('ADMIN_URL')
         ];
         $this->createRememberMail($email, $token);
-        Mail::send('mails/change_password', $emailInfo, function($msg) use($email){
-            $msg->to($email)->subject("Change Password !");
-        });
-        
+        $resetPasswordJob = new SendMailResetPasswordJob($email, $emailInfo);
+        dispatch($resetPasswordJob);
+
         return true;
     }
 
