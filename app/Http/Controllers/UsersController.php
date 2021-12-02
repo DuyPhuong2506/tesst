@@ -74,7 +74,9 @@ class UsersController extends Controller
         $user = $this->userService->destroyStaff($id);
         if ($user) return $this->respondSuccess(['message', __('messages.admin_staff.delete_success')]);
 
-        return $this->respondError(Response::HTTP_NOT_IMPLEMENTED, __('messages.admin_staff.delete_fail'));
+        return $this->respondError(
+            Response::HTTP_NOT_FOUND, __('messages.user.not_found')
+        );
     }
 
     public function sendEmailResetPassword(EmailRequest $request)
@@ -182,6 +184,7 @@ class UsersController extends Controller
             return $this->respondError(
                 Response::HTTP_BAD_REQUEST, __('messages.mail.send_fail')
             );
+            
         } catch (\Exception $e) {
             \DB::rollback();
             
