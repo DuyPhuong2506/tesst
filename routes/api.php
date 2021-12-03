@@ -25,6 +25,9 @@ Route::post('change-password','UsersController@updatePassword');
 Route::post('check-token-expired','UsersController@checkExpiredToken');
 Route::post('check-token-exist','UsersController@checkExistToken');
 
+#Mobile Live Stream Guest
+Route::post('/get-event-live-stream', 'EventsController@getWeddingEventLivestream');
+
 Route::group(['middleware' => ['jwtAuth']], function () {
 
     /* Role Admin (STAFF ADMIN & SUPER_ADMIN)*/
@@ -73,11 +76,6 @@ Route::group(['middleware' => ['jwtAuth']], function () {
     /* Role Guest */
     Route::group(['middleware' => 'auth.guest'], function(){
         Route::resource('channel','ChannelsController');
-    });
-
-    /* Mobile Live Stream - Time table */
-    Route::prefix('event')->group(function () {
-        Route::post('/get-event-live-stream', 'EventsController@getWeddingEventLivestream');
     });
     
     Route::post('auth/logout', 'AuthController@logout');
