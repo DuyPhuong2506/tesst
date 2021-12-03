@@ -15,6 +15,8 @@ class RoleCoupleMiddleware
 
     public function handle($request, Closure $next)
     {
+        if(!Auth::user()) return $this->respondError(Response::HTTP_NOT_FOUND, "404 - Page Not Found");
+        
         $auth = Auth::guard('customer');
         if($auth->check()){
             if(in_array($auth->user()->role, [Role::GROOM, Role::BRIDE])){

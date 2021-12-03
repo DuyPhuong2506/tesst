@@ -22,10 +22,10 @@ class RoleAdminStaffMiddleware
      */
     public function handle($request, Closure $next)
     {
+        if(!Auth::user()) return $this->respondError(Response::HTTP_NOT_FOUND, "404 - Page Not Found");
+        
         $user = JWTAuth::parseToken()->authenticate();
-        if(Auth::check()){
-            if($user->role == \App\Constants\Role::STAFF_ADMIN) return $next($request);
-        }
+        if($user->role == \App\Constants\Role::STAFF_ADMIN) return $next($request);
         
         return  $this->respondError(Response::HTTP_METHOD_NOT_ALLOWED, 'PERMISSION DENIED, ROLE STAFF');
     }
