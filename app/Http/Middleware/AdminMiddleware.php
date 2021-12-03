@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Response;
 use Illuminate\Http\Request;
 use App\Traits\ApiTrait;
@@ -20,9 +21,7 @@ class AdminMiddleware
      * @return mixed return next
      */
     public function handle($request, Closure $next)
-    {
-        if(!Auth::user()) return $this->respondError(Response::HTTP_NOT_FOUND, "404 - Page Not Found");
-        
+    {   
         $user = JWTAuth::parseToken()->authenticate();
         if ($user->role == \App\Constants\Role::SUPER_ADMIN || $user->role == \App\Constants\Role::STAFF_ADMIN) return $next($request);
         

@@ -3,10 +3,10 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Response;
 use Illuminate\Http\Request;
 use App\Traits\ApiTrait;
-use Illuminate\Support\Facades\Auth;
 use App\Constants\Role;
 
 class RoleGuestMiddleware
@@ -15,7 +15,7 @@ class RoleGuestMiddleware
 
     public function handle($request, Closure $next)
     {
-        if(!Auth::user()) return $this->respondError(Response::HTTP_NOT_FOUND, "404 - Page Not Found");
+        if(!Auth::guard('customer')->user()) return $this->respondError(Response::HTTP_NOT_FOUND, "404 - Page Not Found");
         
         $auth = Auth::guard('customer');
         if($auth->check()){
