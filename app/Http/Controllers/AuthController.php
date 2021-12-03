@@ -61,10 +61,14 @@ class AuthController extends Controller
 
         $auth = Auth::user();
         $tempStatus = $auth->is_first_login;
+
+        $auth->update([
+            'lasted_login' => Carbon::now()
+        ]);
+        
         if($auth->role === Role::SUPER_ADMIN){
             $auth->update([
-                'is_first_login' => 1,
-                'lasted_login' => Carbon::now()
+                'is_first_login' => STATUS_TRUE
             ]);
         }
         
