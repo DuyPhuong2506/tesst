@@ -68,7 +68,7 @@ class AuthController extends Controller
         
         if($auth->role === Role::SUPER_ADMIN){
             $auth->update([
-                'is_first_login' => 1
+                'is_first_login' => STATUS_TRUE
             ]);
         }
         
