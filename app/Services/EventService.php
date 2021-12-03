@@ -198,4 +198,28 @@ class EventService
                     ->with(['eventTimes'])
                     ->first();
     }
+
+    public function coupleListGuest($coupleId, $request)
+    {
+        $keyword = (isset($request['keyword'])) ? escape_like($request['keyword']) : NULL;
+        $paginate = (isset($request['paginate'])) ? $request['paginate'] : EventConstant::PAGINATE;
+
+        $weddingId = Customer::where('id', $coupleId)->first()->wedding_id;
+        
+        return Customer::where(function($q) use($weddingId, $keyword){
+                            $q->where('wedding_id', $weddingId);
+                            $q->where('role', Role::GUEST);
+                        })
+                        ->where(function($q) use($keyword){
+                            $q->orWhere('full_name', 'like', '%'.$keyword.'%');
+                            $q->orWhere('email', 'like', '%'.$keyword.'%');
+                            $q->orWhere(function($q) use($keyword){
+                                $q->whereHas('tablePosition', function($q) use($keyword){
+                                    $q->where('position', 'like', '%'.$keyword.'%');
+                                });
+                            });
+                        })
+                        ->with('tablePosition')
+                        ->paginate($paginate);
+    }
 }
