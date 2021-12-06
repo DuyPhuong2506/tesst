@@ -22,8 +22,6 @@ class RoleSuperAdminMiddleware
      */
     public function handle($request, Closure $next)
     {
-        if(!Auth::user()) return $this->respondError(Response::HTTP_NOT_FOUND, "404 - Page Not Found");
-        
         $user = JWTAuth::parseToken()->authenticate();
         if ($user->role == \App\Constants\Role::SUPER_ADMIN) return $next($request);
         
