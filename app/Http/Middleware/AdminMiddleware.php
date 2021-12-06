@@ -22,6 +22,13 @@ class AdminMiddleware
      */
     public function handle($request, Closure $next)
     {   
+        if(!Auth::user()){
+            $token = $request->bearerToken();
+            Auth::setToken($token)->invalidate();
+            
+            return $this->respondError(Response::HTTP_UNAUTHORIZED, 'The token has been blacklisted');
+        }
+
         $user = JWTAuth::parseToken()->authenticate();
         if ($user->role == \App\Constants\Role::SUPER_ADMIN || $user->role == \App\Constants\Role::STAFF_ADMIN) return $next($request);
         
