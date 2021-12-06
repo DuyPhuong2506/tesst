@@ -69,7 +69,7 @@ class PlacesController extends Controller
             }
             
             \DB::rollback();
-            return $this->respondError(Response::HTTP_NOT_IMPLEMENTED, __('messages.place.update_fail'));
+            return $this->respondError(Response::HTTP_NOT_FOUND, __('messages.place.update_fail'));
         }  catch (\Exception $e) {
             \DB::rollback();
             
