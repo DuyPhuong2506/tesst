@@ -135,7 +135,7 @@ class PlaceService
 
         if($place) {
             $place->tablePositions()->createMany($dataTable);
-            $place->positionCameras()->createMany($dataCamera);
+            // $place->positionCameras()->createMany($dataCamera);
         }
 
         return $this->showDetail($place->id);
@@ -318,13 +318,15 @@ class PlaceService
 
     public function updatePlace($id, $request)
     {   
-        $dataCamera = $this->storeFileCamera($request);
+        $place = $this->placeRepo->model->whereId($id)->first();
+        if(!$place) return null;
+        // $dataCamera = $this->storeFileCamera($request);
         $attributes = $request->only('name','restaurant_id', 'image', 'image_thumb');
         $attributes['status'] = STATUS_FALSE;
         if(is_numeric($request->status) && $request->status == STATUS_TRUE){
             $attributes['status'] = STATUS_TRUE;
         } 
-        $place = $this->placeRepo->model->whereId($id)->first();
+        
         if(isset($request->image) && $place->image) {
             $this->removeImageS3($place->image);
         }
@@ -352,10 +354,10 @@ class PlaceService
                     'customer_id' => auth()->id(),
                     'status' => STATUS_TRUE
                 ];
-            }
-            $table = $place->tablePositions()->whereId($item['id'])->first();
-            if($table){
-                $table->update($updateTable);
+                $table = $place->tablePositions()->whereId($item['id'])->first();
+                if($table){
+                    $table->update($updateTable);
+                }
             }
         }
         if($place) {
@@ -364,20 +366,20 @@ class PlaceService
             }
             $place->tablePositions()->createMany($dataTable);
 
-            if(isset($request->del_position_cameras) &&  count($request->del_position_cameras)){
-                $positionCameras = $place->positionCameras()->whereIn('id', $request->del_position_cameras)->get();
-                    // check delete image
-                foreach($positionCameras as $item){
-                    if($item->image) {
-                        $this->removeImageS3($item->image);
-                    }
-                    if($item->image_thumb) {
-                        $this->removeImageS3($item->image_thumb);
-                    }
-                    $item->delete();
-                }
-            }
-            $place->positionCameras()->createMany($dataCamera);
+            // if(isset($request->del_position_cameras) &&  count($request->del_position_cameras)){
+            //     $positionCameras = $place->positionCameras()->whereIn('id', $request->del_position_cameras)->get();
+            //         // check delete image
+            //     foreach($positionCameras as $item){
+            //         if($item->image) {
+            //             $this->removeImageS3($item->image);
+            //         }
+            //         if($item->image_thumb) {
+            //             $this->removeImageS3($item->image_thumb);
+            //         }
+            //         $item->delete();
+            //     }
+            // }
+            // $place->positionCameras()->createMany($dataCamera);
         }
 
         return $this->showDetail($place->id);
