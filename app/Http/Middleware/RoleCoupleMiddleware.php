@@ -15,7 +15,12 @@ class RoleCoupleMiddleware
 
     public function handle($request, Closure $next)
     {
-        if(!Auth::guard('customer')->user()) return $this->respondError(Response::HTTP_NOT_FOUND, "404 - Page Not Found");
+        if(!Auth::user()){
+            $token = $request->bearerToken();
+            Auth::setToken($token)->invalidate();
+            
+            return $this->respondError(Response::HTTP_UNAUTHORIZED, 'The token has been blacklisted');
+        }
         
         $auth = Auth::guard('customer');
         if($auth->check()){
