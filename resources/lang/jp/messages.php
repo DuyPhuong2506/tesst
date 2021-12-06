@@ -83,7 +83,7 @@ return [
                 'required' => '必須項目に入力してください。',
                 'date_format' => 'The date format is invalid.',
                 'after' => '今日より後の日付を入力してください。',
-                'was_held' => 'Existed event held in this day and place'
+                'was_held' => 'この日時は別の式が'
             ],
             'pic_name' => [
                 'required' => '必須項目に入力してください。',
