@@ -3,6 +3,11 @@
 namespace App\Http\Requests;
 
 use App\Http\Requests\ApiRequest;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
+use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Http\Response;
 
 class EmailRequest extends ApiRequest
 {
@@ -29,5 +34,15 @@ class EmailRequest extends ApiRequest
             'email.exists' => __('messages.user.validation.email.exists'),
             'email.max' => __('messages.mail.validation.email.max'),
         ];
+    }
+
+    protected function failedValidation(Validator $validator)
+    {
+        $response = $this->respondError(
+            Response::HTTP_BAD_REQUEST, 
+            __('messages.user.validation.email.exists')
+        );
+
+        throw new HttpResponseException($response);
     }
 }
