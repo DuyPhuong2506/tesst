@@ -176,12 +176,12 @@ class EventService
                       ->first();
     }
 
-    public function getWeddingEventLivestream($invitationUrl)
+    public function getWeddingEventLivestream($token)
     {   
-        $weddingId = Customer::where('invitation_url', $invitationUrl)
+        $weddingId = Customer::where('token', $token)
                              ->select('wedding_id')->first()->wedding_id;
-        return $this->eventRepo->model->whereHas('customers', function($q) use($invitationUrl){
-                        $q->where('invitation_url', $invitationUrl);
+        return $this->eventRepo->model->whereHas('customers', function($q) use($token){
+                        $q->where('token', $token);
                     })
                     ->with(['place' => function($q) use($weddingId){
                         $q->select('id', 'name')
