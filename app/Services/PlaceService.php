@@ -328,11 +328,11 @@ class PlaceService
         } 
         
         if(isset($request->image) && $place->image) {
-            $this->removeImageS3($place->image);
+            if($place->image !== $request->image) $this->removeImageS3($place->image);
         }
-        if(isset($request->image_thumb) && $place->image_thumb) {
-            $this->removeImageS3($place->image_thumb);
-        }
+        // if(isset($request->image_thumb) && $place->image_thumb) {
+        //     $this->removeImageS3($place->image_thumb);
+        // }
         if($place)$place->update($attributes);
         $dataTable = [];
         if(isset($request->table_positions) && count($request->table_positions)){
