@@ -14,15 +14,15 @@ class EventLiveStreamRequest extends ApiRequest
     public function rules()
     {
         return [
-            'invitation_url' => 'required|exists:customers,invitation_url'
+            'token' => 'required|exists:customers,token'
         ];
     }
 
     public function messages()
     {
         return [
-            'invitation_url.required' => __('messages.event.validation.invitation_url.required'),
-            'invitation_url.exists' => __('messages.event.validation.invitation_url.exists'),
+            'token.required' => __('messages.event.validation.token.required'),
+            'token.exists' => __('messages.event.validation.token.exists'),
         ];
     }
 }

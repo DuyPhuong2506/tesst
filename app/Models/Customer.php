@@ -16,7 +16,7 @@ class Customer extends AuthJWT
         'phone',
         'address',
         'full_name',
-        'invitation_url',
+        'token',
         'table_position_id',
         'join_status',
         'confirmed_at'

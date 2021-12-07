@@ -129,9 +129,9 @@ return [
                 'before' => 'The couple edit date must be before wedding date',
                 'after' => 'The couple edit date must be after wedding date the guest invitation response date'
             ],
-            'invitation_url' => [
-                'required' => 'The event invitation url is required !',
-                'exists' => 'The event invitation url does not exist !'
+            'token' => [
+                'required' => 'The token is required !',
+                'exists' => 'The token does not exist !'
             ]
         ]
     ],
