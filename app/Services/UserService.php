@@ -6,6 +6,7 @@ use App\Constants\Role;
 use App\Models\Company;
 use App\Models\Restaurant;
 use App\Jobs\SendMailResetPasswordJob;
+use App\Jobs\SendMailInviteStaffJob;
 use Mail;
 use Hash;
 use Str;
@@ -207,9 +208,8 @@ class UserService
             'password' => random_str(200)
         ]);
 
-        Mail::send('mails/admin_staff_invite', $emailInfo, function($msg) use($email){
-            $msg->to($email)->subject("Invite Registry Account Admin Staff!");
-        });
+        $inviteStaffJob = new SendMailInviteStaffJob($email, $emailInfo);
+        dispatch($inviteStaffJob);
 
         return true;
     }
