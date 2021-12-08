@@ -55,5 +55,5 @@ build-dependence:
 
 include:
   - local: .gitlab/dev.gitlab-ci.yml
-  # - local: .gitlab/stg.gitlab-ci.yml
-  # - local: .gitlab/master.gitlab-ci.yml
+  - local: .gitlab/stg.gitlab-ci.yml
+  - local: .gitlab/master.gitlab-ci.yml
