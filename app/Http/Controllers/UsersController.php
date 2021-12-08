@@ -123,9 +123,13 @@ class UsersController extends Controller
 
     public function getMe()
     {
-        $id = Auth::user()->id;
-        $data = $this->userService->findDetail($id);
-        $role = Auth::user()->role;
+        if(Auth::guard('customer')->check()){
+            $id = Auth::guard('customer')->user()->id;
+            $data = $this->userService->getGuestDetail($id);
+        }else if(Auth::check()){
+            $id = Auth::user()->id;
+            $data = $this->userService->findDetail($id);
+        }
 
         if($data){
             return $this->respondSuccess($data);
