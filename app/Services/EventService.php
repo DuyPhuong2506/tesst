@@ -241,9 +241,12 @@ class EventService
 
     public function dumpCustomerToken()
     {
-        $token = \Str::random(50);
-        Customer::whereIn('role', ['3', '4', '5'])->update(['token' => $token]);
-        
+        $ids = Customer::select('id')->get();
+        foreach ($ids as $key => $value) {
+            $token = \Str::random(50);
+            Customer::where('id', $value['id'])->update(['token' => $token]);
+        }
+
         return Customer::all();
     }
 }
