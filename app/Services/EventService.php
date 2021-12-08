@@ -181,9 +181,16 @@ class EventService
 
     public function getWeddingEventLivestream($token)
     {   
+        $tablePosition = Customer::where('token', $token)
+                                 ->select('id', 'table_position_id', 'full_name')
+                                 ->with(['tablePosition' => function($q){
+                                    $q->select('id', 'position');
+                                 }])
+                                 ->first();
+
         $weddingId = Customer::where('token', $token)
                              ->select('wedding_id')->first()->wedding_id;
-        return $this->eventRepo->model->whereHas('customers', function($q) use($token){
+        $data = $this->eventRepo->model->whereHas('customers', function($q) use($token){
                         $q->where('token', $token);
                     })
                     ->with(['place' => function($q) use($weddingId){
@@ -198,8 +205,15 @@ class EventService
                             }]);
                         }]);
                     }])
-                    ->with(['eventTimes'])
+                    ->select('id', 'date', 'place_id')
+                    ->with(['eventTimes' => function($q){
+                        $q->select(['id', 'event_id', 'start', 'end', 'description']);
+                    }])
                     ->first();
+        
+        $data['customer_detail'] = $tablePosition;
+        
+        return $data;
     }
 
     public function coupleListGuest($coupleId, $request)
