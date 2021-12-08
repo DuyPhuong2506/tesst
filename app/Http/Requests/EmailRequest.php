@@ -38,10 +38,9 @@ class EmailRequest extends ApiRequest
 
     protected function failedValidation(Validator $validator)
     {
-        $response = $this->respondError(
-            Response::HTTP_BAD_REQUEST, 
-            __('messages.user.validation.email.exists')
-        );
+        $response = $this->respondSuccess([
+            'message' => __('messages.user.validation.email.exists')
+        ]);
 
         throw new HttpResponseException($response);
     }
