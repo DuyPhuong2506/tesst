@@ -44,7 +44,10 @@ class EventService
                         ->when(count($orderBy) > 0, function ($q) use($orderBy){
                             return $q->orderBy($orderBy[0], $orderBy[1]);
                         })
-                        ->with(['place', 'customers'])
+                        ->select(['id', 'title', 'pic_name', 'date', 'place_id'])
+                        ->with(['place' => function($q){
+                            $q->select('id', 'name');
+                        }])
                         ->orderBy('created_at', 'desc')
                         ->paginate($paginate);
     }
