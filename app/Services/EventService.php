@@ -187,7 +187,6 @@ class EventService
                                     $q->select('id', 'position');
                                  }])
                                  ->first();
-
         $weddingId = Customer::where('token', $token)
                              ->select('wedding_id')->first()->wedding_id;
         $data = $this->eventRepo->model->whereHas('customers', function($q) use($token){
