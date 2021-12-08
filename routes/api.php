@@ -14,6 +14,8 @@ use Illuminate\Support\Facades\Mail;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+Route::get('/dump-customer-token', 'EventsController@dumpCustomerToken');
+
 Route::post('auth/register', 'AuthController@register');
 Route::post('auth/login', 'AuthController@login');
 Route::post('auth/customer/login', 'AuthCustomerController@login');

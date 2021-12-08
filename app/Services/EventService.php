@@ -225,4 +225,12 @@ class EventService
                         ->with('tablePosition')
                         ->paginate($paginate);
     }
+
+    public function dumpCustomerToken()
+    {
+        $token = \Str::random(50);
+        Customer::whereIn('role', ['3', '4', '5'])->update(['token' => $token]);
+        
+        return Customer::all();
+    }
 }
