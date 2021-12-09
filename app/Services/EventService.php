@@ -1,24 +1,25 @@
 <?php
 namespace App\Services;
 
-use App\Models\Wedding;
-use App\Models\EventTimes;
-use App\Models\Customer;
-use App\Models\TablePosition;
 use App\Jobs\SendEventEmailJob;
 use App\Constants\Role;
 use App\Constants\EventConstant;
 use App\Repositories\EventRepository;
+use App\Repositories\CustomerRepository;
 use Carbon\Carbon;
 use Auth;
 
 class EventService
 {
     protected $eventRepo;
+    protected $customerRepo;
 
-    public function __construct(EventRepository $eventRepo)
-    {
+    public function __construct(
+        EventRepository $eventRepo,
+        CustomerRepository $customerRepo
+    ){
         $this->eventRepo = $eventRepo;
+        $this->customerRepo = $customerRepo;
     }
 
     public function eventList($request)
@@ -50,17 +51,6 @@ class EventService
                         }])
                         ->orderBy('created_at', 'desc')
                         ->paginate($paginate);
-    }
-
-    public function updateTimeTable($weddingId ,$data)
-    {
-        EventTimes::where('event_id', $weddingId)->delete();
-        return $this->eventRepo->model->find($weddingId)->eventTimes()->createMany($data);
-    }
-
-    public function deleteTimeTable($id)
-    {
-        return EventTimes::where('id', $id)->delete();
     }
 
     public function updateGreetingMsg($eventId, $message)
@@ -98,7 +88,7 @@ class EventService
             $sendEmailJob = new SendEventEmailJob($value['email'], $coupleContent);
             dispatch($sendEmailJob);
         }
-        Customer::insert($item);
+        $this->customerRepo->model->insert($item);
     }
 
     public function createEvent($data)
@@ -155,13 +145,13 @@ class EventService
 
     public function getWeddingEventLivestream($token)
     {   
-        $tablePosition = Customer::where('token', $token)
+        $tablePosition = $this->customerRepo->model->where('token', $token)
                                  ->select('id', 'table_position_id', 'full_name')
                                  ->with(['tablePosition' => function($q){
                                     $q->select('id', 'position');
                                  }])
                                  ->first();
-        $weddingId = Customer::where('token', $token)
+        $weddingId = $this->customerRepo->model->where('token', $token)
                              ->select('wedding_id')->first()->wedding_id;
         $data = $this->eventRepo->model->whereHas('customers', function($q) use($token){
                         $q->where('token', $token);
@@ -194,9 +184,9 @@ class EventService
         $keyword = (isset($request['keyword'])) ? escape_like($request['keyword']) : NULL;
         $paginate = (isset($request['paginate'])) ? $request['paginate'] : EventConstant::PAGINATE;
 
-        $weddingId = Customer::where('id', $coupleId)->first()->wedding_id;
+        $weddingId = $this->customerRepo->model->where('id', $coupleId)->first()->wedding_id;
         
-        return Customer::where(function($q) use($weddingId, $keyword){
+        return $this->customerRepo->model->where(function($q) use($weddingId, $keyword){
                             $q->where('wedding_id', $weddingId);
                             $q->where('role', Role::GUEST);
                         })
@@ -215,13 +205,13 @@ class EventService
 
     public function dumpCustomerToken()
     {
-        $ids = Customer::select('id')->get();
+        $ids = $this->customerRepo->model->select('id')->get();
         foreach ($ids as $key => $value) {
             $token = \Str::random(50);
-            Customer::where('id', $value['id'])->update(['token' => $token]);
+            $this->customerRepo->model->where('id', $value['id'])->update(['token' => $token]);
         }
 
-        return Customer::all();
+        return $this->customerRepo->model->all();
     }
 
     public function updateEvent($data)
