@@ -28,7 +28,9 @@ Route::post('check-token-expired','UsersController@checkExpiredToken');
 Route::post('check-token-exist','UsersController@checkExistToken');
 
 #Mobile Live Stream Guest
-Route::post('/get-event-live-stream', 'EventsController@getWeddingEventLivestream');
+Route::prefix('v1')->group(function () {
+    Route::post('/guest-online/event', 'EventsController@getWeddingEventLivestream');
+});
 
 Route::group(['middleware' => ['jwtAuth']], function () {
 
@@ -72,8 +74,10 @@ Route::group(['middleware' => ['jwtAuth']], function () {
 
     /* Role Couple */
     Route::group(['middleware' => 'auth.couple'], function(){
-        Route::get('get-event-couple', 'EventsController@coupleDetailEvent');
-        Route::get('get-couple-list-guest', 'EventsController@coupleListGuest');
+        Route::prefix('/v1')->group(function () {
+            Route::get('couple/event', 'EventsController@coupleDetailEvent');
+            Route::get('couple/event-list', 'EventsController@coupleListGuest');
+        });        
     });
 
     /* Role Guest */
