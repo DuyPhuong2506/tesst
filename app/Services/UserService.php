@@ -5,6 +5,7 @@ use App\Models\User;
 use App\Constants\Role;
 use App\Models\Company;
 use App\Models\Restaurant;
+use App\Models\Customer;
 use App\Jobs\SendMailResetPasswordJob;
 use App\Jobs\SendMailInviteStaffJob;
 use Mail;
@@ -190,6 +191,11 @@ class UserService
         if ($user) return $user;
 
         return null;
+    }
+
+    public function getGuestDetail($id)
+    {
+        return Customer::whereId($id)->first();
     }
 
     public function inviteNewAdminStaff($email)

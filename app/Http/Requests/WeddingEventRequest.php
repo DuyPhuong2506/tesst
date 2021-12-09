@@ -53,9 +53,9 @@ class WeddingEventRequest extends ApiRequest
             'place_id' => 'required|exists:places,id,status,1',
             
             'groom_name' => 'required|string|max:20',
-            'groom_email' => 'required|different:bride_email|unique:customers,email|unique:users,email|max:50|string|email|regex:/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix',
+            'groom_email' => 'required|max:50|string|email|regex:/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix',
             'bride_name' => 'required|string|max:20',
-            'bride_email' => 'required|unique:customers,email|unique:users,email|max:50|string|email|regex:/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix',
+            'bride_email' => 'required|max:50|string|email|regex:/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix',
 
             'allow_remote' => 'required|boolean',
             'guest_invitation_response_date' => 'required|date_format:Y-m-d|before:couple_edit_date',
@@ -128,14 +128,11 @@ class WeddingEventRequest extends ApiRequest
             'bride_name.max' => __('messages.event.validation.couple_name.max'),
             
             'groom_email.required' => __('messages.mail.validation.email.required'),
-            'groom_email.unique' => __('messages.mail.validation.email.unique'),
             'groom_email.max' => __('messages.mail.validation.email.max'),
             'groom_email.email' => __('messages.mail.validation.email.regex'),
             'groom_email.regex' => __('messages.mail.validation.email.regex'),
-            'groom_email.different' => __('messages.mail.validation.email.different'),
             
             'bride_email.required' => __('messages.mail.validation.email.required'),
-            'bride_email.unique' => __('messages.mail.validation.email.unique'),
             'bride_email.max' => __('messages.mail.validation.email.max'),
             'bride_email.email' => __('messages.mail.validation.email.regex'),
             'bride_email.regex' => __('messages.mail.validation.email.regex'),
