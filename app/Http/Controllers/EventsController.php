@@ -4,14 +4,15 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use App\Services\EventService;
-use App\Http\Requests\WeddingEventRequest;
+use App\Http\Requests\CreateEventRequest;
 use App\Http\Requests\EventIDRequest;
-use App\Http\Requests\CreateTimeTableEvent;
-use App\Http\Requests\UpdateThankMsg;
+use App\Http\Requests\UpdateTimeTableEventRequest;
+use App\Http\Requests\UpdateGreetingMsgRequest;
 use App\Http\Requests\UpdateEventRequest;
 use App\Http\Requests\EventLiveStreamRequest;
+use App\Services\EventService;
 use Auth;
+use DB;
 
 class EventsController extends Controller
 {
@@ -36,15 +37,20 @@ class EventsController extends Controller
         );
     }
 
-    public function store(WeddingEventRequest $request)
+    public function store(CreateEventRequest $request)
     {
-        $requestData = $request->all();
-        $eventData = $this->eventService->createEvent($requestData);
-        if($eventData){
-            return $this->respondSuccess($eventData);
+        DB::beginTransaction();
+        $eventData = $this->eventService->createEvent($request->all());
+        try {
+            if($eventData){
+                DB::commit();
+                return $this->respondSuccess($eventData);
+            }
+            DB::rollback();
+        } catch (\Throwable $th) {
+            DB::rollback();
+            return $this->respondError(Response::HTTP_BAD_REQUEST, __('messages.event.create_fail'));
         }
-
-        return $this->respondError(Response::HTTP_BAD_REQUEST, __('messages.event.create_fail'));
     }
 
     public function coupleDetailEvent()
@@ -60,21 +66,12 @@ class EventsController extends Controller
         return $this->respondError(Response::HTTP_NOT_FOUND, __('messages.event.detail_fail'));
     }
 
-    public function update(UpdateEventRequest $request)
+    public function updateTimeTable(UpdateTimeTableEventRequest  $request)
     {
-        $data = $request->all();
-        if($this->eventService->updateEvent($data)){
-            return $this->respondSuccess([
-                'event'=>$data
-            ]);
-        }
-        
-        return $this->respondError(Response::HTTP_BAD_REQUEST, __('messages.event.update_fail'));
-    }
+        $timeTable = $request->time_table;
+        $weddingId = Auth::guard('customer')->user()->wedding_id;
+        $data = $this->eventService->updateTimeTable($weddingId, $timeTable);
 
-    public function createTimeTable(CreateTimeTableEvent $request)
-    {
-        $data = $this->eventService->createTimeTable($request->all());
         if($data){
             return $this->respondSuccess($data);
         }
@@ -82,27 +79,18 @@ class EventsController extends Controller
         return $this->respondError(Response::HTTP_BAD_REQUEST, __('messages.event.create_fail'));
     }
 
-    public function deleteTimeTable($id)
+    public function updateGreetingMsg(UpdateGreetingMsgRequest $request)
     {
-        if($this->eventService->deleteTimeTable($id)){
-            return $this->respondSuccess([
-                'message' => __('messages.event.delete_success')
-            ]); 
-        }
-
-        return $this->respondError(Response::HTTP_BAD_REQUEST, __('messages.event.delete_fail'));
-    }
-
-    public function updateThankMsg(UpdateThankMsg $request)
-    {
-        $data = $this->eventService->updateThankMsg($request->all());
+        $message = $request->greeting_message;
+        $weddingId = Auth::guard('customer')->user()->wedding_id;
+        $data = $this->eventService->updateGreetingMsg($weddingId, $message);
         if($data){
             return $this->respondSuccess([
                 'message' => __('messages.event.update_success'),
             ]); 
         }
 
-        return $this->respondError(Response::HTTP_BAD_REQUEST, __('messages.event.update_fail'));
+        return $this->respondError(Response::HTTP_BAD_REQUEST, __('messages.event.delete_fail'));
     }
 
     public function getWeddingEventLivestream(EventLiveStreamRequest $request)
@@ -136,6 +124,22 @@ class EventsController extends Controller
         }
 
         return $this->respondError(Response::HTTP_BAD_REQUEST, 'Failed to dump Token !');   
+    }
+
+    public function staffUpdateEvent(UpdateEventRequest $request)
+    {
+        DB::beginTransaction();
+        try {
+            $eventData = $this->eventService->updateEvent($request->all());
+            if($eventData){
+                DB::commit();
+                return $this->respondSuccess($eventData);
+            }
+            DB::rollback();
+        } catch (\Throwable $th) {
+            DB::rollback();
+            return $this->respondError(Response::HTTP_BAD_REQUEST, __('messages.event.create_fail'));
+        }
     }
 
 }
