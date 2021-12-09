@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Http\Requests\CreateEventRequest;
 use App\Http\Requests\EventIDRequest;
-use App\Http\Requests\UpdateTimeTableEventRequest;
 use App\Http\Requests\UpdateGreetingMsgRequest;
 use App\Http\Requests\UpdateEventRequest;
 use App\Http\Requests\EventLiveStreamRequest;
@@ -66,19 +65,6 @@ class EventsController extends Controller
         return $this->respondError(Response::HTTP_NOT_FOUND, __('messages.event.detail_fail'));
     }
 
-    public function updateTimeTable(UpdateTimeTableEventRequest  $request)
-    {
-        $timeTable = $request->time_table;
-        $weddingId = Auth::guard('customer')->user()->wedding_id;
-        $data = $this->eventService->updateTimeTable($weddingId, $timeTable);
-
-        if($data){
-            return $this->respondSuccess($data);
-        }
-
-        return $this->respondError(Response::HTTP_BAD_REQUEST, __('messages.event.create_fail'));
-    }
-
     public function updateGreetingMsg(UpdateGreetingMsgRequest $request)
     {
         $message = $request->greeting_message;
@@ -126,11 +112,11 @@ class EventsController extends Controller
         return $this->respondError(Response::HTTP_BAD_REQUEST, 'Failed to dump Token !');   
     }
 
-    public function staffUpdateEvent(UpdateEventRequest $request)
+    public function update(UpdateEventRequest $request, $id)
     {
         DB::beginTransaction();
         try {
-            $eventData = $this->eventService->updateEvent($request->all());
+            $eventData = $this->eventService->updateEvent($id, $request->all());
             if($eventData){
                 DB::commit();
                 return $this->respondSuccess($eventData);

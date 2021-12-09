@@ -214,7 +214,7 @@ class EventService
         return $this->customerRepo->model->all();
     }
 
-    public function updateEvent($data)
+    public function updateEvent($id, $data)
     {
         $data['ceremony_reception_time'] = (isset($data['ceremony_reception_time'])) 
                                             ? implode('-', $data['ceremony_reception_time'])
@@ -227,7 +227,7 @@ class EventService
                               ? implode('-', $data['party_time'])
                               : $data['party_time'][0];
 
-        $event = $this->eventRepo->model->find($data['id']);
+        $event = $this->eventRepo->model->find($id);
         $event->update([
             'title' => $data['title'],
             'date' => $data['date'],
@@ -269,10 +269,10 @@ class EventService
             
             $event->customers()->updateOrCreate([
                 'role' => $value['role'], 
-                'wedding_id' => $data['id']
+                'wedding_id' => $id
             ], $value);
         }
         
-        return $this->detailEvent($data['id']);
+        return $this->detailEvent($id);
     }
 }
