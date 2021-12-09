@@ -38,4 +38,9 @@ class Customer extends AuthJWT
     {
         return $this->belongsTo(TablePosition::class, 'table_position_id');
     }
+
+    public function setPasswordAttribute($value)
+    {
+        $this->attributes['password'] = $value;
+    }
 }

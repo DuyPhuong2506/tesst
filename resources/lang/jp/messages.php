@@ -65,7 +65,7 @@ return [
     'event' => [
         'create_success' => 'Event create success',
         'create_fail' => 'Event create fail',
-        'update_sucess' => 'Event update success',
+        'update_success' => 'Event update success',
         'update_fail' => 'Event update fail',
         'delete_success' => 'Event delete success',
         'delete_fail' => 'Event delete fail',
@@ -109,7 +109,8 @@ return [
                 'max' => ':max文字列以内を入力してください。'
             ],
             'greeting_message' => [
-                'max' => ':max文字列以内を入力してください。'
+                'max' => ':max文字列以内を入力してください。',
+                'required' => 'The greeting message is required !'
             ],
             'couple_name' => [
                 'required' => '必須項目に入力してください。',
@@ -133,6 +134,17 @@ return [
             'token' => [
                 'required' => 'The token is required !',
                 'exists' => 'The token does not exist !'
+            ],
+            'time_table' => [
+                'array' => 'The event must be an array.',
+                'date_format' => 'The time table date format is invalid',
+                'after_or_equal' => 'The time could not be loop',
+                'after' => 'The time could not be loop',
+                'required' => 'The time is required'
+            ],
+            'id' => [
+                'required' => 'The event id is required',
+                'exists' => 'The event id does not exists',
             ]
         ]
     ],

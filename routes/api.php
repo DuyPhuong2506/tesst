@@ -44,10 +44,8 @@ Route::prefix('v1')->group(function () {
         
         /* Role Staff Admin */
         Route::group(['middleware' => 'auth.admin_staff'], function(){
-            Route::prefix('/event')->group(function () {
-                Route::post('/create-time-table', 'EventsController@createTimeTable');
-                Route::get('/delete-time-table/{id}', 'EventsController@deleteTimeTable');
-                Route::post('/update-thank-msg', 'EventsController@updateThankMsg');
+            Route::prefix('/staff')->group(function () {
+                Route::post('/update-event', 'EventsController@staffUpdateEvent');
             });
             Route::resource('/event','EventsController');
 
@@ -74,7 +72,12 @@ Route::prefix('v1')->group(function () {
         /* Role Couple */
         Route::group(['middleware' => 'auth.couple'], function(){
             Route::get('/couple/event', 'EventsController@coupleDetailEvent');
-            Route::get('/couple/guest-list', 'EventsController@coupleListGuest');       
+            Route::get('/couple/guest-list', 'EventsController@coupleListGuest');
+            
+            Route::prefix('/couple/event')->group(function () {
+                Route::post('/update-greeting', 'EventsController@updateGreetingMsg');
+                Route::post('/update-time-table', 'WeddingTimeTableController@update');
+            });
         });
 
         /* Role Guest */

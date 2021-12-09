@@ -6,7 +6,7 @@ use App\Http\Requests\ApiRequest;
 use Carbon\Carbon;
 use App\Models\Wedding;
 
-class WeddingEventRequest extends ApiRequest
+class CreateEventRequest extends ApiRequest
 {
     public function rules()
     {

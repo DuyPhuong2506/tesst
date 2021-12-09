@@ -1,24 +1,25 @@
 <?php
 namespace App\Services;
 
-use App\Models\Wedding;
-use App\Models\EventTimes;
-use App\Models\Customer;
-use App\Models\TablePosition;
 use App\Jobs\SendEventEmailJob;
 use App\Constants\Role;
 use App\Constants\EventConstant;
 use App\Repositories\EventRepository;
+use App\Repositories\CustomerRepository;
 use Carbon\Carbon;
 use Auth;
 
 class EventService
 {
     protected $eventRepo;
+    protected $customerRepo;
 
-    public function __construct(EventRepository $eventRepo)
-    {
+    public function __construct(
+        EventRepository $eventRepo,
+        CustomerRepository $customerRepo
+    ){
         $this->eventRepo = $eventRepo;
+        $this->customerRepo = $customerRepo;
     }
 
     public function eventList($request)
@@ -52,25 +53,10 @@ class EventService
                         ->paginate($paginate);
     }
 
-    public function createTimeTable($data)
+    public function updateGreetingMsg($eventId, $message)
     {
-        $data = EventTimes::create($data);
-        if($data){
-            return $data;
-        }
-        
-        return false;
-    }
-
-    public function deleteTimeTable($id)
-    {
-        return EventTimes::where('id', $id)->delete();
-    }
-
-    public function updateThankMsg($msg)
-    {
-        $data = Wedding::where('id', $msg['event_id'])->update([
-            'thank_you_message' => $msg['thank_you_message']
+        $data = $this->eventRepo->model->where('id', $eventId)->update([
+            'greeting_message' => $message
         ]);
 
         if($data){
@@ -102,7 +88,7 @@ class EventService
             $sendEmailJob = new SendEventEmailJob($value['email'], $coupleContent);
             dispatch($sendEmailJob);
         }
-        Customer::insert($item);
+        $this->customerRepo->model->insert($item);
     }
 
     public function createEvent($data)
@@ -137,57 +123,35 @@ class EventService
         return $this->detailEvent($event->id);
     }
 
-    public function updateEvent($data)
-    {
-        $eventId = $data['id'];
-        $timeEvent = $data['event_times'];
-        unset($data['event_times']);
-        EventTimes::where('event_id', $eventId)->delete();
-        if(count($timeEvent) > 0){
-            $event = Wedding::find($eventId);
-            $event->update($data);
-            $event->eventTimes()->createMany($timeEvent);
-            
-            return true;
-        }else{
-            Wedding::where('id', $data['id'])->update($data);
-
-            return true;
-        }
-
-        return false;
-
-    }
-
     public function detailEvent($eventId)
     {
-        return Wedding::where('id', $eventId)
-                      ->with(['eventTimes', 'customers'])
-                      ->first();
+        return $this->eventRepo->model->where('id', $eventId)
+                    ->with(['eventTimes', 'customers'])
+                    ->first();
     }
 
     public function coupleDetailEvent($weddingId, $coupleId)
     {
-        return Wedding::where('id', $weddingId)
-                      ->whereHas('customers', function($q) use($coupleId){
-                            $q->where('id', $coupleId);
-                      })
-                      ->with(['eventTimes', 'place'])
-                      ->with(['customers' => function($q){
-                            $q->where('role', Role::GUEST);
-                      }])
-                      ->first();
+        return $this->eventRepo->model->where('id', $weddingId)
+                    ->whereHas('customers', function($q) use($coupleId){
+                        $q->where('id', $coupleId);
+                    })
+                    ->with(['eventTimes', 'place'])
+                    ->with(['customers' => function($q){
+                        $q->where('role', Role::GUEST);
+                    }])
+                    ->first();
     }
 
     public function getWeddingEventLivestream($token)
     {   
-        $tablePosition = Customer::where('token', $token)
+        $tablePosition = $this->customerRepo->model->where('token', $token)
                                  ->select('id', 'table_position_id', 'full_name')
                                  ->with(['tablePosition' => function($q){
                                     $q->select('id', 'position');
                                  }])
                                  ->first();
-        $weddingId = Customer::where('token', $token)
+        $weddingId = $this->customerRepo->model->where('token', $token)
                              ->select('wedding_id')->first()->wedding_id;
         $data = $this->eventRepo->model->whereHas('customers', function($q) use($token){
                         $q->where('token', $token);
@@ -220,9 +184,9 @@ class EventService
         $keyword = (isset($request['keyword'])) ? escape_like($request['keyword']) : NULL;
         $paginate = (isset($request['paginate'])) ? $request['paginate'] : EventConstant::PAGINATE;
 
-        $weddingId = Customer::where('id', $coupleId)->first()->wedding_id;
+        $weddingId = $this->customerRepo->model->where('id', $coupleId)->first()->wedding_id;
         
-        return Customer::where(function($q) use($weddingId, $keyword){
+        return $this->customerRepo->model->where(function($q) use($weddingId, $keyword){
                             $q->where('wedding_id', $weddingId);
                             $q->where('role', Role::GUEST);
                         })
@@ -241,12 +205,74 @@ class EventService
 
     public function dumpCustomerToken()
     {
-        $ids = Customer::select('id')->get();
+        $ids = $this->customerRepo->model->select('id')->get();
         foreach ($ids as $key => $value) {
             $token = \Str::random(50);
-            Customer::where('id', $value['id'])->update(['token' => $token]);
+            $this->customerRepo->model->where('id', $value['id'])->update(['token' => $token]);
         }
 
-        return Customer::all();
+        return $this->customerRepo->model->all();
+    }
+
+    public function updateEvent($data)
+    {
+        $data['ceremony_reception_time'] = (isset($data['ceremony_reception_time'])) 
+                                            ? implode('-', $data['ceremony_reception_time'])
+                                            : null;
+        $data['ceremony_time'] = implode('-', $data['ceremony_time']);
+        $data['party_reception_time'] = (isset($data['party_reception_time']))
+                                        ? implode('-', $data['party_reception_time'])
+                                        : null;
+        $data['party_time'] = (count($data['party_time']) > 1)
+                              ? implode('-', $data['party_time'])
+                              : $data['party_time'][0];
+
+        $event = $this->eventRepo->model->find($data['id']);
+        $event->update([
+            'title' => $data['title'],
+            'date' => $data['date'],
+            'pic_name' => $data['pic_name'],
+            'ceremony_reception_time' => $data['ceremony_reception_time'],
+            'ceremony_time' => $data['ceremony_time'],
+            'party_reception_time' => $data['party_reception_time'],
+            'party_time' => $data['party_time'],
+            'place_id' => $data['place_id'],
+            'allow_remote' => $data['allow_remote'],
+            'guest_invitation_response_date' => $data['guest_invitation_response_date'],
+            'couple_edit_date' => $data['couple_edit_date']
+        ]);
+        
+        $couple = [
+            [
+                'email' => $data['groom_email'], 
+                'full_name' => $data['groom_name'],
+                'role' => Role::GROOM
+            ],
+            [
+                'email' => $data['bride_email'],
+                'full_name' => $data['bride_name'],
+                'role' => Role::BRIDE
+            ]
+        ];
+
+        foreach($couple as $key => $value){
+            $username = random_str_az(8).random_str_number(4);
+            $password = random_str_az(8).random_str_number(4);
+
+            $value = array_merge($value, [
+                'username' => $username,
+                'password' => $password
+            ]);
+
+            $sendEmailJob = new SendEventEmailJob($value['email'], $value);
+            dispatch($sendEmailJob);
+            
+            $event->customers()->updateOrCreate([
+                'role' => $value['role'], 
+                'wedding_id' => $data['id']
+            ], $value);
+        }
+        
+        return $this->detailEvent($data['id']);
     }
 }
