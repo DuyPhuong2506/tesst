@@ -193,7 +193,7 @@ class UserService
         return null;
     }
 
-    public function getGuestDetail($id)
+    public function getMeCustomer($id)
     {
         return Customer::whereId($id)->first();
     }

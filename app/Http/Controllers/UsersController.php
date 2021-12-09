@@ -121,11 +121,23 @@ class UsersController extends Controller
         return $this->respondError(Response::HTTP_BAD_REQUEST, __('messages.user.token_fail'));
     }
 
+    public function getMeUser()
+    {
+        $id = Auth::user()->id;
+        
+
+        if($data){
+            return $this->respondSuccess($data);
+        }
+
+        return $this->respondError(Response::HTTP_BAD_REQUEST, __('messages.user.detail_fail'));
+    }
+
     public function getMe()
     {
         if(Auth::guard('customer')->check()){
             $id = Auth::guard('customer')->user()->id;
-            $data = $this->userService->getGuestDetail($id);
+            $data = $this->userService->getMeCustomer($id);
         }else if(Auth::check()){
             $id = Auth::user()->id;
             $data = $this->userService->findDetail($id);
