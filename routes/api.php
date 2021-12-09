@@ -76,7 +76,7 @@ Route::group(['middleware' => ['jwtAuth']], function () {
     Route::group(['middleware' => 'auth.couple'], function(){
         Route::prefix('/v1')->group(function () {
             Route::get('couple/event', 'EventsController@coupleDetailEvent');
-            Route::get('couple/event-list', 'EventsController@coupleListGuest');
+            Route::get('couple/guest-list', 'EventsController@coupleListGuest');
         });        
     });
 
