@@ -76,7 +76,7 @@ Route::prefix('v1')->group(function () {
         Route::post('/admin/create','UsersController@createAdmin');
         Route::get('/places-get-pre-signed', 'PlacesController@getPreSigned')->name('get.getPreSigned');
         Route::resource('/restaurants','RestaurantsController');
-    
+        Route::resource('/table-positon', 'TablePositionsController');
     });
 
     Route::get('/agora/get-token','AgoraController@generateToken')->middleware('cors');

@@ -199,7 +199,10 @@ class EventService
                                 });
                             });
                         })
-                        ->with('tablePosition')
+                        ->select(['id', 'table_position_id', 'full_name', 'email', 'join_status'])
+                        ->with(['tablePosition' => function($q){
+                            $q->select(['id', 'position']);
+                        }])
                         ->paginate($paginate);
     }
 
