@@ -124,7 +124,7 @@ class UsersController extends Controller
     public function getMeUser()
     {
         $id = Auth::user()->id;
-        $data = $this->userService->findDetail($id);
+        
 
         if($data){
             return $this->respondSuccess($data);
@@ -133,10 +133,15 @@ class UsersController extends Controller
         return $this->respondError(Response::HTTP_BAD_REQUEST, __('messages.user.detail_fail'));
     }
 
-    public function getMeCustomer()
+    public function getMe()
     {
-        $id = Auth::guard('customer')->user()->id;
-        $data = $this->userService->getMeCustomer($id);
+        if(Auth::guard('customer')->check()){
+            $id = Auth::guard('customer')->user()->id;
+            $data = $this->userService->getMeCustomer($id);
+        }else if(Auth::check()){
+            $id = Auth::user()->id;
+            $data = $this->userService->findDetail($id);
+        }
 
         if($data){
             return $this->respondSuccess($data);
