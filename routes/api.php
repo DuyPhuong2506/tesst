@@ -32,13 +32,13 @@ Route::post('/get-event-live-stream', 'EventsController@getWeddingEventLivestrea
 
 Route::group(['middleware' => ['jwtAuth']], function () {
 
+    Route::get('users/get-me', 'UsersController@getMe');
+
     /* Role Admin (STAFF ADMIN & SUPER_ADMIN)*/
     Route::group(['middleware' => 'auth.admin'], function(){
         Route::prefix('users')->group(function () {
             Route::put('/password-verify/update', 'UsersController@updatePasswordWithVerify');
         });
-
-        Route::get('users/get-me', 'UsersController@getMeUser');
     });
     
     /* Role Staff Admin */
@@ -83,7 +83,7 @@ Route::group(['middleware' => ['jwtAuth']], function () {
 
     /* Role Customer (Guest + Groom + Bride) */
     Route::group(['middleware' => 'auth.customer'], function(){
-        Route::get('customers/get-me', 'UsersController@getMeCustomer');
+        
     });
     
     Route::post('auth/logout', 'AuthController@logout');
