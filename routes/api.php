@@ -74,7 +74,7 @@ Route::group(['middleware' => ['jwtAuth']], function () {
 
     /* Role Couple */
     Route::group(['middleware' => 'auth.couple'], function(){
-        Route::prefix('/v1')->group(function () {
+        Route::prefix('v1')->group(function () {
             Route::get('couple/event', 'EventsController@coupleDetailEvent');
             Route::get('couple/guest-list', 'EventsController@coupleListGuest');
         });        
