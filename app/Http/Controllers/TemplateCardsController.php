@@ -25,7 +25,14 @@ class TemplateCardsController extends Controller
      */
     public function index()
     {
-        //
+        $data = $this->templateCardService->getTemplateCards();
+        if($data){
+            return $this->respondSuccess($data);
+        }
+
+        return $this->respondError(
+            Response::HTTP_BAD_REQUEST, __('messages.user.update_fail')
+        );
     }
 
     /**

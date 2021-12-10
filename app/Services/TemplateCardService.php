@@ -14,6 +14,14 @@ class TemplateCardService
         $this->templateCardRepo = $templateCardRepo;
     }
 
+    public function getTemplateCards()
+    {
+        return $this->templateCardRepo
+                    ->model
+                    ->select(['id', 'name', 'card_path', 'type'])
+                    ->get();
+    }
+
     public function createTemplateCard($requestData, $file)
     {
         $nameDirectory = 'template_card/';

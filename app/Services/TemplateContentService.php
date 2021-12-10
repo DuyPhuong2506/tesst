@@ -13,6 +13,17 @@ class TemplateContentService
         $this->templateContentRepo = $templateContentRepo;
     }
 
+    public function getTemplateContents()
+    {
+        return $this->templateContentRepo
+                    ->model
+                    ->select([
+                        'id', 'name', 'preview_image', 
+                        'font_name', 'content', 'status'
+                    ])
+                    ->get();
+    }
+
     public function createTemplateContent($file, $requestData)
     {
         $nameDirectory = 'template_content/';

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Services\TemplateContentService;
 use App\Http\Requests\CreateTemplateContentRequest;
+use DB;
 
 class TemplateContentController extends Controller
 {
@@ -24,7 +25,14 @@ class TemplateContentController extends Controller
      */
     public function index()
     {
-        //
+        $data = $this->templateContentService->getTemplateContents();
+        if($data){
+            return $this->respondSuccess($data);
+        }
+
+        return $this->respondError(
+            Response::HTTP_BAD_REQUEST, __('messages.user.update_fail')
+        );
     }
 
     /**
@@ -48,14 +56,21 @@ class TemplateContentController extends Controller
         $requestData = $request->only('name', 'font_name', 'content', 'status');
         $requestImg  = $request->file('preview_image');
 
-        $data = $this->templateContentService->createTemplateContent($requestImg, $requestData);
-        if($data){
-            return $this->respondSuccess($data);
+        DB::beginTransaction();
+        try {
+            $data = $this->templateContentService->createTemplateContent($requestImg, $requestData);
+            if($data){
+                DB::commit();
+                return $this->respondSuccess($data);
+            }
+            DB::rollback();
+        } catch (\Throwable $th) {
+            DB::rollback();
+
+            return $this->respondError(
+                Response::HTTP_BAD_REQUEST, __('messages.user.update_fail')
+            );
         }
-        
-        return $this->respondError(
-            Response::HTTP_BAD_REQUEST, __('messages.user.update_fail')
-        );
     }
 
     /**
