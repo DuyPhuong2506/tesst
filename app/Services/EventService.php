@@ -8,7 +8,7 @@ use App\Repositories\EventRepository;
 use App\Repositories\CustomerRepository;
 use Carbon\Carbon;
 use Auth;
-
+use App\Constants\Common;
 class EventService
 {
     protected $eventRepo;
@@ -38,7 +38,7 @@ class EventService
                         ->when(isset($keyword), function($q) use($keyword){
                             $q->whereHas('place', function($q) use($keyword){
                                 $q->where("name", "like", '%'.$keyword.'%')
-                                  ->where('status', STATUS_TRUE)
+                                  ->where('status', Common::STATUS_TRUE)
                                   ->orWhere("title", "like", '%'.$keyword.'%');
                             })->orWhere('place_id', null);
                         })
@@ -160,7 +160,7 @@ class EventService
                         $q->select('id', 'name')
                           ->with(['tablePositions' => function($q) use($weddingId){
                                 $q->select('place_id', 'id', 'position')
-                                  ->where('status', STATUS_TRUE)
+                                  ->where('status', Common::STATUS_TRUE)
                                   ->with(['customers' => function($q) use($weddingId){
                                         $q->select('table_position_id', 'full_name')
                                           ->where('role', Role::GUEST)

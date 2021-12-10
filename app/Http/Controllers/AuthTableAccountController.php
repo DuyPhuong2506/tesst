@@ -36,7 +36,7 @@ class AuthTableAccountController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function login(Request $request)
+    public function loginbk(Request $request)
     {
         $credentials = $request->only('username', 'password');
 
@@ -50,6 +50,32 @@ class AuthTableAccountController extends Controller
         }
         return $this->respondSuccess($this->respondWithToken($token));
     }
+
+    /**
+     * Get a JWT token via given credentials.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function login(Request $request)
+    {
+        $token = $request->token;
+        $customer = TableAccount::where('token', $token)->first();
+        try {
+            if(!$token = JWTAuth::fromUser($customer)){
+                return $this->respondError(Response::HTTP_BAD_REQUEST, __('messages.login.table_account.login_fail'));
+            }
+        } catch (\Throwable $th) {
+            return $this->respondError(Response::HTTP_BAD_REQUEST, __('messages.login.table_account.login_fail'));
+        }
+        
+        JWTAuth::setToken($token)->toUser();
+        // dd(Auth::guard('table_account'));
+        return $this->respondSuccess($this->respondWithToken($token));
+    }
+
+    
 
     /**
      * Log out

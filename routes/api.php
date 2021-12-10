@@ -22,7 +22,6 @@ Route::prefix('v1')->group(function () {
     Route::post('/auth/login', 'AuthController@login');
     Route::post('/auth/customer/login', 'AuthCustomerController@login');
     Route::post('/auth/table-account/login', 'AuthTableAccountController@login');
-
     #API CHANGE PASSWORD
     Route::post('/forgot-password','UsersController@sendEmailResetPassword');
     Route::post('/change-password','UsersController@updatePassword');
@@ -88,6 +87,9 @@ Route::prefix('v1')->group(function () {
         Route::get('/places-get-pre-signed', 'PlacesController@getPreSigned')->name('get.getPreSigned');
         Route::resource('/restaurants','RestaurantsController');
         Route::resource('/table-positon', 'TablePositionsController');
+        Route::resource('/table-account', 'TableAccountController');
+        Route::resource('/customer', 'CustomersController');
+        Route::get('/customer-in-wedding', 'CustomersController@getListCustomerInWedding');
     });
 
     Route::get('/agora/get-token','AgoraController@generateToken')->middleware('cors');

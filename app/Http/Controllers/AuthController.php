@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Constants\Common;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -68,7 +69,7 @@ class AuthController extends Controller
         
         if($auth->role === Role::SUPER_ADMIN){
             $auth->update([
-                'is_first_login' => STATUS_TRUE
+                'is_first_login' => Common::STATUS_TRUE
             ]);
         }
         
