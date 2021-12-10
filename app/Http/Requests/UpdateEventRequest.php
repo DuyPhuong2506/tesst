@@ -12,19 +12,19 @@ class UpdateEventRequest extends ApiRequest
     public function rules()
     {
         $rule = [
-            'id' => 'required|exists:weddings,id',
             'title' => 'required|max:100|string',
             'date' => [
                 'required', 
                 'date_format:Y-m-d H:i',
                 function($attribute, $value, $fail){
-                    $placeId = request()->place_id;
-                    $eventDate = Carbon::parse($value)->format('Y-m-d');
-                    $exist = Wedding::whereDate('date', '=', $eventDate)
-                                    ->whereHas('place', function($q) use($placeId){
-                                        $q->where('id', $placeId);
-                                    })
+                    $id = request()->event;
+                    $date = request()->date;
+                    $place = request()->place_id;
+                    $exist = Wedding::whereDate('date', $date)
+                                    ->where('place_id', $place)
+                                    ->where('id', '<>', $id)
                                     ->exists();
+
                     if($exist){
                         $fail(__('messages.event.validation.date.was_held'));
                     }

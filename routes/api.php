@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Mail;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+
 Route::prefix('v1')->group(function () {
     Route::get('/dump-customer-token', 'EventsController@dumpCustomerToken');
 
@@ -44,9 +45,6 @@ Route::prefix('v1')->group(function () {
         
         /* Role Staff Admin */
         Route::group(['middleware' => 'auth.admin_staff'], function(){
-            Route::prefix('/staff')->group(function () {
-                Route::post('/update-event', 'EventsController@staffUpdateEvent');
-            });
             Route::resource('/event','EventsController');
 
             Route::prefix('/users')->group(function () {
@@ -84,22 +82,13 @@ Route::prefix('v1')->group(function () {
         Route::group(['middleware' => 'auth.guest'], function(){
             Route::resource('/channel','ChannelsController');
         });
-
-        /* Role Customer (Guest + Groom + Bride) */
-        Route::group(['middleware' => 'auth.customer'], function(){
-            
-        });
         
         Route::post('/auth/logout', 'AuthController@logout');
         Route::post('/admin/create','UsersController@createAdmin');
         Route::get('/places-get-pre-signed', 'PlacesController@getPreSigned')->name('get.getPreSigned');
         Route::resource('/restaurants','RestaurantsController');
+        Route::resource('/table-positon', 'TablePositionsController');
+    });
 
-    
-    });
     Route::get('/agora/get-token','AgoraController@generateToken')->middleware('cors');
-    Route::get('/send-mail', function () {
-        Mail::to('anhpmt@bap.jp')->send(new SendMail()); 
-        return 'A message has been sent to Mailtrap!';
-    });
 });
