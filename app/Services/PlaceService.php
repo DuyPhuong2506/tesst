@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Facades\Image;
 use App\Repositories\PlaceRepository;
 use App\Models\Place;
+use App\Constants\Common;
 
 class PlaceService
 {
@@ -128,7 +129,7 @@ class PlaceService
                 'amount_chair' => $item['amount_chair'],
                 'position' =>   $item['position'],
                 'customer_id' => auth()->id(),
-                'status' => STATUS_TRUE
+                'status' => Common::STATUS_TRUE
             ];
             array_push($dataTable, $objectTable);
         }
@@ -158,7 +159,7 @@ class PlaceService
     {   
         $orderBy = isset($request['order_by']) ? explode('|', $request['order_by']) : [];
         $keyword = !empty($request['keyword']) ? escape_like($request['keyword']) : null;
-        $paginate = !empty($request['paginate']) ? $request['paginate'] : PAGINATE;
+        $paginate = !empty($request['paginate']) ? $request['paginate'] : Common::PAGINATE;
 
         $places = $this->placeRepo->model->with(['tablePositions'])
             ->whereHas('restaurant', function($q) {
@@ -171,7 +172,7 @@ class PlaceService
             })
             ->orderBy('created_at', 'desc');
 
-        if($paginate != PAGINATE_ALL){
+        if($paginate != Common::PAGINATE_ALL){
             $places = $places->paginate($paginate);
         } else {
             $places = $places->get();
@@ -322,9 +323,9 @@ class PlaceService
         if(!$place) return null;
         // $dataCamera = $this->storeFileCamera($request);
         $attributes = $request->only('name','restaurant_id', 'image', 'image_thumb');
-        $attributes['status'] = STATUS_FALSE;
-        if(is_numeric($request->status) && $request->status == STATUS_TRUE){
-            $attributes['status'] = STATUS_TRUE;
+        $attributes['status'] = Common::STATUS_FALSE;
+        if(is_numeric($request->status) && $request->status == Common::STATUS_TRUE){
+            $attributes['status'] = Common::STATUS_TRUE;
         } 
         
         if(isset($request->image) && $place->image) {
@@ -341,7 +342,7 @@ class PlaceService
                     'amount_chair' => $item['amount_chair'],
                     'position' =>   $item['position'],
                     'customer_id' => auth()->id(),
-                    'status' => STATUS_TRUE
+                    'status' => Common::STATUS_TRUE
                 ];
                 array_push($dataTable, $objectTable);
             }
@@ -352,7 +353,7 @@ class PlaceService
                     'amount_chair' => $item['amount_chair'],
                     'position' =>   $item['position'],
                     'customer_id' => auth()->id(),
-                    'status' => STATUS_TRUE
+                    'status' => Common::STATUS_TRUE
                 ];
                 $table = $place->tablePositions()->whereId($item['id'])->first();
                 if($table){

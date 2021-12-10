@@ -10,6 +10,7 @@ use Mail;
 use Hash;
 use Str;
 use Carbon\Carbon;
+use App\Constants\Common;
 
 class ChannelService
 {
@@ -31,16 +32,16 @@ class ChannelService
     {   
         $orderBy = isset($request['order_by']) ? explode('|', $request['order_by']) : [];
         $keyword = !empty($request['keyword']) ? $request['keyword'] : null;
-        $paginate = !empty($request['paginate']) ? $request['paginate'] : PAGINATE;
+        $paginate = !empty($request['paginate']) ? $request['paginate'] : Common::PAGINATE;
         $list = $this->channelRepo->model
             ->whereWeddingId(auth()->guard('customer')->user()->wedding_id)
             ->when(!empty($keyword), function($q) use ($keyword) {
                 $q->where('name', 'like', '%' . $keyword . '%');
             })
-            ->where('status', STATUS_TRUE)
+            ->where('status', Common::STATUS_TRUE)
             ->orderBy('created_at', 'desc');
 
-        if($paginate != PAGINATE_ALL){
+        if($paginate != Common::PAGINATE_ALL){
             $list = $list->paginate($paginate);
         } else {
             $list = $list->get();

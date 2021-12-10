@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Constants\Common;
 use Illuminate\Console\Command;
 use App\Constants\CustomerConstant;
 use App\Constants\EventConstant;
@@ -73,7 +74,7 @@ class CreateChannel extends Command
                     'rtm_token' => null,
                     'name' => $table->position,
                     'amount' => 6,
-                    'status' => STATUS_FALSE,
+                    'status' => Common::STATUS_FALSE,
                     'type' => EventConstant::TYPE_GUEST,
                     'start_time' => null,
                     'end_time' => null,
@@ -95,10 +96,10 @@ class CreateChannel extends Command
                     foreach($customers as $customer) {
                         $customer_channel = [
                             'channel_id'    => $id,
-                            'is_host'       => STATUS_TRUE,
-                            'is_guest'      => STATUS_FALSE,
+                            'is_host'       => Common::STATUS_TRUE,
+                            'is_guest'      => Common::STATUS_FALSE,
                             'customer_id'   => $customer->id,
-                            'status'        => STATUS_TRUE,
+                            'status'        => Common::STATUS_TRUE,
                         ];
 
                         array_push($customer_join_channels, $customer_channel);
@@ -134,7 +135,7 @@ class CreateChannel extends Command
             'rtm_token' => null,
             'name' => $name,
             'amount' => 6,
-            'status' => STATUS_FALSE,
+            'status' => Common::STATUS_FALSE,
             'type' => $role,
             'start_time' => null,
             'end_time' => null,
@@ -160,10 +161,10 @@ class CreateChannel extends Command
         foreach($customers as $customer) {
             $customer_channel = [
                 'channel_id'    => $id,
-                'is_host'       => STATUS_TRUE,
-                'is_guest'      => STATUS_FALSE,
+                'is_host'       => Common::STATUS_TRUE,
+                'is_guest'      => Common::STATUS_FALSE,
                 'customer_id'   => $customer->id,
-                'status'        => STATUS_TRUE,
+                'status'        => Common::STATUS_TRUE,
             ];
 
             \DB::table('customer_channel')->insert($customer_channel);
@@ -184,10 +185,10 @@ class CreateChannel extends Command
         foreach($customers as $customer) {
             $customer_channel = [
                 'channel_id'    => $id,
-                'is_host'       => STATUS_TRUE,
-                'is_guest'      => STATUS_FALSE,
+                'is_host'       => Common::STATUS_TRUE,
+                'is_guest'      => Common::STATUS_FALSE,
                 'customer_id'   => $customer->id,
-                'status'        => STATUS_TRUE,
+                'status'        => Common::STATUS_TRUE,
             ];
 
             \DB::table('customer_channel')->insert($customer_channel);
@@ -210,10 +211,10 @@ class CreateChannel extends Command
         foreach($customers as $customer) {
             $customer_channel = [
                 'channel_id'    => $id,
-                'is_host'       => STATUS_TRUE,
-                'is_guest'      => STATUS_FALSE,
+                'is_host'       => Common::STATUS_TRUE,
+                'is_guest'      => Common::STATUS_FALSE,
                 'customer_id'   => $customer->id,
-                'status'        => STATUS_TRUE,
+                'status'        => Common::STATUS_TRUE,
             ];
 
             \DB::table('customer_channel')->insert($customer_channel);

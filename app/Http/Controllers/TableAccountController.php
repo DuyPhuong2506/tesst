@@ -2,27 +2,25 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\CustomerService;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
+use App\Http\Requests\LoginRequest;
+use App\Http\Requests\RegisterRequest;
+use Illuminate\Support\Facades\Auth;
+use App\Constants\Role;
+use JWTAuth;
+use JWTAuthException;
+use Hash;
 
-class CustomersController extends Controller
+class TableAccountController extends Controller
 {
-    protected $customerRepo;
-
-    public function __construct(CustomerService $customerService)
-    {
-        $this->customerService = $customerService;
-    }
-
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index()
     {
-        //
+        dd(Auth::guard('table_account')->user());
     }
 
     /**
@@ -89,23 +87,5 @@ class CustomersController extends Controller
     public function destroy($id)
     {
         //
-    }
-
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function getListCustomerInWedding(Request $request)
-    {
-        $responseData = $this->customerService->getListCustomerInWedding($request->all());
-
-        if($responseData){
-            return $this->respondSuccess($responseData);
-        }
-
-        return $this->respondError(
-            Response::HTTP_BAD_REQUEST, __('messages.customers.request_fail')
-        );
     }
 }
