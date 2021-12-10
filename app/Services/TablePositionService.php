@@ -13,7 +13,7 @@ class TablePositionService
         $this->tablePositionRepo = $tablePositionRepo;
     }
 
-    public function index()
+    public function getListTable()
     {
         return $this->tablePositionRepo->model
                     ->where('status', STATUS_TRUE)

@@ -17,7 +17,7 @@ class TablePositionsController extends Controller
     
     public function index()
     {
-        return $this->tablePostionService->index();
+        return $this->tablePostionService->getListTable();
     }
 
     public function create()
