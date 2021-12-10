@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Mail;
 
 Route::prefix('v1')->group(function () {
     Route::get('/dump-customer-token', 'EventsController@dumpCustomerToken');
+    Route::post('/dump-template-card', 'TemplateCardsController@store');
 
     Route::post('/auth/register', 'AuthController@register');
     Route::post('/auth/login', 'AuthController@login');
