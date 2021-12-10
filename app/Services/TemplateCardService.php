@@ -3,7 +3,6 @@ namespace App\Services;
 
 use App\Repositories\TemplateCardRepository;
 use Illuminate\Support\Facades\Storage;
-use Intervention\Image\Facades\Image;
 
 class TemplateCardService
 {
@@ -17,7 +16,7 @@ class TemplateCardService
 
     public function createTemplateCard($requestData, $file)
     {
-        $nameDirectory = 'template_wedding_card/';
+        $nameDirectory = 'template_card/';
         $fullName = $file->getClientOriginalName();
         $extension = $file->getClientOriginalExtension();
         $nameFile = \Str::random(10) . '_' . $fullName;
