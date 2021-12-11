@@ -21,6 +21,7 @@ class ChannelsController extends Controller
      */
     public function index(Request $request)
     {
+
         $channels = $this->channelService->getAll($request);
         
         return $this->respondSuccess($channels);
@@ -55,7 +56,9 @@ class ChannelsController extends Controller
      */
     public function show($id)
     {
-        //
+        $channel = $this->channelService->showDetail($id);
+
+        return $this->respondSuccess($channel);
     }
 
     /**
@@ -78,7 +81,26 @@ class ChannelsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        \DB::beginTransaction();
+        try {
+
+            $channel = $this->channelService->updateChannel($id, $request->all());
+            if ($channel) {
+                \DB::commit();
+
+                return $this->respondSuccess([
+                    'channel' => $channel,
+                    'message' => __('messages.channel.update_success')
+                ]);
+            }
+            
+            \DB::rollback();
+            return $this->respondError(Response::HTTP_NOT_FOUND, __('messages.channel.update_fail'));
+        }  catch (\Exception $e) {
+            \DB::rollback();
+            
+            return $this->respondError(Response::HTTP_BAD_REQUEST, $e->getMessage());
+        }
     }
 
     /**

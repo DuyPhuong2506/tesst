@@ -99,4 +99,28 @@ class AuthCustomerController extends Controller
             'info' => \Auth::user(),
         ];
     }
+
+    /**
+     * Get a JWT token via given credentials.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function tokenLogin(Request $request)
+    {
+        $token = $request->token;
+        $customer = Customer::where('token', $token)->first();
+
+        try {
+            if(!$token = JWTAuth::fromUser($customer)){
+                return $this->respondError(Response::HTTP_BAD_REQUEST, __('messages.login.couple.login_fail'));
+            }
+        } catch (\Throwable $th) {
+            return $this->respondError(Response::HTTP_BAD_REQUEST, __('messages.login.couple.login_fail'));
+        }
+
+        JWTAuth::setToken($token)->toUser();
+        return $this->respondSuccess($this->respondWithToken($token));
+    }
 }
