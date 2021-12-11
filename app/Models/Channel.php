@@ -33,4 +33,8 @@ class Channel extends Model
       'role'
     ];
 
+    public function wedding()
+    {
+        return $this->belongsTo(Wedding::class, 'wedding_id', 'id');
+    }
 }
