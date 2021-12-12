@@ -3,6 +3,8 @@ namespace App\Services;
 
 use App\Repositories\TemplateContentRepository;
 use Illuminate\Support\Facades\Storage;
+use Intervention\Image\Facades\Image;
+use Str;
 
 class TemplateContentService
 {
@@ -26,15 +28,20 @@ class TemplateContentService
 
     public function createTemplateContent($file, $requestData)
     {
-        $nameDirectory = 'template_content/';
-        $fullName = $file->getClientOriginalName();
-        $extension = $file->getClientOriginalExtension();
-        $nameFile = \Str::random(10) . '_' . $fullName;
         
-        Storage::disk('local')
-               ->put($nameDirectory.$nameFile, file_get_contents($file));
+        $directory = "templatecontent/";
+        $fileName = Str::random(30) . "_" . $file->getClientOriginalName();
+        $fileExtension = $file->getClientOriginalExtension();
+        $filePath = $directory . $fileName;
+        
+        $image = Image::make($file)
+                      ->resize(700, null, function($constraint){ 
+                            $constraint->aspectRatio(); 
+                        })
+                      ->encode($fileExtension, 90);
 
-        $requestData['preview_image'] = $nameDirectory.$nameFile;
+        $store = Storage::disk('local')->put($filePath, $image);
+        $requestData['preview_image'] = $filePath;
 
         return $this->templateContentRepo->model->create($requestData);
     }

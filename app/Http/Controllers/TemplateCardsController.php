@@ -23,9 +23,9 @@ class TemplateCardsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $data = $this->templateCardService->getTemplateCards();
+        $data = $this->templateCardService->getTemplateCards($request->type);
         if($data){
             return $this->respondSuccess($data);
         }
