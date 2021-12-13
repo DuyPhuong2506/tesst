@@ -6,6 +6,7 @@ use App\Models\Wedding;
 use App\Models\TablePosition;
 use App\Models\Customer;
 use App\Models\Restaurant;
+use App\Models\EventTimes;
 use Illuminate\Support\Str;
 
 class WeddingSeeder extends Seeder
@@ -45,6 +46,18 @@ class WeddingSeeder extends Seeder
             "couple_edit_date" => "2021-12-13",
         ]);
 
+        $eventTimes = [];
+        for($i = 0; $i < 4; $i++){
+            $item = [
+                'start' => $faker->time,
+                'end' => $faker->time,
+                'description' => $faker->name,
+                'event_id' => $wedding->id
+            ];
+            array_push($eventTimes, $item);
+        }
+        DB::table('wedding_timetable')->insert($eventTimes);
+        
         $tableA = TablePosition::create([
             'position' => "TABLE A",
             "status" => "1",
