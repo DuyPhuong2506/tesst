@@ -102,16 +102,6 @@ class EventsController extends Controller
         return $this->respondError(Response::HTTP_BAD_REQUEST, __('messages.event.list_null'));
     }
 
-    public function dumpCustomerToken()
-    {
-        $token = $this->eventService->dumpCustomerToken();
-        if($token){
-            return $this->respondSuccess($token); 
-        }
-
-        return $this->respondError(Response::HTTP_BAD_REQUEST, 'Failed to dump Token !');   
-    }
-
     public function update(UpdateEventRequest $request, $id)
     {
         DB::beginTransaction();
