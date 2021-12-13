@@ -92,4 +92,16 @@ Route::prefix('v1')->group(function () {
     });
 
     Route::get('/agora/get-token','AgoraController@generateToken')->middleware('cors');
+
+    Route::get('/agora/create-channel', function()  {
+        \Artisan::call('command:CreateChannel');
+        
+        echo true;
+    });
+
+    Route::get('/agora/update-token-channel', function()  {
+        \Artisan::call('command:UpdateTokenChannel');
+
+        echo true;
+    });
 });
