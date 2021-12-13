@@ -6,6 +6,7 @@ use App\Models\Wedding;
 use App\Models\TablePosition;
 use App\Models\Customer;
 use App\Models\Restaurant;
+use Illuminate\Support\Str;
 
 class WeddingSeeder extends Seeder
 {
@@ -24,8 +25,8 @@ class WeddingSeeder extends Seeder
 
         $place = Place::create([
             'name' => 'Place 1',
-            'restaurant_id' => '1',
-            'status' => $restaurant->id
+            'restaurant_id' => $restaurant->id,
+            'status' => "1"
         ]);
 
         $wedding = Wedding::create([
@@ -60,8 +61,8 @@ class WeddingSeeder extends Seeder
         ]);
 
         Customer::create([
-            'username' => '111111111111',
-            'full_name' => 'Groom Name',
+            'username' => Str::random(12),
+            'full_name' => 'Groom_Name',
             'email' => 'groom@mail.com',
             'token' => '12345678',
             'password' => '111111111111',
@@ -70,8 +71,8 @@ class WeddingSeeder extends Seeder
         ]);
 
         Customer::create([
-            'username' => '222222222222',
-            'full_name' => 'Bride Name',
+            'username' => Str::random(12),
+            'full_name' => 'Bride_Name',
             'email' => 'bride@mail.com',
             'token' => '876543121',
             'password' => '222222222222',
@@ -80,8 +81,8 @@ class WeddingSeeder extends Seeder
         ]);
 
         Customer::create([
-            'username' => '333333333333',
-            'full_name' => 'GUEST 1',
+            'username' => Str::random(12),
+            'full_name' => 'GUEST_1',
             'email' => '333333333333@mail.com',
             'token' => '333333333333',
             'password' => '333333333333',
@@ -91,7 +92,7 @@ class WeddingSeeder extends Seeder
         ]);
 
         Customer::create([
-            'username' => '444444444444',
+            'username' => Str::random(12),
             'full_name' => 'GUEST 2',
             'email' => '444444444444@mail.com',
             'token' => '444444444444',
@@ -102,7 +103,7 @@ class WeddingSeeder extends Seeder
         ]);
         
         Customer::create([
-            'username' => '555555555555',
+            'username' => Str::random(12),
             'full_name' => 'GUEST 3',
             'email' => '555555555555@mail.com',
             'token' => '555555555555',
@@ -113,7 +114,7 @@ class WeddingSeeder extends Seeder
         ]);
 
         Customer::create([
-            'username' => '666666666666',
+            'username' => Str::random(12),
             'full_name' => 'GUEST 4',
             'email' => '666666666666@mail.com',
             'token' => '666666666666',
