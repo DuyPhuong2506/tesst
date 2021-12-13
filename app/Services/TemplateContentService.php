@@ -17,13 +17,22 @@ class TemplateContentService
 
     public function getTemplateContents()
     {
-        return $this->templateContentRepo
-                    ->model
-                    ->select([
+        $data = $this->templateContentRepo
+                     ->model
+                     ->select([
                         'id', 'name', 'preview_image', 
                         'font_name', 'content', 'status'
                     ])
-                    ->get();
+                     ->get();
+
+        $disk = Storage::disk('s3');
+        for($i = 0; $i < count($data); $i++){
+            $previewImage = $disk->url($data[$i]['preview_image']);
+            $data[$i]['preview_image'] = $previewImage;
+        }
+        
+        return $data;
+        
     }
 
     public function storeTemplateContentFile($file)

@@ -18,11 +18,21 @@ class TemplateCardService
 
     public function getTemplateCards($type)
     {
-        return $this->templateCardRepo
-                    ->model
-                    ->where('type', $type)
-                    ->select(['id', 'name', 'card_path', 'card_thumb_path', 'type'])
-                    ->get();
+        $data = $this->templateCardRepo
+                     ->model
+                     ->where('type', $type)
+                     ->select(['id', 'name', 'card_path', 'card_thumb_path', 'type'])
+                     ->get();
+
+        $disk = Storage::disk('s3');
+        for($i = 0; $i < count($data); $i++){
+            $cardPath = $disk->url($data[$i]['card_path']);
+            $cardThumbPath = $disk->url($data[$i]['card_thumb_path']);
+            $data[$i]['card_path'] = $cardPath;
+            $data[$i]['card_thumb_path'] = $cardThumbPath;
+        }
+        
+        return $data;
     }
     
     public function storeFileWeddingTemplateCard($file)
