@@ -24,27 +24,48 @@ class TemplateCardService
                     ->select([
                         'id', 
                         'name', 
-                        'card_path', 
+                        'card_path',
+                        'card_thumb_path',
                         'type'
                     ])
                     ->get();
     }
+    
+    public function storeFileWeddingTemplateCard($file)
+    {   
+        $linkS3Thumbnail = null;
+        $linkS3 = null;
+        if ($file){
+            $nameDirectory = 'templatecard/';
+            $fullName = $file->getClientOriginalName();
+            $extension = $file->getClientOriginalExtension();
+            $nameFile = Str::random(10) . '_' . $fullName;
+            uploadImageS3($nameDirectory . $nameFile, $file);
+            $linkS3 = $nameDirectory . $nameFile;
+
+            if(in_array($extension , ['png', 'jpg', 'jpeg'])){
+                $imgThumb = Image::make($file)->resize(300, 300, function ($constraint) {
+                    $constraint->aspectRatio();
+                })->stream();
+                
+                $linkS3Thumbnail = Storage::disk('s3')->put(
+                    $nameDirectory.'thumbnail_' . $nameFile,
+                    $imgThumb->__toString(),
+                );
+                $linkS3Thumbnail = $nameDirectory.'thumbnail_' . $nameFile;
+            }
+        }
+
+        return [
+            'card_path' => $linkS3,
+            'card_thumb_path' => $linkS3Thumbnail
+        ];
+    }
 
     public function createTemplateCard($requestData, $file)
-    {   
-        $directory = "templatecard/";
-        $fileName = Str::random(30) . "_" . $file->getClientOriginalName();
-        $fileExtension = $file->getClientOriginalExtension();
-        $filePath = $directory . $fileName;
-        
-        $image = Image::make($file)
-                      ->resize(700, null, function($constraint){ 
-                            $constraint->aspectRatio(); 
-                        })
-                      ->encode($fileExtension, 90);
-
-        $store = Storage::disk('local')->put($filePath, $image);
-        $requestData['card_path'] = $filePath;
+    {
+        $imageLink = $this->storeFileWeddingTemplateCard($file);
+        $requestData = array_merge($requestData, $imageLink);
 
         return $this->templateCardRepo->model->create($requestData);
     }

@@ -12,6 +12,7 @@ class TemplateCard extends Model
         'id',
         'name',
         'card_path',
+        'card_thumb_path',
         'type'
     ];
 }

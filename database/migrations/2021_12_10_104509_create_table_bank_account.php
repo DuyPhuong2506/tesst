@@ -22,6 +22,7 @@ class CreateTableBankAccount extends Migration
             $table->string('holder_name')->nullable()->default(null);
             $table->unsignedBigInteger('wedding_card_id')->nullable()->default(null);
             $table->foreign('wedding_card_id')->references('id')->on('wedding_cards')->onDelete('set NULL');
+            $table->timestamps();
         });
     }
 

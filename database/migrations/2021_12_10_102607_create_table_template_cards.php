@@ -17,6 +17,7 @@ class CreateTableTemplateCards extends Migration
             $table->bigIncrements('id');
             $table->string('name')->nullable()->default(null);
             $table->string('card_path')->nullable()->default(null);
+            $table->string('card_thumb_path')->nullable()->default(null);
             $table->tinyInteger('type');
             $table->timestamps();
         });
