@@ -45,18 +45,17 @@ class CreateChannel extends Command
         $now = \Carbon\Carbon::now()->startOfDay();
         $weddings = \DB::table('weddings')
             ->join('customers', 'weddings.id', '=', 'customers.wedding_id')
-            ->where('ceremony_confirm_date', '>=', $now)
-            ->select('weddings.id','weddings.ceremony_confirm_date', 'weddings.place_id')
+            // ->where('guest_invitation_response_date', '>=', $now)
+            ->select('weddings.id','weddings.guest_invitation_response_date', 'weddings.place_id')
             ->groupBy('weddings.id')
             ->get();
-
         foreach($weddings as $wedding) {
             $roleHost = RtcTokenBuilder::RolePublisher;
             $roleMember = RtcTokenBuilder::RoleSubscriber;
            
             $tables = \DB::table('table_positions')
                 ->join('customers', 'customers.table_position_id', '=', 'table_positions.id')
-                ->where('place_id', $wedding->place_id)
+                ->where('table_positions.place_id', $wedding->place_id)
                 ->select('table_positions.*')
                 ->groupBy('table_positions.id')
                 ->get();
@@ -68,44 +67,51 @@ class CreateChannel extends Command
             $this->createChannelTest($wedding->id);
 
             foreach($tables as $key => $table) {
-                $channel = [
-                    'wedding_id' => $wedding->id,
-                    'rtc_token' => null,
-                    'rtm_token' => null,
-                    'name' => $table->position,
-                    'amount' => 6,
-                    'status' => Common::STATUS_FALSE,
-                    'type' => EventConstant::TYPE_GUEST,
-                    'start_time' => null,
-                    'end_time' => null,
-                    'created_at' => \Carbon\Carbon::now(),
-                    'updated_at' => \Carbon\Carbon::now(),
-                    'role' => RtcTokenBuilder::RolePublisher
-                ];
+                $checkChannel = \DB::table('channels')
+                    ->where('name', 'like', $table->position)
+                    ->where('wedding_id', $wedding->id)
+                    ->exists();
+                if(!$checkChannel){
 
-                $id = \DB::table('channels')->insertGetId($channel);
+                    $channel = [
+                        'wedding_id' => $wedding->id,
+                        'rtc_token' => null,
+                        'rtm_token' => null,
+                        'name' => $table->position,
+                        'amount' => 6,
+                        'status' => Common::STATUS_FALSE,
+                        'type' => EventConstant::TYPE_GUEST,
+                        'start_time' => null,
+                        'end_time' => null,
+                        'created_at' => \Carbon\Carbon::now(),
+                        'updated_at' => \Carbon\Carbon::now(),
+                        'role' => RtcTokenBuilder::RolePublisher
+                    ];
 
-                if($id) {
-                    $customers = \DB::table('customers')
-                        ->where('wedding_id', $wedding->id)
-                        ->where('table_position_id', $table->id)
-                        ->where('role', Role::GUEST)
-                        ->get();
-                    
-                    $customer_join_channels = [];
-                    foreach($customers as $customer) {
-                        $customer_channel = [
-                            'channel_id'    => $id,
-                            'is_host'       => Common::STATUS_TRUE,
-                            'is_guest'      => Common::STATUS_FALSE,
-                            'customer_id'   => $customer->id,
-                            'status'        => Common::STATUS_TRUE,
-                        ];
+                    $id = \DB::table('channels')->insertGetId($channel);
 
-                        array_push($customer_join_channels, $customer_channel);
+                    if($id) {
+                        $customers = \DB::table('customers')
+                            ->where('wedding_id', $wedding->id)
+                            ->where('table_position_id', $table->id)
+                            ->where('role', Role::GUEST)
+                            ->get();
+                        
+                        $customer_join_channels = [];
+                        foreach($customers as $customer) {
+                            $customer_channel = [
+                                'channel_id'    => $id,
+                                'is_host'       => Common::STATUS_TRUE,
+                                'is_guest'      => Common::STATUS_FALSE,
+                                'customer_id'   => $customer->id,
+                                'status'        => Common::STATUS_TRUE,
+                            ];
+
+                            array_push($customer_join_channels, $customer_channel);
+                        }
+
+                        \DB::table('customer_channel')->insert($customer_join_channels);
                     }
-
-                    \DB::table('customer_channel')->insert($customer_join_channels);
                 }
             }
         }
@@ -149,75 +155,94 @@ class CreateChannel extends Command
 
     public function createChannelGuest($wedding_id)
     {
-        $customers = \DB::table('customers')
+        $checkChannel = \DB::table('channels')
+            ->where('name', 'like', 'coupe_'.'%')
             ->where('wedding_id', $wedding_id)
-            ->whereIn('role', [Role::GROOM, Role::BRIDE])
-            ->where('join_status', CustomerConstant::JOIN_STATUS_APPROVED)
-            ->get();
+            ->exists();
+        if(!$checkChannel){
+            $customers = \DB::table('customers')
+                ->where('wedding_id', $wedding_id)
+                ->whereIn('role', [Role::GROOM, Role::BRIDE])
+                ->where('join_status', CustomerConstant::JOIN_STATUS_APPROVED)
+                ->get();
 
-        $channel = $this->getDefaultRoomWedding('coupe_'. random_str(6) . getDateStringRandom(), EventConstant::TYPE_COUPE, $wedding_id);
-        $id = \DB::table('channels')->insertGetId($channel);
+            $channel = $this->getDefaultRoomWedding('coupe_'. random_str(6) . getDateStringRandom(), EventConstant::TYPE_COUPE, $wedding_id);
+            $id = \DB::table('channels')->insertGetId($channel);
 
-        foreach($customers as $customer) {
-            $customer_channel = [
-                'channel_id'    => $id,
-                'is_host'       => Common::STATUS_TRUE,
-                'is_guest'      => Common::STATUS_FALSE,
-                'customer_id'   => $customer->id,
-                'status'        => Common::STATUS_TRUE,
-            ];
+            foreach($customers as $customer) {
+                $customer_channel = [
+                    'channel_id'    => $id,
+                    'is_host'       => Common::STATUS_TRUE,
+                    'is_guest'      => Common::STATUS_FALSE,
+                    'customer_id'   => $customer->id,
+                    'status'        => Common::STATUS_TRUE,
+                ];
 
-            \DB::table('customer_channel')->insert($customer_channel);
+                \DB::table('customer_channel')->insert($customer_channel);
+            }
         }
+        
     }
 
     public function createChannelStage($wedding_id)
     {
-        $customers = \DB::table('customers')
+        $checkChannel = \DB::table('channels')
+            ->where('name', 'like', 'stage_'.'%')
             ->where('wedding_id', $wedding_id)
-            ->whereIn('role', [Role::GROOM, Role::BRIDE, Role::GUEST])
-            ->where('join_status', CustomerConstant::JOIN_STATUS_APPROVED)
-            ->get();
+            ->exists();
+        if(!$checkChannel){
+            $customers = \DB::table('customers')
+                ->where('wedding_id', $wedding_id)
+                ->whereIn('role', [Role::GROOM, Role::BRIDE, Role::GUEST])
+                ->where('join_status', CustomerConstant::JOIN_STATUS_APPROVED)
+                ->get();
 
-        $channel = $this->getDefaultRoomWedding('stage_'. random_str(6) . getDateStringRandom(), EventConstant::TYPE_STAGE, $wedding_id);
-        $id = \DB::table('channels')->insertGetId($channel);
+            $channel = $this->getDefaultRoomWedding('stage_'. random_str(6) . getDateStringRandom(), EventConstant::TYPE_STAGE, $wedding_id);
+            $id = \DB::table('channels')->insertGetId($channel);
 
-        foreach($customers as $customer) {
-            $customer_channel = [
-                'channel_id'    => $id,
-                'is_host'       => Common::STATUS_TRUE,
-                'is_guest'      => Common::STATUS_FALSE,
-                'customer_id'   => $customer->id,
-                'status'        => Common::STATUS_TRUE,
-            ];
+            foreach($customers as $customer) {
+                $customer_channel = [
+                    'channel_id'    => $id,
+                    'is_host'       => Common::STATUS_TRUE,
+                    'is_guest'      => Common::STATUS_FALSE,
+                    'customer_id'   => $customer->id,
+                    'status'        => Common::STATUS_TRUE,
+                ];
 
-            \DB::table('customer_channel')->insert($customer_channel);
+                \DB::table('customer_channel')->insert($customer_channel);
+            }
         }
     }
 
     public function createChannelTest($wedding_id)
     {
-        $customers = \DB::table('customers')
-            ->join('customer_tasks', 'customers.id', '=', 'customer_tasks.customer_id')
-            ->where('customer_tasks.task_name',  CustomerConstant::CUSTOMER_TASK_SPEECH)
-            ->where('customers.wedding_id', $wedding_id)
-            ->whereIn('customers.role', [Role::GUEST])
-            ->where('customers.join_status', CustomerConstant::JOIN_STATUS_APPROVED)
-            ->get();
+        $checkChannel = \DB::table('channels')
+            ->where('name', 'like', 'test_'.'%')
+            ->where('wedding_id', $wedding_id)
+            ->exists();
+        if(!$checkChannel){
+            $customers = \DB::table('customers')
+                ->join('customer_tasks', 'customers.id', '=', 'customer_tasks.customer_id')
+                ->where('customer_tasks.task_name',  CustomerConstant::CUSTOMER_TASK_SPEECH)
+                ->where('customers.wedding_id', $wedding_id)
+                ->whereIn('customers.role', [Role::GUEST])
+                ->where('customers.join_status', CustomerConstant::JOIN_STATUS_APPROVED)
+                ->get();
 
-        $channel = $this->getDefaultRoomWedding('test_'. random_str(6) . getDateStringRandom(), EventConstant::TYPE_TEST, $wedding_id);
-        $id = \DB::table('channels')->insertGetId($channel);
+            $channel = $this->getDefaultRoomWedding('test_'. random_str(6) . getDateStringRandom(), EventConstant::TYPE_TEST, $wedding_id);
+            $id = \DB::table('channels')->insertGetId($channel);
 
-        foreach($customers as $customer) {
-            $customer_channel = [
-                'channel_id'    => $id,
-                'is_host'       => Common::STATUS_TRUE,
-                'is_guest'      => Common::STATUS_FALSE,
-                'customer_id'   => $customer->id,
-                'status'        => Common::STATUS_TRUE,
-            ];
+            foreach($customers as $customer) {
+                $customer_channel = [
+                    'channel_id'    => $id,
+                    'is_host'       => Common::STATUS_TRUE,
+                    'is_guest'      => Common::STATUS_FALSE,
+                    'customer_id'   => $customer->id,
+                    'status'        => Common::STATUS_TRUE,
+                ];
 
-            \DB::table('customer_channel')->insert($customer_channel);
+                \DB::table('customer_channel')->insert($customer_channel);
+            }
         }
     }
 }

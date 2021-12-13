@@ -25,7 +25,7 @@ class AgoraService
         try {
             $currentTimestamp =  Carbon::now()->timestamp;
             $privilegeExpiredTs = $currentTimestamp + $expireTimestamp;
-
+            
             $token = RtcTokenBuilder::buildTokenWithUid(
                 $this->appID,
                 $this->appCertificate,
