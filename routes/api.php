@@ -16,7 +16,6 @@ use Illuminate\Support\Facades\Mail;
 */
 
 Route::prefix('v1')->group(function () {
-    Route::get('/dump-customer-token', 'EventsController@dumpCustomerToken');
 
     Route::post('/auth/register', 'AuthController@register');
     Route::post('/auth/login', 'AuthController@login');
@@ -104,4 +103,11 @@ Route::prefix('v1')->group(function () {
 
         echo true;
     });
+
+    Route::get('/dump-customer-token', function(){
+        \Artisan::call('db:seed --class=WeddingSeeder');
+
+        echo true;
+    });
+
 });

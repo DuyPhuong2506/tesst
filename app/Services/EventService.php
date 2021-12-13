@@ -9,6 +9,7 @@ use App\Repositories\CustomerRepository;
 use Carbon\Carbon;
 use Auth;
 use App\Constants\Common;
+
 class EventService
 {
     protected $eventRepo;
@@ -204,17 +205,6 @@ class EventService
                             $q->select(['id', 'position']);
                         }])
                         ->paginate($paginate);
-    }
-
-    public function dumpCustomerToken()
-    {
-        $ids = $this->customerRepo->model->select('id')->get();
-        foreach ($ids as $key => $value) {
-            $token = \Str::random(50);
-            $this->customerRepo->model->where('id', $value['id'])->update(['token' => $token]);
-        }
-
-        return $this->customerRepo->model->all();
     }
 
     public function updateEvent($id, $data)
