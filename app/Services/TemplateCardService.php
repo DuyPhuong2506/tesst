@@ -21,13 +21,7 @@ class TemplateCardService
         return $this->templateCardRepo
                     ->model
                     ->where('type', $type)
-                    ->select([
-                        'id', 
-                        'name', 
-                        'card_path',
-                        'card_thumb_path',
-                        'type'
-                    ])
+                    ->select(['id', 'name', 'card_path', 'card_thumb_path', 'type'])
                     ->get();
     }
     

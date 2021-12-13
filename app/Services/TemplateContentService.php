@@ -26,22 +26,31 @@ class TemplateContentService
                     ->get();
     }
 
+    public function storeTemplateContentFile($file)
+    {
+        $linkS3Thumbnail = null;
+        if ($file){
+            $nameDirectory = 'templatecontent/';
+            $fullName = $file->getClientOriginalName();
+            $extension = $file->getClientOriginalExtension();
+            $nameFile = Str::random(10) . '_' . $fullName;
+            
+            $imgThumb = Image::make($file)->fit(300)->stream();
+            
+            $linkS3Thumbnail = Storage::disk('s3')->put(
+                $nameDirectory.'thumbnail_' . $nameFile,
+                $imgThumb->__toString(),
+            );
+            $linkS3Thumbnail = $nameDirectory.'thumbnail_' . $nameFile;
+        }
+
+        return $linkS3Thumbnail;
+    }
+
     public function createTemplateContent($file, $requestData)
     {
-        
-        $directory = "templatecontent/";
-        $fileName = Str::random(30) . "_" . $file->getClientOriginalName();
-        $fileExtension = $file->getClientOriginalExtension();
-        $filePath = $directory . $fileName;
-        
-        $image = Image::make($file)
-                      ->resize(700, null, function($constraint){ 
-                            $constraint->aspectRatio(); 
-                        })
-                      ->encode($fileExtension, 90);
-
-        $store = Storage::disk('local')->put($filePath, $image);
-        $requestData['preview_image'] = $filePath;
+        $linkImage = $this->storeTemplateContentFile($file);
+        $requestData['preview_image'] = $linkImage;
 
         return $this->templateContentRepo->model->create($requestData);
     }
