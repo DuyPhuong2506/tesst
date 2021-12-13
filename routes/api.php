@@ -75,6 +75,10 @@ Route::prefix('v1')->group(function () {
                 Route::post('/update-greeting', 'EventsController@updateGreetingMsg');
                 Route::post('/update-time-table', 'WeddingTimeTableController@update');
             });
+
+            Route::resource('/template-card', 'TemplateCardsController');
+            Route::resource('/template-content', 'TemplateContentController');
+            Route::resource('/wedding-card', 'WeddingCardsController');
         });
 
         /* Role Guest */
