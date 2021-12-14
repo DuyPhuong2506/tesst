@@ -24,7 +24,7 @@ class RoleCustomerMiddleware
         
         $auth = Auth::guard('customer');
         if($auth->check()){
-            if(in_array($auth->user()->role, [Role::GROOM, Role::BRIDE, Role::GUEST])){
+            if(in_array($auth->user()->role, [Role::GROOM, Role::BRIDE, Role::GUEST, Role::TABLE_ACCOUNT])){
                 return $next($request);
             } 
         }
