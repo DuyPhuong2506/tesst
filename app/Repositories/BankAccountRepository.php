@@ -3,12 +3,12 @@ namespace App\Repositories;
 
 use App\Repositories\BaseRepository;
 
-class WeddingCardRepository extends BaseRepository
+class BankAccountRepository extends BaseRepository
 {
     public $model;
     
     public function getModel()
     {
-        return \App\Models\WeddingCard::class;
+        return \App\Models\BankAccount::class;
     }
 }

@@ -241,5 +241,53 @@ return [
                 'different' => 'The groom email can not be same bride email'
             ]
         ]
-    ]
+    ],
+    'wedding_card' => [
+        'create_success' => 'Wedding card create success',
+        'create_fail' => 'Wedding card create fail',
+        'update_success' => 'Wedding card update success',
+        'update_fail' => 'Wedding card update fail',
+        'delete_success' => 'Wedding card delete success',
+        'delete_fail' => 'Wedding card delete fail',
+
+        'validation' => [
+            'card_url' => [
+                'required' => 'The card url is required'
+            ],
+            'content' => [
+                'required' => 'The content is required',
+            ],
+            'couple_photo' => [
+                'required' => 'The couple photo is required',
+                'mimes' => 'The couple photo must be JPG, PNG type',
+                'max' => 'The couple photo can not be greater than 10Mb',
+            ],
+            'wedding_price' => [
+                'required' => 'The wedding price is required'
+            ]
+        ]
+    ],
+    'bank_account' => [
+        'validation' => [
+            'bank_name' => [
+                'required' => 'The bank name is required',
+            ],
+            'bank_branch' => [
+                'required' => 'The bank branch is required',
+            ],
+            'account_number' => [
+                'required' => 'The account number is required',
+            ],
+            'card_type' => [
+                'required' => 'The card type is required',
+            ],
+            'holder_name' => [
+                'required' => 'The holder name is required',
+            ],
+            'wedding_card_id' => [
+                'required' => 'The wedding card id is required',
+                'exists' => 'The wedding card id does not exist',
+            ],
+        ]
+    ],
 ];

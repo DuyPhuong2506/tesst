@@ -12,7 +12,7 @@ class WeddingCard extends Model
         'id',
         'card_url',
         'content',
-        'img_url',
+        'couple_photo',
         'status',
         'wedding_price',
         'wedding_id',
@@ -26,5 +26,15 @@ class WeddingCard extends Model
     public function wedding()
     {
         return $this->belongsTo(Wedding::class, 'wedding_id');
+    }
+    
+    /**
+     * Get all of the comments for the WeddingCard
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function bankAccounts()
+    {
+        return $this->hasMany(BankAccounts::class, 'wedding_card_id', 'id');
     }
 }
