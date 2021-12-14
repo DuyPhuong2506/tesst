@@ -48,9 +48,7 @@ class TemplateCardService
             $linkS3 = $nameDirectory . $nameFile;
 
             if(in_array($extension , ['png', 'jpg', 'jpeg'])){
-                $imgThumb = Image::make($file)->resize(300, 300, function ($constraint) {
-                    $constraint->aspectRatio();
-                })->stream();
+                $imgThumb = Image::make($file)->fit(300)->stream();
                 
                 $linkS3Thumbnail = Storage::disk('s3')->put(
                     $nameDirectory.'thumbnail_' . $nameFile,
