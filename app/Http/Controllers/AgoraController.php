@@ -76,7 +76,7 @@ class AgoraController extends Controller
     public function storeRtm(StoreRtmRequest $request)
     {
         try {
-            $uuid = auth()->id();
+            $uuid = auth()->guard('customer')->user()->id;
             $rtmToken = $this->agoraService->getRtmToken($uuid);
             return $this->respondSuccess($rtmToken);
         } catch (Exception $e) {
@@ -87,7 +87,7 @@ class AgoraController extends Controller
     public function storeRtc(StoreRtcRequest $request)
     {
         try {
-            $uuid = auth()->id();
+            $uuid = auth()->guard('customer')->user()->id;
             $rtcToken = $this->agoraService->getRtcToken($request->name, $uuid, $request->role);
 
             return $this->respondSuccess($rtcToken);
