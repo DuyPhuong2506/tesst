@@ -7,6 +7,7 @@ use Illuminate\Http\Response;
 use App\Services\WeddingCardService;
 use App\Http\Requests\CreateWeddingCardRequest;
 use App\Http\Requests\UploadCouplePhotoRequest;
+use App\Http\Requests\UpdateCardContentRequest;
 use DB;
 use Auth;
 
@@ -14,10 +15,12 @@ class WeddingCardsController extends Controller
 {
 
     protected $weddingCardService;
+    protected $customer;
 
     public function __construct(WeddingCardService $weddingCardService)
     {
         $this->weddingCardService = $weddingCardService;
+        $this->customer = Auth::guard('customer')->user();
     }
     /**
      * Display a listing of the resource.
@@ -47,30 +50,18 @@ class WeddingCardsController extends Controller
      */
     public function store(CreateWeddingCardRequest $request)
     {
-        $weddingCard = $request->only(
-            'template_card_id', 'couple_photo', 
-            'content', 'wedding_price'
-        );
-        $weddingId = Auth::guard('customer')->user()->wedding_id;
-        $bankAccount = $request->bank_accounts;
+        $weddingCard = $request->only('template_card_id', 'couple_photo');
+        $weddingId = $this->customer->wedding_id;
         $data = $this->weddingCardService
-                     ->createWeddingCard($weddingCard, $bankAccount, $weddingId);
+                     ->createWeddingCard($weddingCard, $weddingId);
 
-        DB::beginTransaction();
-        try {
-            if($data){
-                DB::commit();
-                return $this->respondSuccess($data);
-            }
-            
-            DB::rollback();
-        } catch (\Throwable $th) {
-            DB::rollback();
-
-            return $this->respondError(
-                Response::HTTP_BAD_REQUEST, __('messages.wedding_card.create_fail')
-            );
+        if($data){
+            return $this->respondSuccess($data);
         }
+        
+        return $this->respondError(
+            Response::HTTP_BAD_REQUEST, __('messages.wedding_card.create_fail')
+        );
     }
 
     public function getPreSigned(UploadCouplePhotoRequest $request)
@@ -90,9 +81,17 @@ class WeddingCardsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
-    {
-        //
+    public function show()
+    {   
+        $weddingId = $this->customer->wedding_id;
+        $data = $this->weddingCardService->showWeddingCard($weddingId);
+        if($data){
+            return $this->respondSuccess($data);
+        }
+        
+        return $this->respondError(
+            Response::HTTP_BAD_REQUEST, __('messages.wedding_card.detail_fail')
+        );
     }
 
     /**
@@ -113,9 +112,19 @@ class WeddingCardsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateCardContentRequest $request)
     {
-        //
+        $cardContent = $request->only('content');
+        $weddingId = $this->customer->wedding_id;
+        $data = $this->weddingCardService->updateCardContent($cardContent, $weddingId);
+        
+        if($data){
+            return $this->respondSuccess($data);
+        }
+        
+        return $this->respondError(
+            Response::HTTP_BAD_REQUEST, __('messages.wedding_card.update_fail')
+        );
     }
 
     /**

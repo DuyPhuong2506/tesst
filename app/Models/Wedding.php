@@ -43,4 +43,9 @@ class Wedding extends Model
     {
         return $this->hasMany(Customer::class, 'wedding_id', 'id');
     } 
+
+    public function weddingCard()
+    {
+        return $this->hasOne(WeddingCard::class, 'wedding_id', 'id');
+    }
 }

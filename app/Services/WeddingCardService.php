@@ -3,6 +3,7 @@ namespace App\Services;
 
 use App\Repositories\WeddingCardRepository;
 use App\Repositories\BankAccountRepository;
+use App\Repositories\EventRepository;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Facades\Image;
 
@@ -10,24 +11,37 @@ class WeddingCardService
 {
     protected $weddingCardRepo;
     protected $bankAccountRepo;
+    protected $weddingRepo;
 
     public function __construct(
         WeddingCardRepository $weddingCardRepo,
-        BankAccountRepository $bankAccountRepo
+        BankAccountRepository $bankAccountRepo,
+        EventRepository $weddingRepo
     ){
         $this->weddingCardRepo = $weddingCardRepo;
         $this->bankAccountRepo = $bankAccountRepo;
+        $this->weddingRepo = $weddingRepo;
     }
 
-    public function createWeddingCard($weddingCard, $bankAccount, $weddingId)
+    public function createWeddingCard($weddingCard, $weddingId)
     {
-        $weddingCard['wedding_id'] = $weddingId;
-        $weddingCard = $this->weddingCardRepo
-                            ->model
-                            ->create($weddingCard);
-        $weddingCard->bankAccounts()->createMany($bankAccount);
+        $wedding = $this->weddingRepo->model->find($weddingId);
+        $weddingCard = $wedding->weddingCard()->updateOrCreate(
+            ['wedding_id' => $weddingId],
+            $weddingCard
+        );
 
         return $this->detailWeddingCard($weddingCard->id);
+    }
+
+    public function updateCardContent($cardContent, $weddingId)
+    {
+        $this->weddingCardRepo
+             ->model
+             ->where('wedding_id', $weddingId)
+             ->update($cardContent);
+        
+        return $cardContent;
     }
 
     public function getPreSigned($request)
@@ -74,6 +88,21 @@ class WeddingCardService
         $data = $this->weddingCardRepo
                      ->model
                      ->where('id', $id)
+                     ->with(['bankAccounts'])
+                     ->first();
+
+        $disk = Storage::disk('s3');
+        $couplePhoto = $disk->url($data['couple_photo']);
+        $data['couple_photo'] = $couplePhoto;
+        
+        return $data;
+    }
+
+    public function showWeddingCard($weddingId)
+    {
+        $data = $this->weddingCardRepo
+                     ->model
+                     ->where('wedding_id', $weddingId)
                      ->with(['bankAccounts'])
                      ->first();
 

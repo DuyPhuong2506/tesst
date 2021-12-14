@@ -68,6 +68,8 @@ Route::prefix('v1')->group(function () {
 
         /* Role Couple */
         Route::group(['middleware' => 'auth.couple'], function(){
+            Route::get('/couple/wedding-card/get-pre-signed', 'WeddingCardsController@getPreSigned');
+
             Route::get('/couple/event', 'EventsController@coupleDetailEvent');
             Route::get('/couple/guest-list', 'EventsController@coupleListGuest');
             
@@ -76,9 +78,10 @@ Route::prefix('v1')->group(function () {
                 Route::post('/update-time-table', 'WeddingTimeTableController@update');
             });
 
-            Route::resource('/template-card', 'TemplateCardsController');
-            Route::resource('/template-content', 'TemplateContentController');
-            Route::resource('/wedding-card', 'WeddingCardsController');
+            Route::resource('/couple/template-card', 'TemplateCardsController');
+            Route::resource('/couple/template-content', 'TemplateContentController');
+            Route::resource('/couple/wedding-card', 'WeddingCardsController');
+            Route::resource('/couple/bank-account', 'BankAccountsController');
         });
 
         /* Role Customer*/
@@ -89,7 +92,6 @@ Route::prefix('v1')->group(function () {
         Route::post('/auth/logout', 'AuthController@logout');
         Route::post('/admin/create','UsersController@createAdmin');
         Route::get('/places-get-pre-signed', 'PlacesController@getPreSigned')->name('get.getPreSigned');
-        Route::get('/wedding-card-get-pre-signed', 'WeddingCardsController@getPreSigned')->name('get.getPreSigned');
         Route::resource('/restaurants','RestaurantsController');
         Route::resource('/table-positon', 'TablePositionsController');
         Route::resource('/table-account', 'TableAccountController');
