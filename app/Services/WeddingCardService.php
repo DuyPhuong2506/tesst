@@ -21,7 +21,6 @@ class WeddingCardService
 
     public function createWeddingCard($weddingCard, $bankAccount, $weddingId)
     {
-        $couplePhoto = $weddingCard['couple_photo'];
         $weddingCard['wedding_id'] = $weddingId;
         $weddingCard = $this->weddingCardRepo
                             ->model
@@ -65,8 +64,8 @@ class WeddingCardService
         $pre_signed = $preSignedArray;
            
         return  [
-            'place_file_paths' => $file_paths,
-            'place_pre_signeds' => $pre_signed,
+            'couple_file_paths' => $file_paths,
+            'couple_pre_signeds' => $pre_signed,
         ];
     }
 
