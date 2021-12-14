@@ -92,6 +92,8 @@ Route::prefix('v1')->group(function () {
         Route::resource('/customer', 'CustomersController');
         Route::get('/customer-in-wedding', 'CustomersController@getListCustomerInWedding');
         Route::resource('/channel','ChannelsController');
+        Route::post('agora/store-rtm','AgoraController@storeRtm');
+        Route::post('agora/store-rtc','AgoraController@storeRtc');
     });
 
     Route::get('/agora/get-token','AgoraController@generateToken')->middleware('cors');

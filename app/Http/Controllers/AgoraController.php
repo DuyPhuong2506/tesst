@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Services\AgoraService;
+use App\Http\Requests\StoreRtcRequest;
+use App\Http\Requests\StoreRtmRequest;
 use Webpatser\Uuid\Uuid;
 use Illuminate\Support\Facades\Auth;
 use Exception;
@@ -66,6 +68,29 @@ class AgoraController extends Controller
            
 
             return $this->respondSuccess($dataChanels);
+        } catch (Exception $e) {
+            return $this->respondError(Response::HTTP_BAD_REQUEST, $e->getMessage());
+        }
+    }
+
+    public function storeRtm(StoreRtmRequest $request)
+    {
+        try {
+            $uuid = auth()->id();
+            $rtmToken = $this->agoraService->getRtmToken($uuid);
+            return $this->respondSuccess($rtmToken);
+        } catch (Exception $e) {
+            return $this->respondError(Response::HTTP_BAD_REQUEST, $e->getMessage());
+        }
+    }
+
+    public function storeRtc(StoreRtcRequest $request)
+    {
+        try {
+            $uuid = auth()->id();
+            $rtcToken = $this->agoraService->getRtcToken($request->name, $uuid, $request->role);
+
+            return $this->respondSuccess($rtcToken);
         } catch (Exception $e) {
             return $this->respondError(Response::HTTP_BAD_REQUEST, $e->getMessage());
         }
