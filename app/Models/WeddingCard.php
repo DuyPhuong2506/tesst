@@ -35,6 +35,6 @@ class WeddingCard extends Model
      */
     public function bankAccounts()
     {
-        return $this->hasMany(BankAccounts::class, 'wedding_card_id', 'id');
+        return $this->hasMany(BankAccount::class, 'wedding_card_id', 'id');
     }
 }

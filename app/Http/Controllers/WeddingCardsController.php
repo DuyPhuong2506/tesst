@@ -7,6 +7,7 @@ use Illuminate\Http\Response;
 use App\Services\WeddingCardService;
 use App\Http\Requests\CreateWeddingCardRequest;
 use DB;
+use Auth;
 
 class WeddingCardsController extends Controller
 {
@@ -45,8 +46,16 @@ class WeddingCardsController extends Controller
      */
     public function store(CreateWeddingCardRequest $request)
     {
+        $weddingCard = $request->only(
+            'card_url', 'couple_photo', 
+            'content', 'wedding_price'
+        );
+        $weddingId = Auth::guard('customer')->user()->wedding_id;
+        $bankAccount = $request->bank_accounts;
+        $data = $this->weddingCardService
+                     ->createWeddingCard($weddingCard, $bankAccount, $weddingId);
+
         DB::beginTransaction();
-        $data = $this->weddingCardService->createWeddingCard($request->all());
         try {
             if($data){
                 DB::commit();
