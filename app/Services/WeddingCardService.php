@@ -22,7 +22,6 @@ class WeddingCardService
     public function createWeddingCard($weddingCard, $bankAccount, $weddingId)
     {
         $couplePhoto = $weddingCard['couple_photo'];
-        $weddingCard['couple_photo'] = $this->storeCouplePhoto($couplePhoto);
         $weddingCard['wedding_id'] = $weddingId;
         $weddingCard = $this->weddingCardRepo
                             ->model
@@ -32,24 +31,43 @@ class WeddingCardService
         return $this->detailWeddingCard($weddingCard->id);
     }
 
-    public function storeCouplePhoto($file)
+    public function getPreSigned($request)
     {
-        $linkS3 = null;
-        if ($file){
-            $nameDirectory = 'couple/';
-            $fullName = $file->getClientOriginalName();
-            $extension = $file->getClientOriginalExtension();
-            $nameFile = \Str::random(10) . '_' . $fullName;
+        $file_paths = null;
+        $pre_signed = null;
 
-            $img = Image::make($file)->fit(400)->stream();
-            $linkS3 = Storage::disk('s3')->put(
-                $nameDirectory . $nameFile,
-                $img->__toString()
-            );
-            $linkS3 = $nameDirectory . $nameFile;
-        }
+        $file_info = $request->file_couple;
+        $file = explode('.', $file_info);
+        $extensionFile = $file[1];
+        $nameFile = $file[0];
+        $client = Storage::disk('s3')->getDriver()->getAdapter()->getClient();
+        $fileName = \Str::random(10) . '_' . $file_info;
+        $filePath = 'couple/' . $fileName;
+        
+        $command = $client->getCommand('PutObject', [
+            'Bucket' => config('filesystems.disks.s3.bucket'),
+            'Key' => $filePath,
+        ]);
 
-        return $linkS3;
+        $request = $client->createPresignedRequest($command, '+20 minutes');
+
+        $filePathArray = [
+            'image_path' => $filePath,
+            'full_link_image' => Storage::disk('s3')->url($filePath),
+            'extension' =>  $extensionFile,
+        ];
+
+        $preSignedArray = [
+            'pre_signed' => (string) $request->getUri()
+        ];
+
+        $file_paths = $filePathArray;
+        $pre_signed = $preSignedArray;
+           
+        return  [
+            'place_file_paths' => $file_paths,
+            'place_pre_signeds' => $pre_signed,
+        ];
     }
 
     public function detailWeddingCard($id)

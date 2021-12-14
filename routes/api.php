@@ -89,6 +89,7 @@ Route::prefix('v1')->group(function () {
         Route::post('/auth/logout', 'AuthController@logout');
         Route::post('/admin/create','UsersController@createAdmin');
         Route::get('/places-get-pre-signed', 'PlacesController@getPreSigned')->name('get.getPreSigned');
+        Route::get('/wedding-card-get-pre-signed', 'WeddingCardsController@getPreSigned')->name('get.getPreSigned');
         Route::resource('/restaurants','RestaurantsController');
         Route::resource('/table-positon', 'TablePositionsController');
         Route::resource('/table-account', 'TableAccountController');

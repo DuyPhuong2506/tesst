@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Services\WeddingCardService;
 use App\Http\Requests\CreateWeddingCardRequest;
+use App\Http\Requests\UploadCouplePhotoRequest;
 use DB;
 use Auth;
 
@@ -47,7 +48,7 @@ class WeddingCardsController extends Controller
     public function store(CreateWeddingCardRequest $request)
     {
         $weddingCard = $request->only(
-            'card_url', 'couple_photo', 
+            'template_card_id', 'couple_photo', 
             'content', 'wedding_price'
         );
         $weddingId = Auth::guard('customer')->user()->wedding_id;
@@ -69,6 +70,17 @@ class WeddingCardsController extends Controller
             return $this->respondError(
                 Response::HTTP_BAD_REQUEST, __('messages.wedding_card.create_fail')
             );
+        }
+    }
+
+    public function getPreSigned(UploadCouplePhotoRequest $request)
+    {
+        try {
+            $data = $this->weddingCardService->getPreSigned($request);
+
+            return $this->respondSuccess($data);
+        }  catch (\Exception $e) {
+            return $this->respondError(Response::HTTP_BAD_REQUEST, $e->getMessage());
         }
     }
 

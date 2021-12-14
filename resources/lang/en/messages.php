@@ -251,8 +251,9 @@ return [
         'delete_fail' => 'Wedding card delete fail',
 
         'validation' => [
-            'card_url' => [
-                'required' => 'The card url is required'
+            'template_card_id' => [
+                'required' => 'The template card id is required',
+                'exists' => 'The template card does not exist'
             ],
             'content' => [
                 'required' => 'The content is required',
