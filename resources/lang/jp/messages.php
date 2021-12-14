@@ -242,5 +242,53 @@ return [
                 'different' => 'メールアドレスがすでにシステムで使用されています。 別のメールアドレスを入力してください。'
             ]
         ]
-    ]
+    ],
+    'wedding_card' => [
+        'create_success' => 'Wedding card create success',
+        'create_fail' => 'Wedding card create fail',
+        'update_success' => 'Wedding card update success',
+        'update_fail' => 'Wedding card update fail',
+        'delete_success' => 'Wedding card delete success',
+        'delete_fail' => 'Wedding card delete fail',
+
+        'validation' => [
+            'card_url' => [
+                'required' => '必須項目に入力してください。'
+            ],
+            'content' => [
+                'required' => '必須項目に入力してください。',
+            ],
+            'couple_photo' => [
+                'required' => '必須項目に入力してください。',
+                'mimes' => 'The couple photo must be JPG, PNG type',
+                'max' => 'The couple photo can not be greater than 10Mb',
+            ],
+            'wedding_price' => [
+                'required' => '必須項目に入力してください。'
+            ]
+        ]
+    ],
+    'bank_account' => [
+        'validation' => [
+            'bank_name' => [
+                'required' => '必須項目に入力してください。',
+            ],
+            'bank_branch' => [
+                'required' => '必須項目に入力してください。',
+            ],
+            'account_number' => [
+                'required' => '必須項目に入力してください。',
+            ],
+            'card_type' => [
+                'required' => '必須項目に入力してください。',
+            ],
+            'holder_name' => [
+                'required' => '必須項目に入力してください。',
+            ],
+            'wedding_card_id' => [
+                'required' => '必須項目に入力してください。',
+                'exists' => 'The wedding card id does not exist',
+            ],
+        ]
+    ],
 ];
