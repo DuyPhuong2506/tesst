@@ -180,6 +180,42 @@ class EventService
         return $data;
     }
 
+    public function getWeddingEventWithBearerToken($customerId)
+    {   
+        $tablePosition = $this->customerRepo->model->where('id', $customerId)
+                                 ->select('id', 'table_position_id', 'full_name')
+                                 ->with(['tablePosition' => function($q){
+                                    $q->select('id', 'position');
+                                 }])
+                                 ->first();
+        $weddingId = $this->customerRepo->model->where('id', $customerId)
+                             ->select('wedding_id')->first()->wedding_id;
+        $data = $this->eventRepo->model->whereHas('customers', function($q) use($customerId){
+                        $q->where('id', $customerId);
+                    })
+                    ->with(['place' => function($q) use($weddingId){
+                        $q->select('id', 'name')
+                          ->with(['tablePositions' => function($q) use($weddingId){
+                                $q->select('place_id', 'id', 'position')
+                                  ->where('status', Common::STATUS_TRUE)
+                                  ->with(['customers' => function($q) use($weddingId){
+                                        $q->select('table_position_id', 'full_name')
+                                          ->where('role', Role::GUEST)
+                                          ->where('wedding_id', $weddingId);
+                            }]);
+                        }]);
+                    }])
+                    ->select('id', 'date', 'place_id')
+                    ->with(['eventTimes' => function($q){
+                        $q->select(['id', 'event_id', 'start', 'end', 'description']);
+                    }])
+                    ->first();
+        
+        $data['customer_detail'] = $tablePosition;
+        
+        return $data;
+    }
+
     public function coupleListGuest($coupleId, $request)
     {
         $keyword = (isset($request['keyword'])) ? escape_like($request['keyword']) : NULL;

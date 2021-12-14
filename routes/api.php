@@ -81,7 +81,10 @@ Route::prefix('v1')->group(function () {
             Route::resource('/wedding-card', 'WeddingCardsController');
         });
 
-        /* Role Guest */
+        /* Role Customer*/
+        Route::group(['middleware' => 'auth.customer'], function(){
+            Route::get('/customer/event', 'EventsController@getWeddingEventWithBearerToken');
+        });
         
         Route::post('/auth/logout', 'AuthController@logout');
         Route::post('/admin/create','UsersController@createAdmin');
