@@ -124,6 +124,16 @@ class WeddingSeeder extends Seeder
             'role' => "6"
         ]);
 
+        Customer::create([
+            'username' => '111122223333',
+            'full_name' => $faker->name,
+            'email' => $faker->email,
+            'token' => "111122223333",
+            'password' => '111122223333',
+            'place_id' => $place->id,
+            'role' => "5"
+        ]);
+
         $listCustomer = [];
         for($i = 0; $i < 10; $i++){
             $arrayId = [$tableA->id, $tableB->id];
