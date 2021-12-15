@@ -23,12 +23,19 @@ class WeddingCardService
         $this->weddingRepo = $weddingRepo;
     }
 
-    public function createWeddingCard($weddingCard, $weddingId)
+    public function createWeddingCard($cardData, $weddingId)
     {
         $wedding = $this->weddingRepo->model->find($weddingId);
-        $weddingCard = $wedding->weddingCard()->updateOrCreate(
+        $weddingCard = $wedding->weddingCard();
+        
+        if($weddingCard->exists()){
+            $couplePhoto = $weddingCard->first()->couple_photo;
+            Storage::disk('s3')->delete($couplePhoto);
+        }
+
+        $weddingCard = $weddingCard->updateOrCreate(
             ['wedding_id' => $weddingId],
-            $weddingCard
+            $cardData
         );
 
         return $this->detailWeddingCard($weddingCard->id);
