@@ -10,7 +10,7 @@ class WeddingCard extends Model
 
     protected $fillable = [
         'id',
-        'card_url',
+        'template_card_id',
         'content',
         'couple_photo',
         'status',
@@ -35,6 +35,16 @@ class WeddingCard extends Model
      */
     public function bankAccounts()
     {
-        return $this->hasMany(BankAccounts::class, 'wedding_card_id', 'id');
+        return $this->hasMany(BankAccount::class, 'wedding_card_id', 'id');
+    }
+
+    /**
+     * Get the user that owns the WeddingCard
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function templateCard()
+    {
+        return $this->belongsTo(TemplateCard::class, 'template_card_id');
     }
 }

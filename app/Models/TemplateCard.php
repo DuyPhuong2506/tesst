@@ -15,4 +15,14 @@ class TemplateCard extends Model
         'card_thumb_path',
         'type'
     ];
+
+    /**
+     * Get all of the comments for the TemplateCard
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function weddingCards()
+    {
+        return $this->hasMany(WeddingCard::class, 'template_card_id', 'id');
+    }
 }

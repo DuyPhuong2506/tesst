@@ -251,8 +251,9 @@ return [
         'delete_fail' => 'Wedding card delete fail',
 
         'validation' => [
-            'card_url' => [
-                'required' => 'The card url is required'
+            'template_card_id' => [
+                'required' => 'The template card id is required',
+                'exists' => 'The template card does not exist'
             ],
             'content' => [
                 'required' => 'The content is required',
@@ -268,6 +269,13 @@ return [
         ]
     ],
     'bank_account' => [
+        'create_success' => 'Bank account create success',
+        'create_fail' => 'Bank account create fail',
+        'update_success' => 'Bank account update success',
+        'update_fail' => 'Bank account update fail',
+        'delete_success' => 'Bank account delete success',
+        'delete_fail' => 'Bank account delete fail',
+
         'validation' => [
             'bank_name' => [
                 'required' => 'The bank name is required',

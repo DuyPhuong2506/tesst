@@ -252,8 +252,9 @@ return [
         'delete_fail' => 'Wedding card delete fail',
 
         'validation' => [
-            'card_url' => [
-                'required' => '必須項目に入力してください。'
+            'template_card_id' => [
+                'required' => '必須項目に入力してください。',
+                'exists' => 'The template card does not exist'
             ],
             'content' => [
                 'required' => '必須項目に入力してください。',
@@ -269,6 +270,13 @@ return [
         ]
     ],
     'bank_account' => [
+        'create_success' => 'Bank account create success',
+        'create_fail' => 'Bank account create fail',
+        'update_success' => 'Bank account update success',
+        'update_fail' => 'Bank account update fail',
+        'delete_success' => 'Bank account delete success',
+        'delete_fail' => 'Bank account delete fail',
+
         'validation' => [
             'bank_name' => [
                 'required' => '必須項目に入力してください。',
