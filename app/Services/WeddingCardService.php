@@ -26,6 +26,7 @@ class WeddingCardService
     public function createWeddingCard($weddingCard, $weddingId)
     {
         $wedding = $this->weddingRepo->model->find($weddingId);
+        $this->removeImageCoupleS3($weddingId);
         $weddingCard = $wedding->weddingCard()->updateOrCreate(
             ['wedding_id' => $weddingId],
             $weddingCard
@@ -111,6 +112,16 @@ class WeddingCardService
         $data['couple_photo'] = $couplePhoto;
         
         return $data;
+    }
+
+    public function removeImageCoupleS3($weddingId)
+    {   
+        $couplePhoto = $this->weddingCardRepo
+                            ->model
+                            ->where('wedding_id', $weddingId)
+                            ->first()->couple_photo;
+        $path = $couplePhoto;
+        Storage::disk('s3')->delete($path);
     }
 
 }
