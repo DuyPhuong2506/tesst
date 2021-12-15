@@ -205,7 +205,7 @@ class EventService
                             }]);
                         }]);
                     }])
-                    ->select('id', 'date', 'place_id')
+                    ->select('id', 'date', 'place_id', 'is_livestream')
                     ->with(['eventTimes' => function($q){
                         $q->select(['id', 'event_id', 'start', 'end', 'description']);
                     }])
