@@ -19,6 +19,7 @@ class TemplateContentService
     {
         $data = $this->templateContentRepo
                      ->model
+                     ->where('status', STATUS_TRUE)
                      ->select([
                         'id', 'name', 'preview_image', 
                         'font_name', 'content', 'status'
