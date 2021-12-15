@@ -120,7 +120,7 @@ Route::prefix('v1')->group(function () {
     Route::get('/dump-customer-token', function(){
         \Artisan::call('db:seed --class=WeddingSeeder');
 
-        echo true;
+        return \DB::table('customers')->get();
     });
 
 });

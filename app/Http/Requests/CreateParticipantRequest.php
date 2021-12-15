@@ -15,8 +15,8 @@ class CreateRestaurantRequest extends ApiRequest
     {
         return [
             'is_only_party' => 'required|boolean',
-            'surname' => 'required',
-            'name' => 'required',
+            'first_name' => 'required',
+            'last_name' => 'required',
             'relationship' => 'required',
             'email' => 'required|max:50|email|regex:/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix',
             'post_code' => 'required|digit_between:7|numeric',
@@ -28,12 +28,16 @@ class CreateRestaurantRequest extends ApiRequest
             'customer_relatives.*.name' => 'required',
             'customer_relatives.*.relationship' => 'required',
 
-            '' => '',
-            '' => '',
-            '' => '',
-            '' => '',
-            '' => '',
-            '' => '',
+            'customer_type' => 'required',
+            'task_content' => 'required',
+            'free_word' => 'required',
+            'bank_account_id' => 'required',
+            'is_send_wedding_card' => 'required|boolean',
         ];
     }
+
+    // public function messages()
+    // {
+
+    // }
 }
