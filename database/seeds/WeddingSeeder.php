@@ -94,6 +94,36 @@ class WeddingSeeder extends Seeder
             'role' => "4"
         ]);
 
+        Customer::create([
+            'username' => $faker->unique()->userName,
+            'full_name' => $faker->name,
+            'email' => $faker->email,
+            'token' => "123AEQWEQWE",
+            'password' => '222222222222',
+            'place_id' => $place->id,
+            'role' => "6"
+        ]);
+
+        Customer::create([
+            'username' => $faker->unique()->userName,
+            'full_name' => $faker->name,
+            'email' => $faker->email,
+            'token' => "dfgsdferwer",
+            'password' => '222222222222',
+            'place_id' => $place->id,
+            'role' => "6"
+        ]);
+
+        Customer::create([
+            'username' => $faker->unique()->userName,
+            'full_name' => $faker->name,
+            'email' => $faker->email,
+            'token' => "fgsfrtyrtyzxd",
+            'password' => '222222222222',
+            'place_id' => $place->id,
+            'role' => "6"
+        ]);
+
         $listCustomer = [];
         for($i = 0; $i < 10; $i++){
             $arrayId = [$tableA->id, $tableB->id];
