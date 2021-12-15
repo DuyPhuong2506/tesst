@@ -82,6 +82,7 @@ Route::prefix('v1')->group(function () {
             Route::resource('/couple/template-content', 'TemplateContentController');
             Route::resource('/couple/wedding-card', 'WeddingCardsController');
             Route::resource('/couple/bank-account', 'BankAccountsController');
+            Route::resource('/couple/articipant', 'CustomersController');
         });
 
         /* Role Customer*/
@@ -119,7 +120,7 @@ Route::prefix('v1')->group(function () {
     Route::get('/dump-customer-token', function(){
         \Artisan::call('db:seed --class=WeddingSeeder');
 
-        echo true;
+        echo 1;
     });
 
 });
