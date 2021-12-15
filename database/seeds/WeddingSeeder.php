@@ -123,33 +123,38 @@ class WeddingSeeder extends Seeder
             'place_id' => $place->id,
             'role' => "6"
         ]);
+        
+        Customer::updateOrcreate(
+            ['username' => '111122223333'],
+            [
+                'username' => '111122223333',
+                'full_name' => $faker->name,
+                'email' => $faker->email,
+                'token' => "111122223333",
+                'password' => '111122223333',
+                'place_id' => $place->id,
+                'role' => "5"
+            ]
+        );
 
         Customer::create([
-            'username' => '111122223333',
+            'username' => $faker->unique()->userName,
             'full_name' => $faker->name,
             'email' => $faker->email,
-            'token' => "111122223333",
-            'password' => '111122223333',
+            'token' => "dfgsdferwer",
+            'password' => '222222222222',
             'place_id' => $place->id,
             'role' => "5"
         ]);
 
-        $listCustomer = [];
-        for($i = 0; $i < 10; $i++){
-            $arrayId = [$tableA->id, $tableB->id];
-            $tableId = $arrayId[array_rand($arrayId)];
-            $item = [
-                'username' => $faker->unique()->userName,
-                'full_name' => $faker->name,
-                'email' => $faker->email,
-                'token' => Str::random(12),
-                'password' => '222222222222',
-                'wedding_id' => $wedding->id,
-                'role' => "5",
-                "table_position_id" => $tableId
-            ];
-            array_push($listCustomer, $item);
-        }
-        DB::table('customers')->insert($listCustomer);
+        Customer::create([
+            'username' => $faker->unique()->userName,
+            'full_name' => $faker->name,
+            'email' => $faker->email,
+            'token' => "jhhdfasdqwetyt",
+            'password' => '222222222222',
+            'place_id' => $place->id,
+            'role' => "5"
+        ]);
     }
 }
