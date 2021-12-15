@@ -4,6 +4,7 @@ namespace App\Services;
 use App\Repositories\CustomerRepository;
 use Illuminate\Support\Facades\Auth;
 use App\Constants\Common;
+use App\Constants\Role;
 
 class CustomerService
 {
@@ -20,10 +21,22 @@ class CustomerService
         $keyword = !empty($data['keyword']) ? escape_like($data['keyword']) : null;
         $paginate = !empty($data['paginate']) ? $data['paginate'] : Common::PAGINATE;
         $auth = Auth::guard('customer')->user();
-        $getList = $this->customerRepo->model->whereHas('wedding', function($q) use ($auth){
-            $q->where('place_id', $auth->place_id)
-                ->where('is_close', Common::STATUS_FALSE);
-        });
+        $roleWeddingIds = [Role::GUEST, Role::BRIDE, Role::GROOM];
+        
+        $getList = $this->customerRepo->model
+            ->when(isset($auth->role) &&  in_array($auth->role, $roleWeddingIds), function($q) use ($auth) {
+                $q->whereHas('wedding', function($q) use ($auth){
+                    $q->whereId($auth->wedding_id)
+                        ->where('is_close', Common::STATUS_FALSE);
+                });
+            })
+            ->when(isset($auth->role) && $auth->role == Role::TABLE_ACCOUNT, function($q) use ($auth) {
+                $q->whereHas('wedding', function($q) use ($auth){
+                    $q->where('place_id', $auth->place_id)
+                        ->where('is_close', Common::STATUS_FALSE);
+                });
+            });
+            
 
         if($paginate != Common::PAGINATE_ALL){
             $getList = $getList->paginate($paginate);
