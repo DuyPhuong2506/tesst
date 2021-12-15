@@ -120,8 +120,7 @@ class WeddingCardService
                             ->model
                             ->where('wedding_id', $weddingId)
                             ->first()->couple_photo;
-        $path = $couplePhoto;
-        Storage::disk('s3')->delete($path);
+        Storage::disk('s3')->delete($couplePhoto);
     }
 
 }
