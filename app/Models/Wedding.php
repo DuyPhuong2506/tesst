@@ -24,7 +24,8 @@ class Wedding extends Model
         'guest_invitation_response_date',
         'couple_edit_date',
         'couple_invitation_edit_date',
-        'ceremony_confirm_date'
+        'ceremony_confirm_date',
+        'is_livestream'
     ];
     
     protected $table = 'weddings';

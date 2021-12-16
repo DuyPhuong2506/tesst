@@ -22,8 +22,6 @@ class Channel extends Model
      */
     protected $fillable = [
       'wedding_id',
-      'rtc_token',
-      'rtm_token',
       'name',
       'amount',
       'status',
