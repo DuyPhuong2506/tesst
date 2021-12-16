@@ -276,6 +276,7 @@ return [
         'update_fail' => 'Bank account update fail',
         'delete_success' => 'Bank account delete success',
         'delete_fail' => 'Bank account delete fail',
+        'not_exist' => 'The bank account does not exists !',
 
         'validation' => [
             'bank_name' => [
@@ -302,6 +303,72 @@ return [
                 'required' => 'The bank account data is required',
                 'max' => 'The banks account can not be greater than :max items'
             ],
+        ]
+    ],
+    'participant' => [
+        'create_success' => 'Bank account create success',
+        'create_fail' => 'Bank account create fail',
+        'update_success' => 'Bank account update success',
+        'update_fail' => 'Bank account update fail',
+        'delete_success' => 'Bank account delete success',
+        'delete_fail' => 'Bank account delete fail',
+
+        'validation' => [
+            'is_only_party' => [
+                'required' => 'The is only party is required',
+                'boolean' => 'The is only party is boolean',
+            ],
+            'first_name' => [
+                'required' => 'The first name is required',
+            ],
+            'last_name' => [
+                'required' => 'The last name is required',
+            ],
+            'relationship_couple' => [
+                'required' => 'The couple relationship is required'
+            ],
+            'email' => [
+                'required' => 'The email field is required',
+                'max' => 'The email can not be greater than :max characters',
+                'regex' => 'The email format is invalid'
+            ],
+            'post_code' => [
+                'required' => 'The post code is required',
+                'digits' => 'The post code is :digits characters',
+                'numeric' => 'The post code is numeric',
+            ],
+            'address' => [
+                'required' => 'The address is required',
+                'max' => 'The address can not be greater than :max characters',
+            ],
+            'phone' => [
+                'required' => 'The phone is required',
+                'digits_between' => 'The phone must be 10~11 characters'
+            ],
+            'customer_type' => [
+                'required' => 'The customer type is required',
+                'numeric' => 'The customer type must be numeric',
+            ],
+            'task_content' => [
+                'required' => 'The task content is required'
+            ],
+            'free_word' => [
+                'required' => 'The free work is required'
+            ],
+            'bank_account_id' => [
+                'required' => 'The bank account id is required',
+                'exists' => 'The bank account does not exists'
+            ],
+            'bank_order' => [
+                'required' => 'The bank account id is required',
+                'min' => 'The bank account value can not be less than :min',
+                'max' => 'The bank account value can not be greater than :max',
+                'numeric' => 'The bank order must be a numeric',
+            ],
+            'is_send_wedding_card' => [
+                'required' => 'The is send wedding card is required',
+                'boolean' => 'The is send wedding card must be an boolean'
+            ]
         ]
     ],
 ];

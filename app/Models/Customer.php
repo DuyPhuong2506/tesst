@@ -44,5 +44,13 @@ class Customer extends AuthJWT
         $this->attributes['password'] = $value;
     }
 
+    public function customerInfo()
+    {
+        return $this->hasOne(CustomerInfo::class, 'customer_id', 'id');
+    }
 
+    public function customerRelatives()
+    {
+        return $this->hasMany(CustomerRelative::class, 'customer_id', 'id');
+    }
 }

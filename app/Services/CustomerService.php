@@ -2,6 +2,7 @@
 namespace App\Services;
 
 use App\Repositories\CustomerRepository;
+use App\Repositories\WeddingCardRepository;
 use Illuminate\Support\Facades\Auth;
 use App\Constants\Common;
 use App\Constants\Role;
@@ -9,10 +10,14 @@ use App\Constants\Role;
 class CustomerService
 {
     protected $customerRepo;
+    protected $weddingCardRepo;
 
-    public function __construct(CustomerRepository $customerRepo)
-    {
+    public function __construct(
+        CustomerRepository $customerRepo,
+        WeddingCardRepository $weddingCardRepo
+    ){
         $this->customerRepo = $customerRepo;
+        $this->weddingCardRepo = $weddingCardRepo;
     }
 
     public function getListCustomerInWedding(array $data)
@@ -53,4 +58,64 @@ class CustomerService
 
         return $getList;
     }
+
+    public function createParticipant($requestData, $weddingId)
+    {
+        $bankAccountId = null;
+        if($requestData['bank_order'] != 0){
+            $weddingCard = $this->weddingCardRepo
+                                ->model
+                                ->where('wedding_id', $weddingId)
+                                ->whereHas('bankAccounts', function($q) use($requestData){
+                                    $q->where('bank_order', $requestData['bank_order']);
+                                })
+                                ->first();
+        
+            $bankAccount = $weddingCard->bankAccounts()
+                                       ->where('wedding_card_id', $weddingCard->id)
+                                       ->where('bank_order', $requestData['bank_order'])
+                                       ->first();
+
+            $bankAccountId = $bankAccount->id;
+        }
+
+        $username = random_str_az(8) . random_str_number(4);
+        $password = random_str_az(8) . random_str_number(4);
+        $fullname = $requestData['first_name'] . " " . $requestData['last_name'];
+
+        $customer = $this->customerRepo->create([
+            'username' => $username,
+            'password' => $password,
+            'email' => $requestData['email'],
+            'role' => Role::GUEST,
+            'full_name' => $fullname
+        ]);
+
+        $customerInfo = $customer->customerInfo()->create([
+            'is_only_party' => $requestData['is_only_party'],
+            'first_name' => $requestData['first_name'],
+            'last_name' => $requestData['last_name'],
+            'relationship_couple' => $requestData['relationship_couple'],
+            'post_code' => $requestData['post_code'],
+            'address' => $requestData['address'],
+            'phone' => $requestData['phone'],
+            'free_word' => $requestData['free_word'],
+            'task_content' => $requestData['task_content'],
+            'is_send_wedding_card' => $requestData['is_send_wedding_card'],
+            'customer_type' => $requestData['customer_type'],
+            'bank_account_id' => $bankAccountId,
+        ]);
+
+        $customerRelative = $customer->customerRelatives()
+                                     ->createMany(
+                                        $requestData['customer_relatives']
+                                     );
+
+        return [
+            'customer' => $customer,
+            'customer_info' => $customerInfo,
+            'customer_relative' => $customerRelative
+        ];
+    }
+    
 }

@@ -277,6 +277,7 @@ return [
         'update_fail' => 'Bank account update fail',
         'delete_success' => 'Bank account delete success',
         'delete_fail' => 'Bank account delete fail',
+        'not_exist' => 'The bank account does not exists !',
 
         'validation' => [
             'bank_name' => [
@@ -303,6 +304,72 @@ return [
                 'required' => 'The bank account data is required',
                 'max' => 'The banks account can not be greater than :max items'
             ],
+        ]
+    ],
+    'participant' => [
+        'create_success' => 'Bank account create success',
+        'create_fail' => 'Bank account create fail',
+        'update_success' => 'Bank account update success',
+        'update_fail' => 'Bank account update fail',
+        'delete_success' => 'Bank account delete success',
+        'delete_fail' => 'Bank account delete fail',
+
+        'validation' => [
+            'is_only_party' => [
+                'required' => '必須項目に入力してください。',
+                'boolean' => 'The is only party is boolean',
+            ],
+            'first_name' => [
+                'required' => '必須項目に入力してください。',
+            ],
+            'last_name' => [
+                'required' => '必須項目に入力してください。',
+            ],
+            'relationship_couple' => [
+                'required' => '必須項目に入力してください。'
+            ],
+            'email' => [
+                'required' => '必須項目に入力してください。',
+                'max' => 'The email can not be greater than :max characters',
+                'regex' => 'The email format is invalid'
+            ],
+            'post_code' => [
+                'required' => 'The post code is required',
+                'digits' => 'The post code is :digits characters',
+                'numeric' => 'The post code is numeric',
+            ],
+            'address' => [
+                'required' => '必須項目に入力してください。',
+                'max' => 'The address can not be greater than :max characters',
+            ],
+            'phone' => [
+                'required' => 'The phone is required',
+                'digits_between' => 'The phone must be 10~11 characters'
+            ],
+            'customer_type' => [
+                'required' => '必須項目に入力してください。' ,
+                'numeric' => 'The customer type must be numeric',
+            ],
+            'task_content' => [
+                'required' => '必須項目に入力してください。'
+            ],
+            'free_word' => [
+                'required' => '必須項目に入力してください。'
+            ],
+            'bank_account_id' => [
+                'required' => '必須項目に入力してください。',
+                'exists' => 'The bank account does not exists'
+            ],
+            'bank_order' => [
+                'required' => '必須項目に入力してください。',
+                'min' => 'The bank account value can not be less than :min',
+                'max' => 'The bank account value can not be greater than :max',
+                'numeric' => 'The bank order must be a numeric',
+            ],
+            'is_send_wedding_card' => [
+                'required' => '必須項目に入力してください。',
+                'boolean' => 'The is send wedding card must be an boolean'
+            ]
         ]
     ],
 ];
