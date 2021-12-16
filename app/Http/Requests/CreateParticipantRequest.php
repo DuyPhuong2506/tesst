@@ -36,7 +36,7 @@ class CreateParticipantRequest extends ApiRequest
             'customer_relatives.*.last_name' => 'required',
             'customer_relatives.*.relationship' => 'required',
             
-            'customer_type' => 'required',
+            'customer_type' => 'required|numeric',
             'task_content' => 'required',
             'free_word' => 'required',
             'bank_order' => [
@@ -91,6 +91,7 @@ class CreateParticipantRequest extends ApiRequest
             'phone.required' => __('messages.participant.validation.phone.required'),
             'phone.digits_between' => __('messages.participant.validation.phone.digits_between'),
             'customer_type.required' => __('messages.participant.validation.customer_type.required'),
+            'customer_type.numeric' => __('messages.participant.validation.customer_type.numeric'),
             'task_content.required' => __('messages.participant.validation.task_content.required'),
             'free_word.required' => __('messages.participant.validation.free_word.required'),
             'bank_order.required' => __('messages.participant.validation.bank_order.required'),

@@ -340,7 +340,8 @@ return [
                 'digits_between' => 'The phone must be 10~11 characters'
             ],
             'customer_type' => [
-                'required' => 'The customer type is required'  
+                'required' => 'The customer type is required',
+                'numeric' => 'The customer type must be numeric',
             ],
             'task_content' => [
                 'required' => 'The task content is required'

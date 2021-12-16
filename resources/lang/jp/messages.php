@@ -341,7 +341,8 @@ return [
                 'digits_between' => 'The phone must be 10~11 characters'
             ],
             'customer_type' => [
-                'required' => '必須項目に入力してください。'  
+                'required' => '必須項目に入力してください。' ,
+                'numeric' => 'The customer type must be numeric',
             ],
             'task_content' => [
                 'required' => '必須項目に入力してください。'
