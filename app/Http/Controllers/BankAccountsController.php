@@ -7,6 +7,7 @@ use Illuminate\Http\Response;
 use App\Http\Requests\UpdateBankAccountRequest;
 use App\Services\BankAccountService;
 use Auth;
+use DB;
 
 class BankAccountsController extends Controller
 {
@@ -83,18 +84,29 @@ class BankAccountsController extends Controller
     {
         $bankAccount = $request->bank_accounts;
         $weddingPrice = $request->only('wedding_price');
-        $weddingId = $this->customer->id;
+        $weddingId = $this->customer->wedding_id;
 
-        $data = $this->bankAccountService
-                     ->updateOrCreateBankAccount($bankAccount, $weddingPrice, $weddingId);
+        DB::beginTransaction();
+        try {
+            $data = $this->bankAccountService->updateOrCreateBankAccount(
+                $bankAccount, 
+                $weddingPrice,
+                $weddingId
+            );
 
-        if($data){
-            return $this->respondSuccess($data);
+            if($data){
+                DB::commit();
+                return $this->respondSuccess($data);
+            }
+
+            DB::rollback();
+        } catch (\Throwable $th) {
+            DB::rollback();
+
+            return $this->respondError(
+                Response::HTTP_BAD_REQUEST, __('messages.wedding_card.update_fail')
+            );
         }
-        
-        return $this->respondError(
-            Response::HTTP_BAD_REQUEST, __('messages.wedding_card.update_fail')
-        );
     }
 
     /**
