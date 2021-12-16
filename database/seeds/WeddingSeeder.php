@@ -185,5 +185,53 @@ class WeddingSeeder extends Seeder
             "table_position_id" => $tableB->id,
             'wedding_id' => $wedding->id
         ]);
+
+        Customer::create([
+            'username' => $faker->unique()->userName,
+            'full_name' => $faker->name,
+            'email' => $faker->email,
+            'token' => "dfyqwdye123236",
+            'password' => '222222222222',
+            'place_id' => $place->id,
+            'role' => "6",
+            "table_position_id" => $tableB->id,
+            'wedding_id' => $wedding->id
+        ]);
+
+        Customer::create([
+            'username' => $faker->unique()->userName,
+            'full_name' => $faker->name,
+            'email' => $faker->email,
+            'token' => "yutyuasdytuqw",
+            'password' => '222222222222',
+            'place_id' => $place->id,
+            'role' => "7",
+            "table_position_id" => $tableB->id,
+            'wedding_id' => $wedding->id
+        ]);
+
+        Customer::create([
+            'username' => $faker->unique()->userName,
+            'full_name' => $faker->name,
+            'email' => $faker->email,
+            'token' => "jweywom478qwweag",
+            'password' => '222222222222',
+            'place_id' => $place->id,
+            'role' => "8",
+            "table_position_id" => $tableB->id,
+            'wedding_id' => $wedding->id
+        ]);
+
+        Customer::create([
+            'username' => $faker->unique()->userName,
+            'full_name' => $faker->name,
+            'email' => $faker->email,
+            'token' => "58qwewersdfq4q7we",
+            'password' => '222222222222',
+            'place_id' => $place->id,
+            'role' => "9",
+            "table_position_id" => $tableB->id,
+            'wedding_id' => $wedding->id
+        ]);
     }
 }
