@@ -82,7 +82,7 @@ Route::prefix('v1')->group(function () {
             Route::resource('/couple/template-content', 'TemplateContentController');
             Route::resource('/couple/wedding-card', 'WeddingCardsController');
             Route::resource('/couple/bank-account', 'BankAccountsController');
-            Route::resource('/couple/articipant', 'CustomersController');
+            Route::resource('/couple/participant', 'CustomersController');
         });
 
         /* Role Customer*/

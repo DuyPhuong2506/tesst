@@ -2,17 +2,22 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\CustomerService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use App\Http\Requests\CreateParticipantRequest;
+use App\Services\CustomerService;
+use Auth;
+use DB;
 
 class CustomersController extends Controller
 {
-    protected $customerRepo;
+    protected $customerService;
+    protected $customer;
 
     public function __construct(CustomerService $customerService)
     {
         $this->customerService = $customerService;
+        $this->customer = Auth::guard('customer')->user();
     }
 
     /**
@@ -37,13 +42,33 @@ class CustomersController extends Controller
 
     /**
      * Store a newly created resource in storage.
+     * ==> Couple Create Participant Of The Wedding <==
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CreateParticipantRequest $request)
     {
-        
+        $requestData = $request->all();
+        $weddingId = $this->customer->wedding_id;
+
+        DB::beginTransaction();
+        try {
+            $data = $this->customerService->createParticipant($requestData, $weddingId);
+
+            if($data){
+                DB::commit();
+                return $this->respondSuccess($data);
+            }
+
+            DB::rollback();
+        } catch (\Throwable $th) {
+            DB::rollback();
+            
+            return $this->respondError(
+                Response::HTTP_BAD_REQUEST, __('messages.participant.create_fail')
+            );
+        }
     }
 
     /**

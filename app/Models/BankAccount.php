@@ -15,7 +15,8 @@ class BankAccount extends Model
         'account_number',
         'card_type',
         'holder_name',
-        'wedding_card_id'
+        'wedding_card_id',
+        'bank_order'
     ];
 
     /**
