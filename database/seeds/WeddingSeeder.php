@@ -94,22 +94,144 @@ class WeddingSeeder extends Seeder
             'role' => "4"
         ]);
 
-        $listCustomer = [];
-        for($i = 0; $i < 10; $i++){
-            $arrayId = [$tableA->id, $tableB->id];
-            $tableId = $arrayId[array_rand($arrayId)];
-            $item = [
-                'username' => $faker->unique()->userName,
+        Customer::create([
+            'username' => $faker->unique()->userName,
+            'full_name' => $faker->name,
+            'email' => $faker->email,
+            'token' => "123AEQWEQWE",
+            'password' => '222222222222',
+            'place_id' => $place->id,
+            'role' => "6"
+        ]);
+
+        Customer::create([
+            'username' => $faker->unique()->userName,
+            'full_name' => $faker->name,
+            'email' => $faker->email,
+            'token' => "dfgsdferwer",
+            'password' => '222222222222',
+            'place_id' => $place->id,
+            'role' => "6"
+        ]);
+
+        Customer::create([
+            'username' => $faker->unique()->userName,
+            'full_name' => $faker->name,
+            'email' => $faker->email,
+            'token' => "fgsfrtyrtyzxd",
+            'password' => '222222222222',
+            'place_id' => $place->id,
+            'role' => "6"
+        ]);
+        
+        Customer::updateOrcreate(
+            ['username' => '111122223333'],
+            [
+                'username' => '111122223333',
                 'full_name' => $faker->name,
                 'email' => $faker->email,
-                'token' => Str::random(12),
-                'password' => '222222222222',
-                'wedding_id' => $wedding->id,
+                'token' => "111122223333",
+                'password' => '111122223333',
+                'place_id' => $place->id,
                 'role' => "5",
-                "table_position_id" => $tableId
-            ];
-            array_push($listCustomer, $item);
-        }
-        DB::table('customers')->insert($listCustomer);
+                "wedding_id" => $wedding->id,
+            ]
+        );
+
+        Customer::create([
+            'username' => $faker->unique()->userName,
+            'full_name' => $faker->name,
+            'email' => $faker->email,
+            'token' => "dfgsdferwer",
+            'password' => '222222222222',
+            'place_id' => $place->id,
+            'role' => "5",
+            "table_position_id" => $tableA->id,
+            'wedding_id' => $wedding->id
+        ]);
+
+        Customer::create([
+            'username' => $faker->unique()->userName,
+            'full_name' => $faker->name,
+            'email' => $faker->email,
+            'token' => "jhhdfasdqwetyt",
+            'password' => '222222222222',
+            'place_id' => $place->id,
+            'role' => "5",
+            "table_position_id" => $tableA->id,
+            'wedding_id' => $wedding->id
+        ]);
+
+        Customer::create([
+            'username' => $faker->unique()->userName,
+            'full_name' => $faker->name,
+            'email' => $faker->email,
+            'token' => "jhhdfasdqwetyt",
+            'password' => '222222222222',
+            'place_id' => $place->id,
+            'role' => "5",
+            "table_position_id" => $tableB->id,
+            'wedding_id' => $wedding->id
+        ]);
+
+        Customer::create([
+            'username' => $faker->unique()->userName,
+            'full_name' => $faker->name,
+            'email' => $faker->email,
+            'token' => "jhhdfasdqwetyt",
+            'password' => '222222222222',
+            'place_id' => $place->id,
+            'role' => "5",
+            "table_position_id" => $tableB->id,
+            'wedding_id' => $wedding->id
+        ]);
+
+        Customer::create([
+            'username' => $faker->unique()->userName,
+            'full_name' => $faker->name,
+            'email' => $faker->email,
+            'token' => "dfyqwdye123236",
+            'password' => '222222222222',
+            'place_id' => $place->id,
+            'role' => "6",
+            "table_position_id" => $tableB->id,
+            'wedding_id' => $wedding->id
+        ]);
+
+        Customer::create([
+            'username' => $faker->unique()->userName,
+            'full_name' => $faker->name,
+            'email' => $faker->email,
+            'token' => "yutyuasdytuqw",
+            'password' => '222222222222',
+            'place_id' => $place->id,
+            'role' => "7",
+            "table_position_id" => $tableB->id,
+            'wedding_id' => $wedding->id
+        ]);
+
+        Customer::create([
+            'username' => $faker->unique()->userName,
+            'full_name' => $faker->name,
+            'email' => $faker->email,
+            'token' => "jweywom478qwweag",
+            'password' => '222222222222',
+            'place_id' => $place->id,
+            'role' => "8",
+            "table_position_id" => $tableB->id,
+            'wedding_id' => $wedding->id
+        ]);
+
+        Customer::create([
+            'username' => $faker->unique()->userName,
+            'full_name' => $faker->name,
+            'email' => $faker->email,
+            'token' => "58qwewersdfq4q7we",
+            'password' => '222222222222',
+            'place_id' => $place->id,
+            'role' => "9",
+            "table_position_id" => $tableB->id,
+            'wedding_id' => $wedding->id
+        ]);
     }
 }

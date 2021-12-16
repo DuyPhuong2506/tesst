@@ -89,6 +89,8 @@ Route::prefix('v1')->group(function () {
         Route::group(['middleware' => 'auth.customer'], function(){
             Route::get('/customer/event', 'EventsController@getWeddingEventWithBearerToken');
         });
+
+        Route::put('/customer/event/state-livesteam', 'EventsController@updateStateLivesteam');
         
         Route::post('/auth/logout', 'AuthController@logout');
         Route::post('/admin/create','UsersController@createAdmin');

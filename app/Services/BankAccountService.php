@@ -19,6 +19,10 @@ class BankAccountService
 
     public function updateOrCreateBankAccount($bankAccounts, $weddingPrice, $weddingId)
     {
+        for($i = 0; $i < count($bankAccounts); $i++){
+            $bankAccounts[$i]['bank_order'] = $i+1;
+        }
+        
         $weddingCard = $this->weddingCardRepo->model->where('wedding_id', $weddingId)
                                                     ->firstOrFail();
 

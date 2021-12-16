@@ -265,7 +265,8 @@ return [
                 'max' => 'The couple photo can not be greater than 10Mb',
             ],
             'wedding_price' => [
-                'required' => '必須項目に入力してください。'
+                'required' => '必須項目に入力してください。',
+                'numeric' => 'Must be numeric'
             ]
         ]
     ],
@@ -297,6 +298,11 @@ return [
             'wedding_card_id' => [
                 'required' => '必須項目に入力してください。',
                 'exists' => 'The wedding card id does not exist',
+            ],
+            'bank_account' => [
+                'array' => 'The data type must be an array',
+                'required' => 'The bank account data is required',
+                'max' => 'The banks account can not be greater than :max items'
             ],
         ]
     ],

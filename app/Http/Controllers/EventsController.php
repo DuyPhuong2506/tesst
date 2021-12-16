@@ -130,4 +130,19 @@ class EventsController extends Controller
         }
     }
 
+    public function updateStateLivesteam(Request $request)
+    {
+        try {
+            $data = $this->eventService->updateStateLivesteam($request->all());
+            if($data){
+                return $this->respondSuccess($data);
+            }
+        } catch (\Exception $e) {
+            
+            return $this->respondError(Response::HTTP_BAD_REQUEST, $e->getMessage());
+        }
+    }
+
+    
+
 }

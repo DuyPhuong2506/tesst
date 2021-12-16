@@ -36,7 +36,7 @@ class Customer extends AuthJWT
 
     public function tablePosition()
     {
-        return $this->belongsTo(TablePosition::class, 'table_position_id');
+        return $this->belongsToMany(TablePosition::class, 'customer_table', 'customer_id', 'table_position_id');
     }
 
     public function setPasswordAttribute($value)

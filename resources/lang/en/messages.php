@@ -264,7 +264,8 @@ return [
                 'max' => 'The couple photo can not be greater than 10Mb',
             ],
             'wedding_price' => [
-                'required' => 'The wedding price is required'
+                'required' => 'The wedding price is required',
+                'numeric' => 'Must be numeric'
             ]
         ]
     ],
@@ -296,6 +297,11 @@ return [
             'wedding_card_id' => [
                 'required' => 'The wedding card id is required',
                 'exists' => 'The wedding card id does not exist',
+            ],
+            'bank_account' => [
+                'array' => 'The data type must be an array',
+                'required' => 'The bank account data is required',
+                'max' => 'The banks account can not be greater than :max items'
             ],
         ]
     ],

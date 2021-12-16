@@ -205,7 +205,7 @@ class EventService
                             }]);
                         }]);
                     }])
-                    ->select('id', 'date', 'place_id')
+                    ->select('id', 'date', 'place_id', 'is_livestream')
                     ->with(['eventTimes' => function($q){
                         $q->select(['id', 'event_id', 'start', 'end', 'description']);
                     }])
@@ -303,5 +303,24 @@ class EventService
         }
         
         return $this->detailEvent($id);
+    }
+
+    public function updateStateLivesteam($data)
+    {
+        $authId = Auth::guard('customer')->user()->id;
+        $customer = $this->customerRepo->model
+            ->where('id', $authId)
+            ->first();
+        if($customer) {
+            $event = $this->eventRepo->model->find($customer->wedding_id);
+            $stateLivesteam = is_numeric($data['is_livestream']) ? $data['is_livestream'] : 0; 
+            $event->update([
+                'is_livestream' => $stateLivesteam
+            ]);
+            
+            return true;
+        }
+      
+        return false;
     }
 }
