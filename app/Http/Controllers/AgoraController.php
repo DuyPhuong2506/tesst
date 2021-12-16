@@ -43,19 +43,19 @@ class AgoraController extends Controller
                 $channelName = $user['username'];
                 $uuid = $user['id'];
                 // Rtc token using video call
-                $rtcToken = $this->agoraService->getRtcToken($channelName, $uuid, $user['role']);
+                // $rtcToken = $this->agoraService->getRtcToken($channelName, $uuid, $user['role']);
 
-                // Rtm token using chat
-                $rtmToken = $this->agoraService->getRtmToken($uuid);
+                // // Rtm token using chat
+                // $rtmToken = $this->agoraService->getRtmToken($uuid);
 
-                $dataChanels[] = [
-                    'app_id' => env('AGORA_APP_ID'),
-                    'uuid' => $uuid,
-                    'chanel_name' => $channelName,
-                    'rtc_token' => $rtcToken,
-                    'rtm_token' => $rtmToken,
-                    'role' => $user['role']
-                ];
+                // $dataChanels[] = [
+                //     'app_id' => env('AGORA_APP_ID'),
+                //     'uuid' => $uuid,
+                //     'chanel_name' => $channelName,
+                //     'rtc_token' => $rtcToken,
+                //     'rtm_token' => $rtmToken,
+                //     'role' => $user['role']
+                // ];
             }
 
             

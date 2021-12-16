@@ -21,6 +21,7 @@ class CustomerService
         $keyword = !empty($data['keyword']) ? escape_like($data['keyword']) : null;
         $paginate = !empty($data['paginate']) ? $data['paginate'] : Common::PAGINATE;
         $auth = Auth::guard('customer')->user();
+        $tablePositionId = $data['table_position_id'] ?? null; 
         $roleWeddingIds = [Role::GUEST, Role::BRIDE, Role::GROOM];
         $roleTableIds = [Role::STAGE_TABLE, Role::COUPE_TABLE, Role::SPEECH_TABLE, Role::NORMAL_TABLE];
         
@@ -35,6 +36,11 @@ class CustomerService
                 $q->whereHas('wedding', function($q) use ($auth){
                     $q->where('place_id', $auth->place_id)
                         ->where('is_close', Common::STATUS_FALSE);
+                });
+            })
+            ->when(!empty($tablePositionId), function($q) use ($tablePositionId) {
+                $q->whereHas('tablePosition', function($q) use ($tablePositionId){
+                    $q->whereId($tablePositionId);
                 });
             });
             

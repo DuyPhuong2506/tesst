@@ -75,8 +75,6 @@ class CreateChannel extends Command
 
                     $channel = [
                         'wedding_id' => $wedding->id,
-                        'rtc_token' => null,
-                        'rtm_token' => null,
                         'name' => $table->position,
                         'amount' => 6,
                         'status' => Common::STATUS_FALSE,
@@ -137,8 +135,6 @@ class CreateChannel extends Command
     {
         $data = [
             'wedding_id' => $wedding_id,
-            'rtc_token' => null,
-            'rtm_token' => null,
             'name' => $name,
             'amount' => 6,
             'status' => Common::STATUS_FALSE,
