@@ -49,7 +49,7 @@ class CreateParticipantRequest extends ApiRequest
                     $bankOrderRequest = request()->bank_order;
 
                     $bankOrders = [0];
-                    $weddingCard = WeddingCard::where('wedding_id', 1)->firstOrFail();
+                    $weddingCard = WeddingCard::where('wedding_id', $weddingId)->firstOrFail();
                     $bankOrderDB = $weddingCard->bankAccounts()
                                                ->select('bank_order')
                                                ->get();
