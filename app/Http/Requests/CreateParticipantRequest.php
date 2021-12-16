@@ -21,7 +21,7 @@ class CreateParticipantRequest extends ApiRequest
      */
     public function rules()
     {
-        $rules = [
+        return [
             'is_only_party' => 'required|boolean',
             'first_name' => 'required',
             'last_name' => 'required',
@@ -67,8 +67,6 @@ class CreateParticipantRequest extends ApiRequest
             ],
             'is_send_wedding_card' => 'required|boolean',
         ];
-
-        return $rules;
     }
 
     public function messages()
