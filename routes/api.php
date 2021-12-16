@@ -83,6 +83,7 @@ Route::prefix('v1')->group(function () {
             Route::resource('/couple/wedding-card', 'WeddingCardsController');
             Route::resource('/couple/bank-account', 'BankAccountsController');
             Route::resource('/couple/participant', 'CustomersController');
+            Route::resource('/couple/customer-task', 'CustomerTasksController');
         });
 
         /* Role Customer*/
