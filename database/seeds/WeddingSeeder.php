@@ -36,7 +36,6 @@ class WeddingSeeder extends Seeder
 
         //Create Wedding
         $wedding = Wedding::create([
-            'id' => 1,
             'place_id' => $place->id,
             'date' => '2021-12-13 15:00:00',
             'title' => $faker->title,
