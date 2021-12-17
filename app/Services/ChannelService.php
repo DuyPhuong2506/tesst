@@ -12,14 +12,17 @@ use Hash;
 use Str;
 use Carbon\Carbon;
 use App\Constants\Common;
+use App\Models\Customer;
+use App\Repositories\CustomerRepository;
 
 class ChannelService
 {
     protected $channelRepo;
 
-    public function __construct(ChannelRepository $channelRepo)
+    public function __construct(ChannelRepository $channelRepo, CustomerRepository $customerRepo)
     {
         $this->channelRepo = $channelRepo;
+        $this->customerRepo = $customerRepo;
     }
 
     public function showDetail($id)
@@ -41,6 +44,9 @@ class ChannelService
                     $q->where('name', 'like', '%' . $keyword . '%');
                 })
                 ->where('status', Common::STATUS_TRUE)
+                ->with(['tableAccount' => function($q) {
+                    $q->select('id', 'full_name', 'username');
+                }])
                 ->orderBy('created_at', 'desc');
         } 
         if($paginate != Common::PAGINATE_ALL){

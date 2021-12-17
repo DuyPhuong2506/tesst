@@ -35,4 +35,9 @@ class Channel extends Model
     {
         return $this->belongsTo(Wedding::class, 'wedding_id', 'id');
     }
+
+    public function tableAccount()
+    {
+        return $this->belongsTo(Customer::class, 'customer_id', 'id');
+    }
 }
