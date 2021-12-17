@@ -53,12 +53,16 @@ class CustomerService
                     $q->whereId($tablePositionId);
                 });
             });
-            
+        
 
         if($paginate != Common::PAGINATE_ALL){
             $getList = $getList->paginate($paginate);
         } else {
-            $getList = $getList->get();
+            if(isset($data['in_table']) && $guestPositionTableId == null){
+                $getList = collect([]);
+            } else {
+                $getList = $getList->get();
+            }
         }
 
         return $getList;
