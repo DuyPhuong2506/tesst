@@ -79,17 +79,6 @@ class EventsController extends Controller
         return $this->respondError(Response::HTTP_BAD_REQUEST, __('messages.event.delete_fail'));
     }
 
-    public function getWeddingEventLivestream(EventLiveStreamRequest $request)
-    {
-        $data = $this->eventService->getWeddingEventLivestream($request->token);
-
-        if($data){
-            return $this->respondSuccess($data); 
-        }
-
-        return $this->respondError(Response::HTTP_BAD_REQUEST, __('messages.event.list_null'));
-    }
-
     public function getWeddingEventWithBearerToken()
     {   
         $customerId = Auth::guard('customer')->user()->id;
