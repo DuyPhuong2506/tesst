@@ -372,4 +372,12 @@ return [
             ]
         ]
     ],
+    'customer_task' => [
+        'create_success' => 'Customer task create success',
+        'create_fail' => 'Customer task create fail',
+        'update_success' => 'Customer task update success',
+        'update_fail' => 'Customer task update fail',
+        'delete_success' => 'Customer task delete success',
+        'delete_fail' => 'Customer task delete fail',
+    ],
 ];
