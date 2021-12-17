@@ -128,7 +128,6 @@ class PlaceService
             $objectTable = [
                 'amount_chair' => $item['amount_chair'],
                 'position' =>   $item['position'],
-                'customer_id' => auth()->id(),
                 'status' => Common::STATUS_TRUE
             ];
             array_push($dataTable, $objectTable);
@@ -341,7 +340,6 @@ class PlaceService
                 $objectTable = [
                     'amount_chair' => $item['amount_chair'],
                     'position' =>   $item['position'],
-                    'customer_id' => auth()->id(),
                     'status' => Common::STATUS_TRUE
                 ];
                 array_push($dataTable, $objectTable);
@@ -352,7 +350,6 @@ class PlaceService
                 $updateTable = [
                     'amount_chair' => $item['amount_chair'],
                     'position' =>   $item['position'],
-                    'customer_id' => auth()->id(),
                     'status' => Common::STATUS_TRUE
                 ];
                 $table = $place->tablePositions()->whereId($item['id'])->first();
