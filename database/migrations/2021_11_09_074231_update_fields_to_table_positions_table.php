@@ -30,7 +30,7 @@ class UpdateFieldsToTablePositionsTable extends Migration
     public function down()
     {
         Schema::table('table_positions', function (Blueprint $table) {
-            $table->dropForeign('place_id');
+            $table->dropForeign(['place_id']);
             $table->dropColumn('place_id');
             $table->bigInteger('table_account_id')->change();
             $table->dropColumn('amount_chair');

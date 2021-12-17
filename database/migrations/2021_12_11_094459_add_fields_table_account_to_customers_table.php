@@ -33,7 +33,7 @@ class AddFieldsTableAccountToCustomersTable extends Migration
             $table->dropColumn('chair_name');
             $table->dropColumn('link_issue');
             $table->dropColumn('qr_code_image');
-            $table->dropForeign('place_id');
+            $table->dropForeign(['place_id']);
             $table->dropColumn('place_id');
         });
     }
