@@ -8,6 +8,7 @@ use App\Models\Customer;
 use App\Models\Restaurant;
 use App\Models\EventTimes;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 
 class WeddingSeeder extends Seeder
 {
@@ -16,22 +17,26 @@ class WeddingSeeder extends Seeder
      *
      * @return void
      */
-    public function run()
+    public function runSeeders()
     {
         $faker = Faker\Factory::create();
-
+        
+        //Create Restaurant
         $restaurant = Restaurant::create([
             'name' => $faker->name,
-            'phone' => $faker->phoneNumber
+            'phone' => $faker->phoneNumber,
         ]);
 
+        //Create Place
         $place = Place::create([
             'name' => $faker->name,
             'restaurant_id' => $restaurant->id,
             'status' => "1"
         ]);
 
+        //Create Wedding
         $wedding = Wedding::create([
+            'id' => 1,
             'place_id' => $place->id,
             'date' => '2021-12-13 15:00:00',
             'title' => $faker->title,
@@ -46,6 +51,7 @@ class WeddingSeeder extends Seeder
             "couple_edit_date" => "2021-12-13",
         ]);
 
+        //Create Wedding Time Table
         $eventTimes = [];
         for($i = 0; $i < 4; $i++){
             $item = [
@@ -58,22 +64,23 @@ class WeddingSeeder extends Seeder
         }
         DB::table('wedding_timetable')->insert($eventTimes);
         
+        //Create TABLE A
         $tableA = TablePosition::create([
             'position' => "TABLE A",
             "status" => "1",
             "amount_chair" => 10,
-            "place_id" => $place->id,
-            "customer_id" => 0
+            "place_id" => $place->id
         ]);
 
+        //Create TABLE B
         $tableB = TablePosition::create([
             'position' => "TABLE B",
             "status" => "1",
             "amount_chair" => 10,
-            "place_id" => $place->id,
-            "customer_id" => 0
+            "place_id" => $place->id
         ]);
 
+        //Create GROOM account
         Customer::create([
             'username' => $faker->unique()->userName,
             'full_name' => $faker->name,
@@ -84,6 +91,7 @@ class WeddingSeeder extends Seeder
             'role' => "3"
         ]);
 
+        //Create BRIDE account
         Customer::create([
             'username' => $faker->unique()->userName,
             'full_name' => $faker->name,
@@ -94,6 +102,7 @@ class WeddingSeeder extends Seeder
             'role' => "4"
         ]);
 
+        //Create STAGE_TABLE account
         Customer::create([
             'username' => $faker->unique()->userName,
             'full_name' => $faker->name,
@@ -101,9 +110,11 @@ class WeddingSeeder extends Seeder
             'token' => "123AEQWEQWE",
             'password' => '222222222222',
             'place_id' => $place->id,
-            'role' => "6"
+            'role' => "6",
+            'wedding_id' => $wedding->id,
         ]);
 
+        //Create COUPE_TABLE account
         Customer::create([
             'username' => $faker->unique()->userName,
             'full_name' => $faker->name,
@@ -111,9 +122,11 @@ class WeddingSeeder extends Seeder
             'token' => "dfgsdferwer",
             'password' => '222222222222',
             'place_id' => $place->id,
-            'role' => "6"
+            'role' => "7",
+            'wedding_id' => $wedding->id,
         ]);
 
+        //Create SPEECH_TABLE account
         Customer::create([
             'username' => $faker->unique()->userName,
             'full_name' => $faker->name,
@@ -121,117 +134,108 @@ class WeddingSeeder extends Seeder
             'token' => "fgsfrtyrtyzxd",
             'password' => '222222222222',
             'place_id' => $place->id,
-            'role' => "6"
+            'role' => "8",
+            'wedding_id' => $wedding->id,
         ]);
         
-        Customer::updateOrcreate(
-            ['username' => '111122223333'],
-            [
-                'username' => '111122223333',
-                'full_name' => $faker->name,
-                'email' => $faker->email,
-                'token' => "111122223333",
-                'password' => '111122223333',
-                'place_id' => $place->id,
-                'role' => "5",
-                "wedding_id" => $wedding->id,
-            ]
-        );
-
+        //Create NORMAL_TABLE account
         Customer::create([
             'username' => $faker->unique()->userName,
             'full_name' => $faker->name,
             'email' => $faker->email,
-            'token' => "dfgsdferwer",
-            'password' => '222222222222',
-            'place_id' => $place->id,
-            'role' => "5",
-            "table_position_id" => $tableA->id,
-            'wedding_id' => $wedding->id
-        ]);
-
-        Customer::create([
-            'username' => $faker->unique()->userName,
-            'full_name' => $faker->name,
-            'email' => $faker->email,
-            'token' => "jhhdfasdqwetyt",
-            'password' => '222222222222',
-            'place_id' => $place->id,
-            'role' => "5",
-            "table_position_id" => $tableA->id,
-            'wedding_id' => $wedding->id
-        ]);
-
-        Customer::create([
-            'username' => $faker->unique()->userName,
-            'full_name' => $faker->name,
-            'email' => $faker->email,
-            'token' => "jhhdfasdqwetyt",
-            'password' => '222222222222',
-            'place_id' => $place->id,
-            'role' => "5",
-            "table_position_id" => $tableB->id,
-            'wedding_id' => $wedding->id
-        ]);
-
-        Customer::create([
-            'username' => $faker->unique()->userName,
-            'full_name' => $faker->name,
-            'email' => $faker->email,
-            'token' => "jhhdfasdqwetyt",
-            'password' => '222222222222',
-            'place_id' => $place->id,
-            'role' => "5",
-            "table_position_id" => $tableB->id,
-            'wedding_id' => $wedding->id
-        ]);
-
-        Customer::create([
-            'username' => $faker->unique()->userName,
-            'full_name' => $faker->name,
-            'email' => $faker->email,
-            'token' => "dfyqwdye123236",
-            'password' => '222222222222',
-            'place_id' => $place->id,
-            'role' => "6",
-            "table_position_id" => $tableB->id,
-            'wedding_id' => $wedding->id
-        ]);
-
-        Customer::create([
-            'username' => $faker->unique()->userName,
-            'full_name' => $faker->name,
-            'email' => $faker->email,
-            'token' => "yutyuasdytuqw",
-            'password' => '222222222222',
-            'place_id' => $place->id,
-            'role' => "7",
-            "table_position_id" => $tableB->id,
-            'wedding_id' => $wedding->id
-        ]);
-
-        Customer::create([
-            'username' => $faker->unique()->userName,
-            'full_name' => $faker->name,
-            'email' => $faker->email,
-            'token' => "jweywom478qwweag",
-            'password' => '222222222222',
-            'place_id' => $place->id,
-            'role' => "8",
-            "table_position_id" => $tableB->id,
-            'wedding_id' => $wedding->id
-        ]);
-
-        Customer::create([
-            'username' => $faker->unique()->userName,
-            'full_name' => $faker->name,
-            'email' => $faker->email,
-            'token' => "58qwewersdfq4q7we",
-            'password' => '222222222222',
+            'token' => "111122223333",
+            'password' => '111122223333',
             'place_id' => $place->id,
             'role' => "9",
-            "table_position_id" => $tableB->id,
+            "wedding_id" => $wedding->id,
+        ]);
+
+        // Create GUEST 1
+        $guest1 = Customer::create([
+            'username' => 'qqqqqqqqqqqq',
+            'full_name' => $faker->name,
+            'email' => $faker->email,
+            'token' => "qqqqqqqqqqqq",
+            'password' => 'qqqqqqqqqqqq',
+            'place_id' => $place->id,
+            'role' => "5",
             'wedding_id' => $wedding->id
         ]);
+
+        // Create GUEST 2
+        $guest2 = Customer::create([
+            'username' => 'wwwwwwwwwwww',
+            'full_name' => $faker->name,
+            'email' => $faker->email,
+            'token' => "wwwwwwwwwwww",
+            'password' => 'wwwwwwwwwwww',
+            'place_id' => $place->id,
+            'role' => "5",
+            'wedding_id' => $wedding->id
+        ]);
+
+        // Create GUEST 3
+        $guest3 = Customer::create([
+            'username' => 'eeeeeeeeeeee',
+            'full_name' => $faker->name,
+            'email' => $faker->email,
+            'token' => "eeeeeeeeeeee",
+            'password' => 'eeeeeeeeeeee',
+            'place_id' => $place->id,
+            'role' => "5",
+            'wedding_id' => $wedding->id
+        ]);
+
+        // Create GUEST 4
+        $guest4 = Customer::create([
+            'username' => 'dddddddddddd',
+            'full_name' => $faker->name,
+            'email' => $faker->email,
+            'token' => "dddddddddddd",
+            'password' => 'dddddddddddd',
+            'place_id' => $place->id,
+            'role' => "5",
+            'wedding_id' => $wedding->id
+        ]);
+
+        
+        $tableA->customers()->attach([$guest1->id],[
+            'chair_name' => $faker->name,
+            'status' => '1'
+        ]);
+
+        $tableA->customers()->attach([$guest2->id],[
+            'chair_name' => $faker->name,
+            'status' => '1'
+        ]);
+
+        $tableB->customers()->attach([$guest3->id],[
+            'chair_name' => $faker->name,
+            'status' => '1'
+        ]);
+
+        $tableB->customers()->attach([$guest4->id],[
+            'chair_name' => $faker->name,
+            'status' => '1'
+        ]);
+
+        return true;
+    }
+
+    public function run()
+    {
+        DB::beginTransaction();
+        try {
+            if($this->runSeeders()){
+                DB::commit();
+                echo "Dump data successfully !";
+            }else{
+                DB::rollback();
+                echo "Failed to dump wedding data!";
+            }
+        } catch (\Throwable $th) {
+            DB::rollback();
+            echo "Failed to dump wedding data!";
+        }
     }
 }
