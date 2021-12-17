@@ -32,7 +32,7 @@ class CreateTableCustomerRelatives extends Migration
     public function down()
     {
         Schema::table('customer_relatives', function (Blueprint $table) {
-            $table->dropForeign('customer_id');
+            $table->dropForeign(['customer_id']);
         })->dropIfExists('customer_relatives');
     }
 }
