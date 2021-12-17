@@ -37,16 +37,17 @@ class CustomerService
                         ->where('is_close', Common::STATUS_FALSE);
                 });
             })
-            ->when(isset($auth->role) && in_array($auth->role, $roleTableIds), function($q) use ($auth) {
-                $q->whereHas('wedding', function($q) use ($auth){
-                    $q->where('place_id', $auth->place_id)
-                        ->where('is_close', Common::STATUS_FALSE);
-                });
-            })
+            // ->when(isset($auth->role) && in_array($auth->role, $roleTableIds), function($q) use ($auth) {
+            //     $q->whereHas('wedding', function($q) use ($auth){
+            //         $q->where('place_id', $auth->place_id)
+            //             ->where('is_close', Common::STATUS_FALSE);
+            //     });
+            // });
             ->when(isset($data['in_table']) && isset($guestPositionTableId),function($q) use ($guestPositionTableId) {
                 $q->whereHas('tablePosition', function($q) use ($guestPositionTableId){
                     $q->whereId($guestPositionTableId);
-                });
+                })
+                ->whereRole(Role::GUEST);
             })
             ->when(!empty($tablePositionId), function($q) use ($tablePositionId) {
                 $q->whereHas('tablePosition', function($q) use ($tablePositionId){
