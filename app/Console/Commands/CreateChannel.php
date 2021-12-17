@@ -54,7 +54,8 @@ class CreateChannel extends Command
             $roleMember = RtcTokenBuilder::RoleSubscriber;
            
             $tables = \DB::table('table_positions')
-                ->join('customers', 'customers.table_position_id', '=', 'table_positions.id')
+                ->join('customer_table', 'customer_table.table_position_id', '=', 'table_positions.id')
+                ->join('customers', 'customers.id', '=', 'customer_table.customer_id')
                 ->where('table_positions.place_id', $wedding->place_id)
                 ->select('table_positions.*')
                 ->groupBy('table_positions.id')
@@ -88,28 +89,28 @@ class CreateChannel extends Command
 
                     $id = \DB::table('channels')->insertGetId($channel);
 
-                    if($id) {
-                        $customers = \DB::table('customers')
-                            ->where('wedding_id', $wedding->id)
-                            ->where('table_position_id', $table->id)
-                            ->where('role', Role::GUEST)
-                            ->get();
+                    // if($id) {
+                    //     $customers = \DB::table('customers')
+                    //         ->where('wedding_id', $wedding->id)
+                    //         ->where('table_position_id', $table->id)
+                    //         ->where('role', Role::GUEST)
+                    //         ->get();
                         
-                        $customer_join_channels = [];
-                        foreach($customers as $customer) {
-                            $customer_channel = [
-                                'channel_id'    => $id,
-                                'is_host'       => Common::STATUS_TRUE,
-                                'is_guest'      => Common::STATUS_FALSE,
-                                'customer_id'   => $customer->id,
-                                'status'        => Common::STATUS_TRUE,
-                            ];
+                    //     $customer_join_channels = [];
+                    //     foreach($customers as $customer) {
+                    //         $customer_channel = [
+                    //             'channel_id'    => $id,
+                    //             'is_host'       => Common::STATUS_TRUE,
+                    //             'is_guest'      => Common::STATUS_FALSE,
+                    //             'customer_id'   => $customer->id,
+                    //             'status'        => Common::STATUS_TRUE,
+                    //         ];
 
-                            array_push($customer_join_channels, $customer_channel);
-                        }
+                    //         array_push($customer_join_channels, $customer_channel);
+                    //     }
 
-                        \DB::table('customer_channel')->insert($customer_join_channels);
-                    }
+                    //     \DB::table('customer_channel')->insert($customer_join_channels);
+                    // }
                 }
             }
         }
