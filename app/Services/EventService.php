@@ -144,52 +144,19 @@ class EventService
                     ->first();
     }
 
-    public function getWeddingEventLivestream($token)
-    {   
-        $tablePosition = $this->customerRepo->model->where('token', $token)
-                                 ->select('id', 'full_name')
-                                 ->with(['tablePosition' => function($q){
-                                    $q->select('id', 'position');
-                                 }])
-                                 ->first();
-        $weddingId = $this->customerRepo->model->where('token', $token)
-                             ->select('wedding_id')->first()->wedding_id;
-        $data = $this->eventRepo->model->whereHas('customers', function($q) use($token){
-                        $q->where('token', $token);
-                    })
-                    ->with(['place' => function($q) use($weddingId){
-                        $q->select('id', 'name')
-                          ->with(['tablePositions' => function($q) use($weddingId){
-                                $q->select('place_id', 'id', 'position')
-                                  ->where('status', Common::STATUS_TRUE)
-                                  ->with(['customers' => function($q) use($weddingId){
-                                        $q->select('full_name', 'id')
-                                          ->where('role', Role::GUEST)
-                                          ->where('wedding_id', $weddingId);
-                            }]);
-                        }]);
-                    }])
-                    ->select('id', 'date', 'place_id')
-                    ->with(['eventTimes' => function($q){
-                        $q->select(['id', 'event_id', 'start', 'end', 'description']);
-                    }])
-                    ->first();
-        
-        $data['customer_detail'] = $tablePosition;
-        
-        return $data;
-    }
-
     public function getWeddingEventWithBearerToken($customerId)
     {   
         $tablePosition = $this->customerRepo->model->where('id', $customerId)
-                                 ->select('id', 'full_name')
-                                 ->with(['tablePosition' => function($q){
+                              ->select('id', 'full_name')
+                              ->with(['tablePosition' => function($q){
                                     $q->select('id', 'position');
-                                 }])
-                                 ->first();
-        $weddingId = $this->customerRepo->model->where('id', $customerId)
-                             ->select('wedding_id')->first()->wedding_id;
+                              }])->first();
+
+        $weddingId = $this->customerRepo
+                          ->model
+                          ->where('id', $customerId)
+                          ->select('wedding_id')->first()->wedding_id;
+
         $data = $this->eventRepo->model->whereHas('customers', function($q) use($customerId){
                         $q->where('id', $customerId);
                     })
@@ -205,7 +172,6 @@ class EventService
                             }]);
                         }]);
                     }])
-                    ->select('id', 'date', 'place_id', 'is_livestream')
                     ->with(['eventTimes' => function($q){
                         $q->select(['id', 'event_id', 'start', 'end', 'description']);
                     }])
