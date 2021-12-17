@@ -147,7 +147,7 @@ class EventService
     public function getWeddingEventLivestream($token)
     {   
         $tablePosition = $this->customerRepo->model->where('token', $token)
-                                 ->select('id', 'table_position_id', 'full_name')
+                                 ->select('id', 'full_name')
                                  ->with(['tablePosition' => function($q){
                                     $q->select('id', 'position');
                                  }])
@@ -163,7 +163,7 @@ class EventService
                                 $q->select('place_id', 'id', 'position')
                                   ->where('status', Common::STATUS_TRUE)
                                   ->with(['customers' => function($q) use($weddingId){
-                                        $q->select('table_position_id', 'full_name')
+                                        $q->select('full_name', 'id')
                                           ->where('role', Role::GUEST)
                                           ->where('wedding_id', $weddingId);
                             }]);
