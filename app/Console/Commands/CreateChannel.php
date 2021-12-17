@@ -219,8 +219,8 @@ class CreateChannel extends Command
             ->exists();
         if(!$checkChannel){
             $customers = \DB::table('customers')
-                ->join('customer_tasks', 'customers.id', '=', 'customer_tasks.customer_id')
-                ->where('customer_tasks.name',  CustomerConstant::CUSTOMER_TASK_SPEECH)
+                // ->join('customer_tasks', 'customers.id', '=', 'customer_tasks.customer_id')
+                // ->where('customer_tasks.name',  CustomerConstant::CUSTOMER_TASK_SPEECH)
                 ->where('customers.wedding_id', $wedding_id)
                 ->whereIn('customers.role', [Role::GUEST])
                 ->where('customers.join_status', CustomerConstant::JOIN_STATUS_APPROVED)
