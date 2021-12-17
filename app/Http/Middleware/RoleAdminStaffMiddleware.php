@@ -30,7 +30,7 @@ class RoleAdminStaffMiddleware
         }
         
         $user = JWTAuth::parseToken()->authenticate();
-        if(!Auth::guard('customer') && $user->role == \App\Constants\Role::STAFF_ADMIN) return $next($request);
+        if(!Auth::guard('customer')->check() && $user->role == \App\Constants\Role::STAFF_ADMIN) return $next($request);
         return  $this->respondError(Response::HTTP_METHOD_NOT_ALLOWED, 'PERMISSION DENIED, ROLE STAFF');
     }
 }
