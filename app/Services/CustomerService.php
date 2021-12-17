@@ -29,7 +29,7 @@ class CustomerService
         $tablePositionId = $data['table_position_id'] ?? null; 
         $roleWeddingIds = [Role::GUEST, Role::BRIDE, Role::GROOM];
         $roleTableIds = [Role::STAGE_TABLE, Role::COUPE_TABLE, Role::SPEECH_TABLE, Role::NORMAL_TABLE];
-        
+        $guestPositionTableId = Auth::guard('customer')->user()->tablePosition->first()->id ?? null;
         $getList = $this->customerRepo->model
             ->when(isset($auth->role) && in_array($auth->role, $roleWeddingIds), function($q) use ($auth) {
                 $q->whereHas('wedding', function($q) use ($auth){
@@ -41,6 +41,11 @@ class CustomerService
                 $q->whereHas('wedding', function($q) use ($auth){
                     $q->where('place_id', $auth->place_id)
                         ->where('is_close', Common::STATUS_FALSE);
+                });
+            })
+            ->when(isset($data['in_table']) && isset($guestPositionTableId),function($q) use ($guestPositionTableId) {
+                $q->whereHas('tablePosition', function($q) use ($guestPositionTableId){
+                    $q->whereId($guestPositionTableId);
                 });
             })
             ->when(!empty($tablePositionId), function($q) use ($tablePositionId) {
