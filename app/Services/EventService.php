@@ -172,7 +172,6 @@ class EventService
                             }]);
                         }]);
                     }])
-                    ->select('*')
                     ->with(['eventTimes' => function($q){
                         $q->select(['id', 'event_id', 'start', 'end', 'description']);
                     }])
