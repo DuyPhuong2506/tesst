@@ -120,10 +120,12 @@ Route::prefix('v1')->group(function () {
         echo true;
     });
 
-    Route::get('/dump-customer-token', function(){
+    Route::get('/dump-wedding', function(){
         \Artisan::call('db:seed --class=WeddingSeeder');
+    });
 
-        echo true; 
+    Route::get('/un-dump-wedding', function(){
+        \Artisan::call('db:seed --class=UnWeddingSeeder');
     });
 
 });
