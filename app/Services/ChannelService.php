@@ -42,19 +42,7 @@ class ChannelService
                 })
                 ->where('status', Common::STATUS_TRUE)
                 ->orderBy('created_at', 'desc');
-        } else if(Auth::guard('table_account')->check()){
-            $auth = Auth::guard('table_account')->user();
-            $list = $list->whereHas('wedding', function($q) use ($auth) {
-                    $q->where('place_id', $auth->place_id)
-                        ->where('is_close', Common::STATUS_FALSE);
-                })
-                ->when(!empty($keyword), function($q) use ($keyword) {
-                    $q->where('name', 'like', '%' . $keyword . '%');
-                })
-                ->where('status', Common::STATUS_TRUE)
-                ->orderBy('created_at', 'desc');
-        }
-
+        } 
         if($paginate != Common::PAGINATE_ALL){
             $list = $list->paginate($paginate);
         } else {
