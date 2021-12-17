@@ -49,17 +49,10 @@ class UpdateTokenChannel extends Command
             ->where('status', Common::STATUS_FALSE)
             ->get();
        
-        // foreach($channels as $channel) {
-        //     // Rtc token using video call
-        //     $rtcToken = $this->agoraService->getRtcToken($channel->name, $channel->id, $channel->role);
-        //     // Rtm token using chat
-        //     $rtmToken = $this->agoraService->getRtmToken($channel->id);
-
-        //     \DB::table('channels')->where('id', $channel->id)->update([
-        //         'rtc_token' =>  $rtcToken,
-        //         'rtm_token' =>  $rtmToken,
-        //         'status'    =>  Common::STATUS_TRUE
-        //     ]);
-        // }
+        foreach($channels as $channel) {
+            \DB::table('channels')->where('id', $channel->id)->update([
+                'status'    =>  Common::STATUS_TRUE
+            ]);
+        }
     }
 }
