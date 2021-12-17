@@ -10,8 +10,8 @@ class UnWeddingSeeder extends Seeder
 {
     public function runSeeders()
     {
-        $wedding = Wedding::where('ceremony_time' , '07:00-08:00')
-                          ->where('party_time', '09:00-10:00')
+        $wedding = Wedding::where('ceremony_time' , '07:12-12:43')
+                          ->where('party_time', '13:15-17:11')
                           ->firstOrFail();
 
         $weddingId = $wedding->id;
