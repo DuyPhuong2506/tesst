@@ -45,24 +45,28 @@ class CreateParticipantRequest extends ApiRequest
                 'max:2',
                 'numeric',
                 function($attribute, $value, $fail){
-                    $weddingId = $this->customer->wedding_id;
-                    $bankOrderRequest = request()->bank_order;
+                    try {
+                        $weddingId = $this->customer->wedding_id;
+                        $bankOrderRequest = request()->bank_order;
 
-                    $bankOrders = [0];
-                    $weddingCard = WeddingCard::where('wedding_id', $weddingId)->firstOrFail();
-                    $bankOrderDB = $weddingCard->bankAccounts()
-                                               ->select('bank_order')
-                                               ->get();
-                                               
-                    if(count($bankOrders) > 0){
-                        for($i = 0; $i < count($bankOrderDB); $i++){
-                            $bankOrders[$i+1] = $bankOrderDB[$i]['bank_order'];
+                        $bankOrders = [0];
+                        $weddingCard = WeddingCard::where('wedding_id', $weddingId)->firstOrFail();
+                        $bankOrderDB = $weddingCard->bankAccounts()
+                                                ->select('bank_order')
+                                                ->get();
+                                                
+                        if(count($bankOrders) > 0){
+                            for($i = 0; $i < count($bankOrderDB); $i++){
+                                $bankOrders[$i+1] = $bankOrderDB[$i]['bank_order'];
+                            }
                         }
-                    }
-                    
-                    if(!in_array($bankOrderRequest, $bankOrders)){
+                        
+                        if(!in_array($bankOrderRequest, $bankOrders)){
+                            $fail(__('messages.bank_account.not_exist'));
+                        }
+                    } catch (\Throwable $th) {
                         $fail(__('messages.bank_account.not_exist'));
-                    }
+                    }                    
                 }
             ],
             'is_send_wedding_card' => 'required|boolean',
