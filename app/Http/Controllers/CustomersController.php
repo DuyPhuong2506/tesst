@@ -27,7 +27,17 @@ class CustomersController extends Controller
      */
     public function index(Request $request)
     {
-        //
+        $weddingId = $this->customer->wedding_id;
+        $requestData = $request->only('paginate');
+        $data = $this->customerService->getListParticipant($requestData, $weddingId);
+
+        if($data){
+            return $this->respondSuccess($data);
+        }
+
+        return $this->respondError(
+            Response::HTTP_BAD_REQUEST, __('messages.participant.list_fail')
+        );
     }
 
     /**

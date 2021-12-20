@@ -41,9 +41,9 @@ class WeddingSeeder extends Seeder
             'title' => $faker->title,
             'pic_name' => $faker->name,
             "ceremony_reception_time" => "06:00-07:00",
-            "ceremony_time" => "07:00-08:00",
+            "ceremony_time" => "07:12-12:43",
             "party_reception_time" => "08:00-09:00",
-            "party_time" => "09:00-10:00",
+            "party_time" => "13:15-17:11",
             "greeting_message" => $faker->paragraph,
             "thank_you_message" => $faker->paragraph,
             "guest_invitation_response_date" => "2021-12-13",
@@ -98,7 +98,7 @@ class WeddingSeeder extends Seeder
             'token' => "12345678",
             'password' => '222222222222',
             'wedding_id' => $wedding->id,
-            'role' => "4"
+            'role' => "4",
         ]);
 
         //Create STAGE_TABLE account
@@ -108,7 +108,6 @@ class WeddingSeeder extends Seeder
             'email' => $faker->email,
             'token' => "123AEQWEQWE",
             'password' => '222222222222',
-            'place_id' => $place->id,
             'role' => "6",
             'wedding_id' => $wedding->id,
         ]);
@@ -120,7 +119,6 @@ class WeddingSeeder extends Seeder
             'email' => $faker->email,
             'token' => "dfgsdferwer",
             'password' => '222222222222',
-            'place_id' => $place->id,
             'role' => "7",
             'wedding_id' => $wedding->id,
         ]);
@@ -132,7 +130,6 @@ class WeddingSeeder extends Seeder
             'email' => $faker->email,
             'token' => "fgsfrtyrtyzxd",
             'password' => '222222222222',
-            'place_id' => $place->id,
             'role' => "8",
             'wedding_id' => $wedding->id,
         ]);
@@ -144,7 +141,6 @@ class WeddingSeeder extends Seeder
             'email' => $faker->email,
             'token' => "111122223333",
             'password' => '111122223333',
-            'place_id' => $place->id,
             'role' => "9",
             "wedding_id" => $wedding->id,
         ]);
@@ -156,7 +152,6 @@ class WeddingSeeder extends Seeder
             'email' => $faker->email,
             'token' => "qqqqqqqqqqqq",
             'password' => 'qqqqqqqqqqqq',
-            'place_id' => $place->id,
             'role' => "5",
             'wedding_id' => $wedding->id
         ]);
@@ -168,7 +163,6 @@ class WeddingSeeder extends Seeder
             'email' => $faker->email,
             'token' => "wwwwwwwwwwww",
             'password' => 'wwwwwwwwwwww',
-            'place_id' => $place->id,
             'role' => "5",
             'wedding_id' => $wedding->id
         ]);
@@ -180,7 +174,6 @@ class WeddingSeeder extends Seeder
             'email' => $faker->email,
             'token' => "eeeeeeeeeeee",
             'password' => 'eeeeeeeeeeee',
-            'place_id' => $place->id,
             'role' => "5",
             'wedding_id' => $wedding->id
         ]);
@@ -192,7 +185,6 @@ class WeddingSeeder extends Seeder
             'email' => $faker->email,
             'token' => "dddddddddddd",
             'password' => 'dddddddddddd',
-            'place_id' => $place->id,
             'role' => "5",
             'wedding_id' => $wedding->id
         ]);

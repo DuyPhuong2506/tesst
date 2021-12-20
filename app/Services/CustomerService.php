@@ -3,6 +3,7 @@ namespace App\Services;
 
 use App\Repositories\CustomerRepository;
 use App\Repositories\WeddingCardRepository;
+use App\Repositories\EventRepository;
 use Illuminate\Support\Facades\Auth;
 use App\Constants\Common;
 use App\Constants\Role;
@@ -11,13 +12,16 @@ class CustomerService
 {
     protected $customerRepo;
     protected $weddingCardRepo;
+    protected $weddingRepo;
 
     public function __construct(
         CustomerRepository $customerRepo,
-        WeddingCardRepository $weddingCardRepo
+        WeddingCardRepository $weddingCardRepo,
+        EventRepository $weddingRepo
     ){
         $this->customerRepo = $customerRepo;
         $this->weddingCardRepo = $weddingCardRepo;
+        $this->weddingRepo = $weddingRepo;
     }
 
     public function getListCustomerInWedding(array $data)
@@ -126,6 +130,41 @@ class CustomerService
             'customer_info' => $customerInfo,
             'customer_relative' => $customerRelative
         ];
+    }
+
+    public function getListParticipant($data, $weddingId)
+    {
+        $paginate = !empty($data['paginate']) ? $data['paginate'] : Common::PAGINATE;
+
+        $participants = $this->customerRepo
+                             ->model
+                             ->where('wedding_id', $weddingId)
+                             ->where('role', Role::GUEST)
+                             ->with(['customerInfo' => function($q){
+                                $q->select(
+                                    'id', 'first_name', 'last_name', 
+                                    'relationship_couple', 'is_send_wedding_card',
+                                    'is_only_party', 'customer_id'
+                                );
+                             }])
+                             ->select('id', 'full_name', 'email')
+                             ->paginate($paginate);
+
+        
+        $dateInfo = $this->weddingRepo
+                         ->model
+                         ->where('id', $weddingId)
+                         ->select(
+                            'guest_invitation_response_date',
+                            'couple_edit_date'
+                         )
+                         ->first();
+
+        return [
+            'participants' => $participants,
+            'date_info' => $dateInfo
+        ];
+        
     }
     
 }
