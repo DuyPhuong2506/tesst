@@ -7,6 +7,7 @@ use App\Repositories\EventRepository;
 use Illuminate\Support\Facades\Auth;
 use App\Constants\Common;
 use App\Constants\Role;
+use Str;
 
 class CustomerService
 {
@@ -100,7 +101,7 @@ class CustomerService
         $customer = $this->customerRepo->create([
             'username' => $username,
             'password' => $password,
-            'email' => $requestData['email'],
+            'email' => Str::lower($requestData['email']),
             'role' => Role::GUEST,
             'full_name' => $fullname,
             'wedding_id' => $weddingId
@@ -166,6 +167,23 @@ class CustomerService
             'date_info' => $dateInfo
         ];
         
+    }
+
+    public function deleteParticipant($id, $weddingId)
+    {
+        $participant = $this->customerRepo
+                            ->model
+                            ->where('id', $id)
+                            ->where('role', Role::GUEST)
+                            ->where('wedding_id', $weddingId)
+                            ->first();
+
+        if($participant){
+            $participant->delete();
+            return true;
+        }
+
+        return false;
     }
     
 }

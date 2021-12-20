@@ -123,7 +123,18 @@ class CustomersController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $weddingId = $this->customer->wedding_id;
+        $data = $this->customerService->deleteParticipant($id, $weddingId);
+        
+        if($data){
+            return $this->respondSuccess(
+                ['message', __('messages.participant.delete_success')]
+            );
+        }
+
+        return $this->respondError(
+            Response::HTTP_BAD_REQUEST, __('messages.participant.delete_fail')
+        );
     }
 
     /**

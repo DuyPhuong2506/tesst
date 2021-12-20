@@ -307,12 +307,12 @@ return [
         ]
     ],
     'participant' => [
-        'create_success' => 'Bank account create success',
-        'create_fail' => 'Bank account create fail',
-        'update_success' => 'Bank account update success',
-        'update_fail' => 'Bank account update fail',
-        'delete_success' => 'Bank account delete success',
-        'delete_fail' => 'Bank account delete fail',
+        'create_success' => 'Participant create success',
+        'create_fail' => 'Participant create fail',
+        'update_success' => 'Participant update success',
+        'update_fail' => 'Participant update fail',
+        'delete_success' => 'Participant delete success',
+        'delete_fail' => 'Participant delete fail',
         'list_fail' => 'The list is fail',
 
         'validation' => [
