@@ -15,7 +15,7 @@ class CreateEventRequest extends ApiRequest
             'date' => [
                 'required', 
                 'date_format:Y-m-d H:i',
-                'after:12 hours',
+                'after:today',
                 function($attribute, $value, $fail){
                     $placeId = request()->place_id;
                     $eventDate = Carbon::parse($value)->format('Y-m-d');
