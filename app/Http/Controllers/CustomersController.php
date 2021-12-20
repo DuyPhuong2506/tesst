@@ -123,7 +123,17 @@ class CustomersController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $data = $this->customerService->deleteParticipant($id);
+
+        if($data){
+            return $this->respondSuccess(
+                ['message', __('messages.participant.delete_success')]
+            );
+        }
+
+        return $this->respondError(
+            Response::HTTP_BAD_REQUEST, __('messages.participant.delete_fail')
+        );
     }
 
     /**
