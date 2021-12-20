@@ -144,8 +144,7 @@ class CustomerService
                                 $q->select(
                                     'id', 'first_name', 'last_name', 
                                     'relationship_couple', 'is_send_wedding_card',
-                                    'is_only_party',
-                                    'customer_id'
+                                    'is_only_party', 'customer_id'
                                 );
                              }])
                              ->select('id', 'full_name', 'email')
