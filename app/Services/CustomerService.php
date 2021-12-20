@@ -153,7 +153,7 @@ class CustomerService
         
         $dateInfo = $this->weddingRepo
                          ->model
-                         ->find($weddingId)
+                         ->where('id', $weddingId)
                          ->select(
                             'guest_invitation_response_date',
                             'couple_edit_date'
