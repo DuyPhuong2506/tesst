@@ -312,6 +312,7 @@ return [
         'update_fail' => 'Bank account update fail',
         'delete_success' => 'Bank account delete success',
         'delete_fail' => 'Bank account delete fail',
+        'list_fail' => 'The list is fail',
 
         'validation' => [
             'is_only_party' => [
