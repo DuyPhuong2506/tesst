@@ -89,7 +89,20 @@ class CustomersController extends Controller
      */
     public function show($id)
     {
-        //
+        $weddingId = $this->customer->wedding_id;
+        $customerId = $this->customer->id;
+        $data = $this->customerService->detailParticipant($id, $weddingId, $customerId);
+        if($data){
+            return $this->respondSuccess($data);
+        }else{
+            return $this->respondError(
+                Response::HTTP_NOT_FOUND, __('messages.participant.not_found')
+            );
+        }
+
+        return $this->respondError(
+            Response::HTTP_BAD_REQUEST, __('messages.participant.detail_fail')
+        );
     }
 
     /**

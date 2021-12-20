@@ -79,17 +79,17 @@ class CustomerService
         $bankAccountId = null;
         if($requestData['bank_order'] != 0){
             $weddingCard = $this->weddingCardRepo
-                                ->model
-                                ->where('wedding_id', $weddingId)
-                                ->whereHas('bankAccounts', function($q) use($requestData){
-                                    $q->where('bank_order', $requestData['bank_order']);
-                                })
-                                ->first();
+                ->model
+                ->where('wedding_id', $weddingId)
+                ->whereHas('bankAccounts', function($q) use($requestData){
+                    $q->where('bank_order', $requestData['bank_order']);
+                })
+                ->first();
         
             $bankAccount = $weddingCard->bankAccounts()
-                                       ->where('wedding_card_id', $weddingCard->id)
-                                       ->where('bank_order', $requestData['bank_order'])
-                                       ->first();
+                ->where('wedding_card_id', $weddingCard->id)
+                ->where('bank_order', $requestData['bank_order'])
+                ->first();
 
             $bankAccountId = $bankAccount->id;
         }
@@ -123,9 +123,7 @@ class CustomerService
         ]);
 
         $customerRelative = $customer->customerRelatives()
-                                     ->createMany(
-                                        $requestData['customer_relatives']
-                                     );
+            ->createMany($requestData['customer_relatives']);
 
         return [
             'customer' => $customer,
@@ -139,28 +137,28 @@ class CustomerService
         $paginate = !empty($data['paginate']) ? $data['paginate'] : Common::PAGINATE;
 
         $participants = $this->customerRepo
-                             ->model
-                             ->where('wedding_id', $weddingId)
-                             ->where('role', Role::GUEST)
-                             ->with(['customerInfo' => function($q){
-                                $q->select(
-                                    'id', 'first_name', 'last_name', 
-                                    'relationship_couple', 'is_send_wedding_card',
-                                    'is_only_party', 'customer_id'
-                                );
-                             }])
-                             ->select('id', 'full_name', 'email')
-                             ->paginate($paginate);
+            ->model
+            ->where('wedding_id', $weddingId)
+            ->where('role', Role::GUEST)
+            ->with(['customerInfo' => function($q){
+            $q->select(
+                'id', 'first_name', 'last_name', 
+                'relationship_couple', 'is_send_wedding_card',
+                'is_only_party', 'customer_id'
+            );
+            }])
+            ->select('id', 'full_name', 'email')
+            ->paginate($paginate);
 
         
         $dateInfo = $this->weddingRepo
-                         ->model
-                         ->where('id', $weddingId)
-                         ->select(
-                            'guest_invitation_response_date',
-                            'couple_edit_date'
-                         )
-                         ->first();
+            ->model
+            ->where('id', $weddingId)
+            ->select(
+            'guest_invitation_response_date',
+            'couple_edit_date'
+            )
+            ->first();
 
         return [
             'participants' => $participants,
@@ -172,11 +170,11 @@ class CustomerService
     public function deleteParticipant($id, $weddingId)
     {
         $participant = $this->customerRepo
-                            ->model
-                            ->where('id', $id)
-                            ->where('role', Role::GUEST)
-                            ->where('wedding_id', $weddingId)
-                            ->first();
+            ->model
+            ->where('id', $id)
+            ->where('role', Role::GUEST)
+            ->where('wedding_id', $weddingId)
+            ->first();
 
         if($participant){
             $participant->delete();
@@ -184,6 +182,33 @@ class CustomerService
         }
 
         return false;
+    }
+
+    public function detailParticipant($id, $weddingId, $customerId)
+    {
+        $participantInfo = $this->customerRepo
+            ->model
+            ->where('id', $id)
+            ->where('wedding_id', $weddingId)
+            ->where('role', Role::GUEST)
+            ->select('id', 'email')
+            ->with(['customerInfo' => function($q){
+                $q->select(
+                    'id', 'customer_id', 'first_name', 'last_name',
+                    'relationship_couple', 'post_code', 'address',
+                    'phone', 'customer_type', 'task_content', 'free_word',
+                    'is_send_wedding_card'
+                );
+            }])
+            ->with(['customerRelatives' => function($q){
+                $q->select(
+                    'id', 'customer_id', 'first_name',
+                    'last_name', 'relationship'
+                );
+            }])
+            ->first();
+
+        return $participantInfo;
     }
     
 }
