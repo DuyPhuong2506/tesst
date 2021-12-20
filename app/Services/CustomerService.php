@@ -169,9 +169,21 @@ class CustomerService
         
     }
 
-    public function deleteParticipant($id)
+    public function deleteParticipant($id, $weddingId)
     {
-        return $this->customerRepo->model->where('id', $id)->delete();
+        $participant = $this->customerRepo
+                            ->model
+                            ->where('id', $id)
+                            ->where('role', Role::GUEST)
+                            ->where('wedding_id', $weddingId)
+                            ->first();
+
+        if($participant){
+            $participant->delete();
+            return true;
+        }
+
+        return false;
     }
     
 }

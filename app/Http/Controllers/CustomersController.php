@@ -123,8 +123,9 @@ class CustomersController extends Controller
      */
     public function destroy($id)
     {
-        $data = $this->customerService->deleteParticipant($id);
-
+        $weddingId = $this->customer->wedding_id;
+        $data = $this->customerService->deleteParticipant($id, $weddingId);
+        
         if($data){
             return $this->respondSuccess(
                 ['message', __('messages.participant.delete_success')]
