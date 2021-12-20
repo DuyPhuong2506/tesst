@@ -110,7 +110,7 @@ class UserService
     
     public function createRememberMail($email, $token)
     {
-        User::where('email',$email)
+        User::where('email', $email)
             ->update([
                 'remember_token' => $token,
                 'email_at' => Carbon::now()
@@ -201,6 +201,7 @@ class UserService
 
     public function inviteNewAdminStaff($email)
     {
+        $email = Str::lower($email);
         $token = Str::random(100);
         $emailInfo = [
             'app_url' => env('ADMIN_URL'),
@@ -242,7 +243,7 @@ class UserService
             'name' => $data['restaurant_name'],
             'phone' => $data['phone'],
             'contact_name' => $data['contact_name'],
-            'contact_email' => $data['contact_email'],
+            'contact_email' => Str::lower($data['contact_email']),
             'post_code' => $data['post_code'],
             'address_1' => $data['address_1'],
             'address_2' => $data['address_2'],

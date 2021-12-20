@@ -8,6 +8,7 @@ use App\Repositories\EventRepository;
 use App\Repositories\CustomerRepository;
 use Carbon\Carbon;
 use Auth;
+use Str;
 use App\Constants\Common;
 
 class EventService
@@ -78,7 +79,7 @@ class EventService
             $coupleContent = [
                 'username' => $username,
                 'password' => $password,
-                'email'    => $value['email'],
+                'email'    => Str::lower($value['email']),
                 'wedding_id' => $weddingEventId,
                 'role' => $value['role'],
                 'updated_at' => Carbon::now(),
