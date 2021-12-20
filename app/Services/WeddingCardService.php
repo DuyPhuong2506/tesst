@@ -110,7 +110,7 @@ class WeddingCardService
         $data = $this->weddingCardRepo
                      ->model
                      ->where('wedding_id', $weddingId)
-                     ->with(['bankAccounts'])
+                     ->with(['bankAccounts', 'templateCard'])
                      ->first();
 
         $disk = Storage::disk('s3');
