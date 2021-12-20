@@ -98,7 +98,8 @@ class CustomerService
             'password' => $password,
             'email' => $requestData['email'],
             'role' => Role::GUEST,
-            'full_name' => $fullname
+            'full_name' => $fullname,
+            'wedding_id' => $weddingId
         ]);
 
         $customerInfo = $customer->customerInfo()->create([
