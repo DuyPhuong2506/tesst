@@ -225,4 +225,31 @@ class CustomerService
         ];
     }
     
+    public function detailParticipant($id, $weddingId, $customerId)
+    {
+        $participantInfo = $this->customerRepo
+            ->model
+            ->where('id', $id)
+            ->where('wedding_id', $weddingId)
+            ->where('role', Role::GUEST)
+            ->select('id', 'email')
+            ->with(['customerInfo' => function($q){
+                $q->select(
+                    'id', 'customer_id', 'first_name', 'last_name',
+                    'relationship_couple', 'post_code', 'address',
+                    'phone', 'customer_type', 'task_content', 'free_word',
+                    'is_send_wedding_card'
+                );
+            }])
+            ->with(['customerRelatives' => function($q){
+                $q->select(
+                    'id', 'customer_id', 'first_name',
+                    'last_name', 'relationship'
+                );
+            }])
+            ->first();
+
+        return $participantInfo;
+    }
+    
 }

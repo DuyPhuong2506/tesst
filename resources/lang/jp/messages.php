@@ -314,6 +314,8 @@ return [
         'delete_success' => 'Participant delete success',
         'delete_fail' => 'Participant delete fail',
         'list_fail' => 'The list is fail',
+        'detail_fail' => 'Participant detail fail',
+        'not_found' => 'Participant not found',
 
         'validation' => [
             'is_only_party' => [

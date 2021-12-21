@@ -79,7 +79,7 @@ class EventService
             $coupleContent = [
                 'username' => $username,
                 'password' => $password,
-                'email'    => Str::lower($value['email']),
+                'email'    => $value['email'],
                 'wedding_id' => $weddingEventId,
                 'role' => $value['role'],
                 'updated_at' => Carbon::now(),
@@ -105,6 +105,9 @@ class EventService
         $data['party_time'] = (count($data['party_time']) > 1)
                               ? implode('-', $data['party_time'])
                               : $data['party_time'][0];
+        
+        $data['groom_email'] = Str::lower($data['groom_email']);
+        $data['bride_email'] = Str::lower($data['bride_email']);
         
         $event = $this->eventRepo->model->create($data);
         #Make couple
