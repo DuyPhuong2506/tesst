@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Http\Requests\CreateParticipantRequest;
+use App\Http\Requests\UpdateParticipantRequest;
 use App\Services\CustomerService;
 use Auth;
 use DB;
@@ -68,7 +69,9 @@ class CustomersController extends Controller
 
             if($data){
                 DB::commit();
-                return $this->respondSuccess($data);
+                return $this->respondSuccess([
+                    'message' => __('messages.participant.create_success')
+                ]);
             }
 
             DB::rollback();
@@ -107,12 +110,31 @@ class CustomersController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateParticipantRequest $request)
     {
-        //
+        $requestData = $request->all();
+        $weddingId = $this->customer->wedding_id;
+
+        DB::beginTransaction();
+        try {
+            $data = $this->customerService->updateParticipantInfo($requestData, $weddingId);
+            if($data){
+                DB::commit();
+                return $this->respondSuccess([
+                    'message' => __('messages.participant.update_success')
+                ]);
+            }
+
+            DB::rollback();
+        } catch (\Throwable $th) {
+            DB::rollback();
+
+            return $this->respondError(
+                Response::HTTP_BAD_REQUEST, __('messages.participant.update_fail')
+            );
+        }
     }
 
     /**

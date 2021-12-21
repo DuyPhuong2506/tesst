@@ -370,7 +370,12 @@ return [
             'is_send_wedding_card' => [
                 'required' => '必須項目に入力してください。',
                 'boolean' => 'The is send wedding card must be an boolean'
-            ]
+            ],
+            'id' => [
+                'required' => '必須項目に入力してください。',
+                'exists' => 'The participant id does not exists',
+                'numeric' => 'The id must be numeric',
+            ],
         ]
     ],
     'customer_task' => [

@@ -19,7 +19,7 @@ class CustomerInfo extends Model
         'address',
         'customer_type',
         'task_content',
-        'free_work',
+        'free_word',
         'bank_account_id',
         'is_send_wedding_card',
         'customer_id',
