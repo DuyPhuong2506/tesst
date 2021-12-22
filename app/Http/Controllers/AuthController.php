@@ -10,6 +10,7 @@ use Illuminate\Http\Response;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
 use Illuminate\Support\Facades\Auth;
+use App\Services\UserTokenService;
 use App\Constants\Role;
 use JWTAuth;
 use JWTAuthException;
@@ -19,15 +20,19 @@ use Carbon\Carbon;
 class AuthController extends Controller
 {
     private $user;
+    protected $userTokenService;
 
-    public function __construct(User $user)
-    {
+    public function __construct(
+        User $user, 
+        UserTokenService $userTokenService
+    ){
         \Config::set('jwt.user', User::class);
         \Config::set('auth.providers', ['users' => [
                 'driver' => 'eloquent',
                 'model' => User::class,
             ]]);
         $this->user = $user;
+        $this->userTokenService = $userTokenService;
     }
 
     public function register(RegisterRequest $request)
@@ -61,6 +66,7 @@ class AuthController extends Controller
         }
 
         $auth = Auth::user();
+        $this->userTokenService->createToken($auth->id, $token);
         $tempStatus = $auth->is_first_login;
 
         $auth->update([
