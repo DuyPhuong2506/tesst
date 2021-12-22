@@ -27,4 +27,9 @@ class UserTokenService
         $this->userTokenRepo->model->where('user_id', $userID)->delete();
         return true;
     }
+
+    public function destroyToken($token)
+    {
+        $this->userTokenRepo->model->where('token', $token)->delete();
+    }
 }
