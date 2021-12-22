@@ -217,7 +217,6 @@
                 <p id="footer-txt"> 
                     <b>Wow(Watching Online Wedding)</b><br>
                     <a href="{{$appURL}}">{{$appURL}}</a>
-                    <br/> Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.
                 </p>
              </td>
           </tr>
