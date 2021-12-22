@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Response;
 use Illuminate\Http\Request;
 use App\Traits\ApiTrait;
+use App\Constants\Role;
 use JWTAuth;
 
 class RoleSuperAdminMiddleware
@@ -22,9 +23,24 @@ class RoleSuperAdminMiddleware
      */
     public function handle($request, Closure $next)
     {
-        $user = JWTAuth::parseToken()->authenticate();
-        if ($user->role == \App\Constants\Role::SUPER_ADMIN) return $next($request);
+        $token = $request->bearerToken();
+        $exists = \App\Models\UserToken::where('token', $token)->exists();
+        if(!Auth::user() || !$exists){
+            $token = $request->bearerToken();
+            Auth::setToken($token)->invalidate();
+            return $this->respondError(
+                Response::HTTP_UNAUTHORIZED, 'The token has been blacklisted'
+            );
+        }
+
+        if(Auth::check()){
+            if(in_array(Auth::user()->role, [Role::SUPER_ADMIN])){
+                return $next($request);
+            }
+        }
         
-        return  $this->respondError(Response::HTTP_METHOD_NOT_ALLOWED, 'PERMISSION DENIED, ROLE SUPER ADMIN');
+        return  $this->respondError(
+            Response::HTTP_METHOD_NOT_ALLOWED, 'PERMISSION DENIED, ROLE SUPER ADMIN'
+        );
     }
 }

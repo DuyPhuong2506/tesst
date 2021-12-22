@@ -8,6 +8,7 @@ use Illuminate\Http\Response;
 use Hash;
 use Illuminate\Support\Facades\Auth;
 use App\Services\UserService;
+use App\Services\UserTokenService;
 use App\Http\Requests\CreateAdminRequest;
 use App\Http\Requests\ChangePasswordRequest;
 use App\Http\Requests\EmailRequest;
@@ -21,10 +22,14 @@ class UsersController extends Controller
 {
 
     protected $userService;
+    protected $userTokenService;
 
-    public function __construct(UserService $userService)
-    {
+    public function __construct(
+        UserService $userService,
+        UserTokenService $userTokenService
+    ){
         $this->userService = $userService;
+        $this->userTokenService = $userTokenService;
     }
 
     public function getUserCurrent(Request $request)
@@ -162,6 +167,7 @@ class UsersController extends Controller
         );
         
         if($status){
+            $this->userTokenService->destroyUserToken(Auth::user()->id);
             Auth::logout();
             return $this->respondSuccess([
                 'message' => __('messages.user.password_success')
