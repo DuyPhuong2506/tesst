@@ -98,6 +98,7 @@ class AuthController extends Controller
         try {
             $token = $request->bearerToken();
             $this->userTokenService->destroyToken($token);
+            auth()->logout();
             return $this->respondSuccess([
                 'message' => 'You have successfully logged out.'
             ]);
