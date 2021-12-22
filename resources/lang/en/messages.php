@@ -249,6 +249,9 @@ return [
         'update_fail' => 'Wedding card update fail',
         'delete_success' => 'Wedding card delete success',
         'delete_fail' => 'Wedding card delete fail',
+        'send_mail_sucess' => 'The mail send success',
+        'send_mail_fail' => 'The mail send fail',
+        'subject_to_staff' => 'WEB招待状確認依頼',
 
         'validation' => [
             'template_card_id' => [

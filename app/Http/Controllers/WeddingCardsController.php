@@ -137,4 +137,23 @@ class WeddingCardsController extends Controller
     {
         //
     }
+
+    public function notifyToStaff()
+    {
+        $weddingID = $this->customer->wedding_id;
+        $status = $this->weddingCardService->notifyToStaff($weddingID);
+
+        try {
+            if($status){
+                return $this->respondSuccess([
+                    'message' => __('messages.wedding_card.send_mail_sucess')
+                ]);
+            }
+
+        } catch (\Throwable $th) {
+            return $this->respondError(
+                Response::HTTP_BAD_REQUEST, __('messages.wedding_card.send_mail_fail')
+            );
+        }   
+    }
 }

@@ -4,8 +4,10 @@ namespace App\Services;
 use App\Repositories\WeddingCardRepository;
 use App\Repositories\BankAccountRepository;
 use App\Repositories\EventRepository;
+use App\Jobs\SendDoneCardToStaffJob;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Facades\Image;
+use App\Constants\Role;
 
 class WeddingCardService
 {
@@ -118,6 +120,45 @@ class WeddingCardService
         $data['couple_photo'] = $couplePhoto;
         
         return $data;
+    }
+
+    public function notifyToStaff($weddingID)
+    {
+        $exits = $this->weddingCardRepo->model
+            ->where('wedding_id', $weddingID)
+            ->exists();
+
+        if($exits){
+            $wedding = $this->weddingRepo->model->find($weddingID);
+            $place = $wedding->place()->first();
+            $restaurant = $place->restaurant()->first();
+            $staff = $restaurant->user()->first();
+            $customers = $wedding->customers()
+                ->where('role', Role::GROOM)
+                ->orWhere('role', Role::BRIDE)
+                ->select('full_name')
+                ->get();
+
+            $customerNames = [];
+            foreach ($customers as $key => $value) {
+                array_push($customerNames, $value['full_name']);
+            }
+            $customerNames = implode(", " ,$customerNames);
+
+            $staffEmail = $staff->email;
+            $contentEmail = [
+                'contactName' => $restaurant->contact_name,
+                'customerName' => $customerNames,
+                'appURL' => env('APP_URL'),
+            ];
+            
+            $sendEmailJob = new SendDoneCardToStaffJob($staffEmail, $contentEmail);
+            dispatch($sendEmailJob);
+
+            return true;
+        }
+
+        return false;
     }
 
 }

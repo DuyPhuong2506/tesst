@@ -78,6 +78,8 @@ Route::prefix('v1')->group(function () {
                 Route::post('/update-time-table', 'WeddingTimeTableController@update');
             });
 
+            Route::get('/couple/wedding-card/notify-to-staff', 'WeddingCardsController@notifyToStaff');
+
             Route::resource('/couple/template-card', 'TemplateCardsController');
             Route::resource('/couple/template-content', 'TemplateContentController');
             Route::resource('/couple/wedding-card', 'WeddingCardsController');
