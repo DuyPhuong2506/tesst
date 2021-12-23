@@ -16,10 +16,13 @@ use DB;
 class EventsController extends Controller
 {
     protected $eventService;
+    protected $customer;
     
-    public function __construct(EventService $eventService)
-    {
+    public function __construct(
+        EventService $eventService
+    ){
         $this->eventService = $eventService;
+        $this->customer = Auth::guard('customer')->user();
     }
 
     public function index(Request $request)
@@ -54,8 +57,8 @@ class EventsController extends Controller
 
     public function coupleDetailEvent()
     {
-        $coupleId = Auth::guard('customer')->user()->id;
-        $weddingId = Auth::guard('customer')->user()->wedding_id;
+        $coupleId = $this->customer->id;
+        $weddingId = $this->customer->wedding_id;
 
         $data = $this->eventService->coupleDetailEvent($weddingId, $coupleId);
         if($data){
@@ -68,7 +71,7 @@ class EventsController extends Controller
     public function updateGreetingMsg(UpdateGreetingMsgRequest $request)
     {
         $message = $request->greeting_message;
-        $weddingId = Auth::guard('customer')->user()->wedding_id;
+        $weddingId = $this->customer->wedding_id;
         $data = $this->eventService->updateGreetingMsg($weddingId, $message);
         if($data){
             return $this->respondSuccess([
@@ -81,7 +84,7 @@ class EventsController extends Controller
 
     public function getWeddingEventWithBearerToken()
     {   
-        $customerId = Auth::guard('customer')->user()->id;
+        $customerId = $this->customer->id;
         $data = $this->eventService->getWeddingEventWithBearerToken($customerId);
 
         if($data){
