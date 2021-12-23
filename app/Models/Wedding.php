@@ -32,7 +32,7 @@ class Wedding extends Model
 
     public function eventTimes()
     {
-        return $this->hasMany(EventTimes::class, 'event_id');
+        return $this->hasMany(EventTimes::class, 'event_id', 'id');
     }
 
     public function place()
