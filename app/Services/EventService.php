@@ -131,35 +131,56 @@ class EventService
     public function detailEvent($eventId)
     {
         return $this->eventRepo->model->where('id', $eventId)
-                    ->with(['eventTimes', 'customers'])
-                    ->first();
+            ->with(['eventTimes', 'customers'])
+            ->first();
     }
 
     public function coupleDetailEvent($weddingId, $coupleId)
     {
-        return $this->eventRepo->model->where('id', $weddingId)
-                    ->whereHas('customers', function($q) use($coupleId){
-                        $q->where('id', $coupleId);
-                    })
-                    ->with(['eventTimes', 'place'])
-                    ->with(['customers' => function($q){
-                        $q->where('role', Role::GUEST);
-                    }])
-                    ->first();
+        $weddingDetail = $this->eventRepo->model
+            ->where('id', $weddingId)->whereHas('customers', function($q) use($coupleId){
+                $q->where('id', $coupleId);
+            })
+            ->select(
+                'id', 'thank_you_message', 'greeting_message', 
+                'table_map_image', 'date', 'ceremony_reception_time',
+                'ceremony_time', 'party_reception_time', 'party_time',
+                'place_id'
+            )
+            ->first();
+
+        $weddingTimes = $weddingDetail->eventTimes()
+            ->select('id', 'start', 'end', 'description')
+            ->get();
+
+        $place = $weddingDetail->place()
+            ->select('id', 'restaurant_id', 'name')
+            ->first();
+
+        $restaurant = $place->restaurant()
+            ->select('id', 'contact_name')
+            ->first();
+                
+        return [
+            'wedding_detail' => $weddingDetail,
+            'wedding_times' => $weddingTimes,
+            'place_name' => $place->name,
+            'contact_name' => $restaurant->contact_name
+        ];
     }
 
     public function getWeddingEventWithBearerToken($customerId)
     {   
         $tablePosition = $this->customerRepo->model->where('id', $customerId)
-                              ->select('id', 'full_name')
-                              ->with(['tablePosition' => function($q){
-                                    $q->select('id', 'position');
-                              }])->first();
+            ->select('id', 'full_name')
+            ->with(['tablePosition' => function($q){
+                $q->select('id', 'position');
+            }])->first();
 
         $weddingId = $this->customerRepo
-                          ->model
-                          ->where('id', $customerId)
-                          ->select('wedding_id')->first()->wedding_id;
+            ->model
+            ->where('id', $customerId)
+            ->select('wedding_id')->first()->wedding_id;
 
         $data = $this->eventRepo->model->whereHas('customers', function($q) use($customerId){
                         $q->where('id', $customerId);
