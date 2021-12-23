@@ -55,11 +55,9 @@ class EventService
                         ->paginate($paginate);
     }
 
-    public function updateGreetingMsg($eventId, $message)
+    public function updateThankMessage($eventId, $data)
     {
-        $data = $this->eventRepo->model->where('id', $eventId)->update([
-            'greeting_message' => $message
-        ]);
+        $data = $this->eventRepo->model->where('id', $eventId)->update($data);
 
         if($data){
             return $data;
