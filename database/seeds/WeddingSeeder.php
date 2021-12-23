@@ -25,6 +25,7 @@ class WeddingSeeder extends Seeder
         $restaurant = Restaurant::create([
             'name' => $faker->name,
             'phone' => $faker->phoneNumber,
+            'contact_name' => $faker->name,
         ]);
 
         //Create Place

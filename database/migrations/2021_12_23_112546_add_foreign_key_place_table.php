@@ -14,6 +14,7 @@ class AddForeignKeyPlaceTable extends Migration
     public function up()
     {
         Schema::table('places', function (Blueprint $table) {
+            $table->unsignedBigInteger('restaurant_id')->nullable()->default(null)->change();
             $table->foreign('restaurant_id')
                   ->references('id')
                   ->on('restaurants')
@@ -30,6 +31,7 @@ class AddForeignKeyPlaceTable extends Migration
     {
         Schema::table('places', function (Blueprint $table) {
             $table->dropForeign(['restaurant_id']);
+            $table->bigInteger('restaurant_id')->change();
         });
     }
 }
