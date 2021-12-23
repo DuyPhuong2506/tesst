@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use App\Http\Requests\ApiRequest;
 
-class UpdateGreetingMsgRequest extends ApiRequest
+class UpdateThankMsgRequest extends ApiRequest
 {
    
 
@@ -16,7 +16,7 @@ class UpdateGreetingMsgRequest extends ApiRequest
     public function rules()
     {
         return [
-            'greeting_message' => 'required'
+            'thank_you_message' => 'required'
         ];
     }
 

@@ -74,7 +74,7 @@ Route::prefix('v1')->group(function () {
             Route::get('/couple/guest-list', 'EventsController@coupleListGuest');
             
             Route::prefix('/couple/event')->group(function () {
-                Route::post('/update-greeting', 'EventsController@updateGreetingMsg');
+                Route::post('/update-thank-message', 'EventsController@updateThankMessage');
                 Route::post('/update-time-table', 'WeddingTimeTableController@update');
             });
 

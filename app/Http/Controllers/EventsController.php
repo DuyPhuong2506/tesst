@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Http\Requests\CreateEventRequest;
 use App\Http\Requests\EventIDRequest;
-use App\Http\Requests\UpdateGreetingMsgRequest;
+use App\Http\Requests\UpdateThankMsgRequest;
 use App\Http\Requests\UpdateEventRequest;
 use App\Http\Requests\EventLiveStreamRequest;
 use App\Services\EventService;
@@ -68,11 +68,11 @@ class EventsController extends Controller
         return $this->respondError(Response::HTTP_NOT_FOUND, __('messages.event.detail_fail'));
     }
 
-    public function updateGreetingMsg(UpdateGreetingMsgRequest $request)
+    public function updateThankMessage(UpdateThankMsgRequest $request)
     {
-        $message = $request->greeting_message;
+        $message = $request->all();
         $weddingId = $this->customer->wedding_id;
-        $data = $this->eventService->updateGreetingMsg($weddingId, $message);
+        $data = $this->eventService->updateThankMessage($weddingId, $message);
         if($data){
             return $this->respondSuccess([
                 'message' => __('messages.event.update_success'),
