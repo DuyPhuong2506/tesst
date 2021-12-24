@@ -150,6 +150,10 @@ class WeddingCardsController extends Controller
                 ]);
             }
 
+            return $this->respondError(
+                Response::HTTP_BAD_REQUEST, __('messages.wedding_card.send_mail_fail')
+            );
+
         } catch (\Throwable $th) {
             return $this->respondError(
                 Response::HTTP_BAD_REQUEST, __('messages.wedding_card.send_mail_fail')
