@@ -8,6 +8,7 @@ class UserToken extends Model
 {
     protected $table = 'user_tokens';
     protected $fillable = ['id', 'token', 'user_id'];
+    protected $hidden = ['token'];
 
     /**
      * Get the user that owns the UserToken
