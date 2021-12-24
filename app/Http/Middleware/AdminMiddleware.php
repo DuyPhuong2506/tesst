@@ -24,8 +24,8 @@ class AdminMiddleware
     public function handle($request, Closure $next)
     {   
         $token = $request->bearerToken();
-        #$exists = \App\Models\UserToken::where('token', $token)->exists();
-        if(!Auth::user()){
+        $exists = \App\Models\UserToken::where('token', $token)->exists();
+        if(!Auth::user() || !$exists){
             Auth::setToken($token)->invalidate();
             return $this->respondError(
                 Response::HTTP_UNAUTHORIZED, 'The token has been blacklisted'

@@ -24,8 +24,8 @@ class RoleAdminStaffMiddleware
     public function handle($request, Closure $next)
     {
         $token = $request->bearerToken();
-        #$exists = \App\Models\UserToken::where('token', $token)->exists();
-        if(!Auth::user()){
+        $exists = \App\Models\UserToken::where('token', $token)->exists();
+        if(!Auth::user() || !$exists){
             $token = $request->bearerToken();
             Auth::setToken($token)->invalidate();
             return $this->respondError(
