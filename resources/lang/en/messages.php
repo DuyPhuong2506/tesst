@@ -389,5 +389,14 @@ return [
         'update_fail' => 'Customer task update fail',
         'delete_success' => 'Customer task delete success',
         'delete_fail' => 'Customer task delete fail',
+
+        'validation' => [
+            'name' => [
+                'required' => 'Customer task name is required',
+            ],
+            'description' => [
+                'required' => 'Customer task description is required'
+            ]
+        ]
     ],
 ];

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use App\Http\Requests\CreateCustomerTaskRequest;
 use App\Services\CustomerTaskService;
 
 class CustomerTasksController extends Controller
@@ -48,9 +49,18 @@ class CustomerTasksController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CreateCustomerTaskRequest $request)
     {
-        //
+        $requestData = $request->only('name', 'description');
+        $data = $this->customerTaskService->createCustomerTask($requestData);
+
+        if($data){
+            return $this->respondSuccess($data);
+        }
+
+        return $this->respondError(
+            Response::HTTP_BAD_REQUEST, __('messages.customer_task.create_fail')
+        );
     }
 
     /**
