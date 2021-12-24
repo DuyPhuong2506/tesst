@@ -25,6 +25,7 @@ class UpdateBankAccountRequest extends ApiRequest
             'wedding_price.required' => __('messages.wedding_card.validation.wedding_price.required'),
             'wedding_price.numeric' => __('messages.wedding_card.validation.wedding_price.numeric'),
             'bank_accounts.array' => __('messages.bank_account.validation.bank_account.required'),
+            'bank_accounts.max' => __('messages.bank_account.validation.bank_account.max'),
         ];
     }
 }
