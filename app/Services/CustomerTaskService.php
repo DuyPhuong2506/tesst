@@ -16,4 +16,9 @@ class CustomerTaskService
     {
         return $this->customerTaskRepo->model->all();
     }
+
+    public function createCustomerTask($data)
+    {
+        return $this->customerTaskRepo->model->create($data);
+    }
 }

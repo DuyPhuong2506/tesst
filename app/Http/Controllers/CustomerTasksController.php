@@ -50,7 +50,15 @@ class CustomerTasksController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $data = $this->customerTaskService->createCustomerTask($request->all());
+
+        if($data){
+            return $this->respondSuccess($data);
+        }
+
+        return $this->respondError(
+            Response::HTTP_BAD_REQUEST, __('messages.customer_task.list_fail')
+        );
     }
 
     /**
