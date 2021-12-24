@@ -99,6 +99,7 @@ class CustomerService
 
     public function createParticipant($requestData, $weddingId)
     {
+        $customerRelative = null;
         $username = random_str_az(8) . random_str_number(4);
         $password = random_str_az(8) . random_str_number(4);
         $fullname = $requestData['first_name'] . " " . $requestData['last_name'];
@@ -127,9 +128,11 @@ class CustomerService
             'customer_type' => $requestData['customer_type'],
             'bank_account_id' => $bankID,
         ]);
-
-        $customerRelative = $customer->customerRelatives()
-            ->createMany($requestData['customer_relatives']);
+        
+        if(isset($requestData['customer_relatives'])){
+            $customerRelative = $customer->customerRelatives()
+                ->createMany($requestData['customer_relatives']);
+        }
 
         return [
             'customer' => $customer,
