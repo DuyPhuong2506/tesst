@@ -26,7 +26,7 @@ class CreateParticipantRequest extends ApiRequest
             'first_name' => 'required',
             'last_name' => 'required',
             'relationship_couple' => 'required',
-            'email' => 'max:50|email|regex:/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix',
+            'email' => 'nullable|max:50|email|regex:/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix',
             'post_code' => 'required|digits:7|numeric',
             'address' => 'required|max:200|string',
             'phone' => 'required|digits_between:10,11',
