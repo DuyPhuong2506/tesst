@@ -276,8 +276,10 @@ class CustomerService
         $bankAccount = $this->bankAccountRepo->model
             ->find($participantInfo->bank_account_id);
 
-        $participantInfo['bank_order'] = $bankAccount->bank_order;
-
+        if(isset($bankAccount)){
+            $participantInfo['bank_order'] = $bankAccount->bank_order;
+        }
+        
         $participantRelatives = $participant->customerRelatives()->get();
 
         $weddingInfo = $participant->wedding()
