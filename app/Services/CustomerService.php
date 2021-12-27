@@ -41,6 +41,9 @@ class CustomerService
         $roleTableIds = [Role::STAGE_TABLE, Role::COUPE_TABLE, Role::SPEECH_TABLE, Role::NORMAL_TABLE];
         $guestPositionTableId = Auth::guard('customer')->user()->tablePosition->first()->id ?? null;
         $getList = $this->customerRepo->model
+            ->with(['customerRelatives' => function($q) {
+                $q->select('id', 'first_name', 'last_name', 'relationship', 'customer_id');
+            }])
             ->when(isset($auth->role) && in_array($auth->role, $roleWeddingIds), function($q) use ($auth) {
                 $q->whereHas('wedding', function($q) use ($auth){
                     $q->whereId($auth->wedding_id)
