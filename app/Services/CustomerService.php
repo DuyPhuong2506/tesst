@@ -4,6 +4,7 @@ namespace App\Services;
 use App\Repositories\CustomerRepository;
 use App\Repositories\WeddingCardRepository;
 use App\Repositories\EventRepository;
+use App\Repositories\BankAccountRepository;
 use Illuminate\Support\Facades\Auth;
 use App\Constants\Common;
 use App\Constants\Role;
@@ -14,15 +15,18 @@ class CustomerService
     protected $customerRepo;
     protected $weddingCardRepo;
     protected $weddingRepo;
+    protected $bankAccountRepo;
 
     public function __construct(
         CustomerRepository $customerRepo,
         WeddingCardRepository $weddingCardRepo,
-        EventRepository $weddingRepo
+        EventRepository $weddingRepo,
+        BankAccountRepository $bankAccountRepo
     ){
         $this->customerRepo = $customerRepo;
         $this->weddingCardRepo = $weddingCardRepo;
         $this->weddingRepo = $weddingRepo;
+        $this->bankAccountRepo = $bankAccountRepo;
     }
 
     public function getListCustomerInWedding(array $data)
@@ -238,20 +242,36 @@ class CustomerService
             ->select('id', 'email', 'wedding_id')
             ->first();
 
-        $participantInfo = $participant->customerInfo()->first();
+        $participantInfo = $participant->customerInfo()
+            ->select(
+                'id', 'is_only_party', 'first_name', 'last_name', 'relationship_couple',
+                'phone', 'post_code', 'address', 'customer_type', 'task_content',
+                'free_word', 'is_send_wedding_card', 'bank_account_id'
+            )
+            ->first();
+
+        $bankAccount = $this->bankAccountRepo->model
+            ->find($participantInfo->bank_account_id);
+
+        $participantInfo['bank_order'] = $bankAccount->bank_order;
+
         $participantRelatives = $participant->customerRelatives()->get();
+
         $weddingInfo = $participant->wedding()
             ->select(
                 'id', 'thank_you_message', 'greeting_message', 'date', 'ceremony_reception_time',
                 'ceremony_time', 'party_reception_time', 'party_time', 'place_id'
             )
             ->first();
+
         $place = $weddingInfo->place()
             ->select('id', 'name', 'restaurant_id')
             ->first();
+
         $restaurant = $place->restaurant()
             ->select('id', 'address_1', 'address_2' , 'phone')
             ->first();
+
         $weddingCard = $this->weddingCardRepo->model
             ->where('wedding_id', $weddingId)
             ->select('wedding_price', 'couple_photo', 'content', 'template_card_id')
