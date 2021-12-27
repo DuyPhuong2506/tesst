@@ -161,21 +161,6 @@ class WeddingCardService
                 'appURL' => env('APP_URL'),
             ];
 
-            $customerIDs = $this->customerRepo->model
-                ->select('id')
-                ->whereHas('customerInfo')
-                ->where('wedding_id', $weddingID)
-                ->where('email', "<>", "")
-                ->get();
-
-            foreach ($customerIDs as $key => $value) {
-                $this->customerInfoRepo->model
-                    ->where('customer_id', $value['id'])
-                    ->update([
-                        'email_status' => InviteSend::SENT
-                    ]);
-            }
-
             $sendEmailJob = new SendDoneCardToStaffJob($staffEmail, $contentEmail);
             dispatch($sendEmailJob);
 
