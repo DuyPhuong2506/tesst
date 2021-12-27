@@ -189,7 +189,7 @@ class EventService
                                 $q->select('place_id', 'id', 'position')
                                   ->where('status', Common::STATUS_TRUE)
                                   ->with(['customers' => function($q) use($weddingId){
-                                        $q->select('full_name', 'id')
+                                        $q->select('full_name', 'id', 'join_status')
                                             ->with(['customerRelative' => function($q) {
                                                 $q->select('id', 'first_name', 'last_name', 'relationship', 'customer_id');
                                             }])
@@ -297,7 +297,7 @@ class EventService
         return $this->detailEvent($id);
     }
 
-    public function updateStateLivesteam($data)
+    public function updateStateLivesteam($request)
     {
         $authId = Auth::guard('customer')->user()->id;
         $customer = $this->customerRepo->model
@@ -305,12 +305,19 @@ class EventService
             ->first();
         if($customer) {
             $event = $this->eventRepo->model->find($customer->wedding_id);
-            $stateLivesteam = is_numeric($data['is_livestream']) ? $data['is_livestream'] : 0; 
-            $event->update([
-                'is_livestream' => $stateLivesteam
-            ]);
+            $data = [];
+            if(isset($request['is_livestream'])) {
+                $stateLivesteam = is_numeric($request['is_livestream']) ? $request['is_livestream'] : 0; 
+                $data['is_livestream'] = $stateLivesteam;
+            }
+            if(isset($request['is_join_table']) ) {
+                $isJoinTable = is_numeric($request['is_join_table']) ? $request['is_join_table'] : 0; 
+                $data['is_join_table'] = $isJoinTable;
+            }
 
-            return true;
+            $event->update($data);
+
+            return $this->detailEvent($customer->wedding_id);
         }
       
         return false;
