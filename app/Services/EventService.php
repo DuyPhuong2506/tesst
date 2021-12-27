@@ -190,7 +190,7 @@ class EventService
                                   ->where('status', Common::STATUS_TRUE)
                                   ->with(['customers' => function($q) use($weddingId){
                                         $q->select('full_name', 'id')
-                                            ->with(['customerRelatives' => function($q) {
+                                            ->with(['customerRelative' => function($q) {
                                                 $q->select('id', 'first_name', 'last_name', 'relationship', 'customer_id');
                                             }])
                                           ->where('role', Role::GUEST)

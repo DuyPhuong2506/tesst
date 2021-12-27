@@ -55,4 +55,9 @@ class Customer extends AuthJWT
     {
         return $this->hasMany(CustomerRelative::class, 'customer_id', 'id');
     }
+
+    public function customerRelative()
+    {
+        return $this->hasOne(CustomerRelative::class, 'customer_id', 'id');
+    }
 }
