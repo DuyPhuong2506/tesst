@@ -104,20 +104,20 @@ class CustomerService
 
     public function transmissionStatus($isSendWeddingCard, $email)
     {
-        $tranStatus = InviteSend::UNSEND;
+        $emailStatus = InviteSend::UNSEND;
         if($isSendWeddingCard && !isset($email)){
-            $tranStatus = InviteSend::NOT_EMAIL;
+            $emailStatus = InviteSend::NOT_EMAIL;
         }else if(!$isSendWeddingCard){
-            $tranStatus = InviteSend::DO_NOT_SEND;
+            $emailStatus = InviteSend::DO_NOT_SEND;
         }
 
-        return $tranStatus;
+        return $emailStatus;
     }
 
     public function createParticipant($requestData, $weddingId)
     {
         $customerRelative = null;
-        $tranStatus = $this->transmissionStatus(
+        $emailStatus = $this->transmissionStatus(
             $requestData['is_send_wedding_card'],
             $requestData['email'],
         );
@@ -148,7 +148,7 @@ class CustomerService
             'is_send_wedding_card' => $requestData['is_send_wedding_card'],
             'customer_type' => $requestData['customer_type'],
             'bank_account_id' => $bankID,
-            'trans_status' => $tranStatus
+            'email_status' => $emailStatus
         ]);
         
         if(isset($requestData['customer_relatives'])){
@@ -175,7 +175,7 @@ class CustomerService
                 $q->select(
                     'id', 'first_name', 'last_name', 
                     'relationship_couple', 'is_send_wedding_card',
-                    'is_only_party', 'customer_id', 'trans_status',
+                    'is_only_party', 'customer_id', 'email_status',
                 );
             }])
             ->select('id', 'full_name', 'email')
@@ -216,7 +216,7 @@ class CustomerService
     {
         $customer = $this->customerRepo->model->find($data['id']);
         $bankId = $this->getBankID($data['bank_order'], $weddingId);
-        $tranStatus = $this->transmissionStatus(
+        $emailStatus = $this->transmissionStatus(
             $data['is_send_wedding_card'],
             $data['email'],
         );
@@ -240,7 +240,7 @@ class CustomerService
                 'task_content' => $data['task_content'],
                 'free_word' => $data['free_word'],
                 'is_send_wedding_card' => $data['is_send_wedding_card'],
-                'trans_status' => $tranStatus,
+                'email_status' => $emailStatus,
                 'bank_account_id' => $bankId
             ]
         );

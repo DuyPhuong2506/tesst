@@ -14,7 +14,7 @@ class AddColumnToCustomerInfo extends Migration
     public function up()
     {
         Schema::table('customer_infos', function (Blueprint $table) {
-            $table->tinyInteger('trans_status')
+            $table->tinyInteger('email_status')
                 ->nullable()
                 ->default(null)
                 ->after('is_send_wedding_card');
@@ -29,7 +29,7 @@ class AddColumnToCustomerInfo extends Migration
     public function down()
     {
         Schema::table('customer_infos', function (Blueprint $table) {
-            $table->dropColumn('trans_status');
+            $table->dropColumn('email_status');
         });
     }
 }

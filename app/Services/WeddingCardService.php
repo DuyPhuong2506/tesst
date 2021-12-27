@@ -171,7 +171,7 @@ class WeddingCardService
                 $this->customerInfoRepo->model
                     ->where('customer_id', $value['id'])
                     ->update([
-                        'trans_status' => InviteSend::SENT
+                        'email_status' => InviteSend::SENT
                     ]);
             }
 
