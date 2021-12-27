@@ -235,16 +235,39 @@ class CustomerService
             ->where('id', $id)
             ->where('wedding_id', $weddingId)
             ->where('role', Role::GUEST)
-            ->select('id', 'email')
+            ->select('id', 'email', 'wedding_id')
             ->first();
 
         $participantInfo = $participant->customerInfo()->first();
         $participantRelatives = $participant->customerRelatives()->get();
+        $weddingInfo = $participant->wedding()
+            ->select(
+                'id', 'thank_you_message', 'greeting_message', 'date', 'ceremony_reception_time',
+                'ceremony_time', 'party_reception_time', 'party_time', 'place_id'
+            )
+            ->first();
+        $place = $weddingInfo->place()
+            ->select('id', 'name', 'restaurant_id')
+            ->first();
+        $restaurant = $place->restaurant()
+            ->select('id', 'address_1', 'address_2' , 'phone')
+            ->first();
+        $weddingCard = $this->weddingCardRepo->model
+            ->where('wedding_id', $weddingId)
+            ->select('wedding_price', 'couple_photo', 'content', 'template_card_id')
+            ->with(['templateCard' => function($q){
+                $q->select('id', 'card_path');
+            }])
+            ->first();
         
         return [
             'participant' => $participant,
             'participant_info' => $participantInfo,
-            'participant_relatives' => $participantRelatives
+            'participant_relatives' => $participantRelatives,
+            'wedding_info' => $weddingInfo,
+            'place_name' => $place->name,
+            'contact' => $restaurant,
+            'wedding_card' => $weddingCard
         ];
     }
     
