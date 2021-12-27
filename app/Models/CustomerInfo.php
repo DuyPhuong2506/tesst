@@ -23,6 +23,7 @@ class CustomerInfo extends Model
         'bank_account_id',
         'is_send_wedding_card',
         'customer_id',
+        'email_status',
     ];
 
     /**

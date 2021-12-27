@@ -4,25 +4,34 @@ namespace App\Services;
 use App\Repositories\WeddingCardRepository;
 use App\Repositories\BankAccountRepository;
 use App\Repositories\EventRepository;
+use App\Repositories\CustomerRepository;
+use App\Repositories\CustomerInfoRepository;
 use App\Jobs\SendDoneCardToStaffJob;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Facades\Image;
 use App\Constants\Role;
+use App\Constants\InviteSend;
 
 class WeddingCardService
 {
     protected $weddingCardRepo;
     protected $bankAccountRepo;
     protected $weddingRepo;
+    protected $customerRepo;
+    protected $customerInfoRepo;
 
     public function __construct(
         WeddingCardRepository $weddingCardRepo,
         BankAccountRepository $bankAccountRepo,
-        EventRepository $weddingRepo
+        EventRepository $weddingRepo,
+        CustomerRepository $customerRepo,
+        CustomerInfoRepository $customerInfoRepo
     ){
         $this->weddingCardRepo = $weddingCardRepo;
         $this->bankAccountRepo = $bankAccountRepo;
         $this->weddingRepo = $weddingRepo;
+        $this->customerRepo = $customerRepo;
+        $this->customerInfoRepo = $customerInfoRepo;
     }
 
     public function createWeddingCard($cardData, $weddingId)
@@ -34,13 +43,13 @@ class WeddingCardService
             $couplePhoto = $weddingCard->first()->couple_photo;
             Storage::disk('s3')->delete($couplePhoto);
         }
-
+        
         $weddingCard = $weddingCard->updateOrCreate(
             ['wedding_id' => $weddingId],
             $cardData
         );
 
-        return $this->detailWeddingCard($weddingCard->id);
+        return true;
     }
 
     public function updateCardContent($cardContent, $weddingId)
@@ -151,7 +160,7 @@ class WeddingCardService
                 'customerName' => $customerNames,
                 'appURL' => env('APP_URL'),
             ];
-            
+
             $sendEmailJob = new SendDoneCardToStaffJob($staffEmail, $contentEmail);
             dispatch($sendEmailJob);
 

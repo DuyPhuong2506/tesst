@@ -56,7 +56,9 @@ class WeddingCardsController extends Controller
                      ->createWeddingCard($weddingCard, $weddingId);
 
         if($data){
-            return $this->respondSuccess($data);
+            return $this->respondSuccess([
+                'message' => __('messages.wedding_card.create_success')
+            ]);
         }
         
         return $this->respondError(

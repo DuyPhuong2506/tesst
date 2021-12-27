@@ -105,9 +105,25 @@ class CustomerService
         return $bankAccountId;
     }
 
+    public function transmissionStatus($isSendWeddingCard, $email)
+    {
+        $emailStatus = InviteSend::UNSEND;
+        if($isSendWeddingCard && !isset($email)){
+            $emailStatus = InviteSend::NOT_EMAIL;
+        }else if(!$isSendWeddingCard){
+            $emailStatus = InviteSend::DO_NOT_SEND;
+        }
+
+        return $emailStatus;
+    }
+
     public function createParticipant($requestData, $weddingId)
     {
         $customerRelative = null;
+        $emailStatus = $this->transmissionStatus(
+            $requestData['is_send_wedding_card'],
+            $requestData['email'],
+        );
         $username = random_str_az(8) . random_str_number(4);
         $password = random_str_az(8) . random_str_number(4);
         $fullname = $requestData['first_name'] . " " . $requestData['last_name'];
@@ -135,6 +151,7 @@ class CustomerService
             'is_send_wedding_card' => $requestData['is_send_wedding_card'],
             'customer_type' => $requestData['customer_type'],
             'bank_account_id' => $bankID,
+            'email_status' => $emailStatus
         ]);
         
         if(isset($requestData['customer_relatives'])){
@@ -161,7 +178,7 @@ class CustomerService
                 $q->select(
                     'id', 'first_name', 'last_name', 
                     'relationship_couple', 'is_send_wedding_card',
-                    'is_only_party', 'customer_id'
+                    'is_only_party', 'customer_id', 'email_status',
                 );
             }])
             ->select('id', 'full_name', 'email')
@@ -202,6 +219,10 @@ class CustomerService
     {
         $customer = $this->customerRepo->model->find($data['id']);
         $bankId = $this->getBankID($data['bank_order'], $weddingId);
+        $emailStatus = $this->transmissionStatus(
+            $data['is_send_wedding_card'],
+            $data['email'],
+        );
 
         $customer->update([
             'email' => Str::lower($data['email']),
@@ -222,6 +243,7 @@ class CustomerService
                 'task_content' => $data['task_content'],
                 'free_word' => $data['free_word'],
                 'is_send_wedding_card' => $data['is_send_wedding_card'],
+                'email_status' => $emailStatus,
                 'bank_account_id' => $bankId
             ]
         );
@@ -257,8 +279,10 @@ class CustomerService
         $bankAccount = $this->bankAccountRepo->model
             ->find($participantInfo->bank_account_id);
 
-        $participantInfo['bank_order'] = $bankAccount->bank_order;
-
+        if(isset($bankAccount)){
+            $participantInfo['bank_order'] = $bankAccount->bank_order;
+        }
+        
         $participantRelatives = $participant->customerRelatives()->get();
 
         $weddingInfo = $participant->wedding()
