@@ -43,13 +43,13 @@ class WeddingCardService
             $couplePhoto = $weddingCard->first()->couple_photo;
             Storage::disk('s3')->delete($couplePhoto);
         }
-
+        
         $weddingCard = $weddingCard->updateOrCreate(
             ['wedding_id' => $weddingId],
             $cardData
         );
 
-        return $this->detailWeddingCard($weddingCard->id);
+        return true;
     }
 
     public function updateCardContent($cardContent, $weddingId)

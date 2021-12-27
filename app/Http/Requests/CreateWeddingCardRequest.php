@@ -15,7 +15,7 @@ class CreateWeddingCardRequest extends ApiRequest
     {
         return [
             'template_card_id' => 'required|exists:template_cards,id',
-            'couple_photo' => 'required',
+            'couple_photo' => 'nullable|string',
         ];
     }
 
@@ -24,7 +24,6 @@ class CreateWeddingCardRequest extends ApiRequest
         return [
             'template_card_id.required' => __('messages.wedding_card.validation.template_card_id.required'),
             'template_card_id.exists' => __('messages.wedding_card.validation.template_card_id.exists'),
-            'couple_photo.required' => __('messages.wedding_card.validation.couple_photo.required'),
         ];
     }
 }
