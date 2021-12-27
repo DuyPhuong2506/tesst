@@ -165,6 +165,7 @@ class WeddingCardService
                 ->select('id')
                 ->whereHas('customerInfo')
                 ->where('wedding_id', $weddingID)
+                ->where('email', "<>", "")
                 ->get();
 
             foreach ($customerIDs as $key => $value) {
