@@ -45,11 +45,10 @@ Route::prefix('v1')->group(function () {
         /* Role Staff Admin */
         Route::group(['middleware' => 'auth.admin_staff'], function(){
             Route::resource('/event','EventsController');
-
+            Route::resource('/time-table', 'WeddingTimeTableController');
             Route::prefix('/users')->group(function () {
                 Route::put('/staff-admin/create-or-update', 'UsersController@upadateStaffAdmin');
             });
-
             Route::resource('/places', 'PlacesController');
         });
 
@@ -74,11 +73,11 @@ Route::prefix('v1')->group(function () {
             Route::get('/couple/guest-list', 'EventsController@coupleListGuest');
             
             Route::prefix('/couple/event')->group(function () {
-                Route::post('/update-thank-message', 'EventsController@updateThankMessage');
-                Route::post('/update-time-table', 'WeddingTimeTableController@update');
+                Route::post('/thank-message/update', 'EventsController@updateThankMessage');
             });
 
             Route::get('/couple/wedding-card/notify-to-staff', 'WeddingCardsController@notifyToStaff');
+            Route::get('/couple/event/notify-to-planner', 'EventsController@notifyToPlanner');
 
             Route::resource('/couple/template-card', 'TemplateCardsController');
             Route::resource('/couple/template-content', 'TemplateContentController');

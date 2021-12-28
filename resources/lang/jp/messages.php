@@ -73,6 +73,7 @@ return [
         'list_null' => 'Event list null',
         'detail_fail' => 'Event detail fail',
         'not_found' => 'The wedding event not found !',
+        'send_check_seat_subject' => '席次確認依頼',
 
         'validation' => [
             'title' => [
@@ -238,7 +239,7 @@ return [
                 'regex' => 'メールアドレスの形式が正しくありません。ご確認してください。',
                 'exists' => '入力したアカウント情報に誤りがあります。正しいメールアドレスとパスワードを入力してください。',
                 'max' => ':max文字列以内を入力してください。',
-                'unique' => 'メールアドレスが存在しました。',
+                'unique' => 'メールアドレスはすでに登録されています。',
                 'different' => 'メールアドレスがすでにシステムで使用されています。 別のメールアドレスを入力してください。'
             ]
         ]

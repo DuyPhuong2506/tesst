@@ -17,12 +17,14 @@ class EventsController extends Controller
 {
     protected $eventService;
     protected $customer;
+    protected $user;
     
     public function __construct(
         EventService $eventService
     ){
         $this->eventService = $eventService;
         $this->customer = Auth::guard('customer')->user();
+        $this->user = Auth::user();
     }
 
     public function index(Request $request)
@@ -53,6 +55,17 @@ class EventsController extends Controller
             DB::rollback();
             return $this->respondError(Response::HTTP_BAD_REQUEST, __('messages.event.create_fail'));
         }
+    }
+
+    public function show($id)
+    {
+        $staffID = $this->user->id;
+        $data = $this->eventService->staffEventDetail($staffID, $id);
+        if($data){
+            return $this->respondSuccess($data);
+        }
+
+        return $this->respondError(Response::HTTP_NOT_FOUND, __('messages.event.detail_fail'));
     }
 
     public function coupleDetailEvent()
@@ -106,19 +119,23 @@ class EventsController extends Controller
         return $this->respondError(Response::HTTP_BAD_REQUEST, __('messages.event.list_null'));
     }
 
-    public function update(UpdateEventRequest $request, $id)
+    public function update(UpdateEventRequest $request)
     {
+        $requestData = $request->all();
+        $id = $request->id;
         DB::beginTransaction();
         try {
-            $eventData = $this->eventService->updateEvent($id, $request->all());
+            $eventData = $this->eventService->updateEvent($id, $requestData);
             if($eventData){
                 DB::commit();
-                return $this->respondSuccess($eventData);
+                return $this->respondSuccess([
+                    'message' => __('messages.event.update_success')
+                ]);
             }
             DB::rollback();
         } catch (\Throwable $th) {
             DB::rollback();
-            return $this->respondError(Response::HTTP_BAD_REQUEST, __('messages.event.create_fail'));
+            return $this->respondError(Response::HTTP_BAD_REQUEST, __('messages.event.update_fail'));
         }
     }
 
@@ -135,6 +152,18 @@ class EventsController extends Controller
         }
     }
 
-    
+    public function notifyToPlanner()
+    {
+        $weddingID = $this->customer->wedding_id;
+        $status = $this->eventService->notifyToPlanner($weddingID);
+        if($status){
+            return $this->respondSuccess([
+                'message' => __('messages.mail.send_success')
+            ]);
+        }
 
+        return $this->respondError(Response::HTTP_BAD_REQUEST, [
+            'message' => __('messages.mail.send_fail')
+        ]);
+    }
 }
