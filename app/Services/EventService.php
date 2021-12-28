@@ -224,9 +224,17 @@ class EventService
                                           ->where('wedding_id', $weddingId);
                             }]);
                         }]);
-                    }])
-                    ->with(['eventTimes' => function($q){
+                    }, 'eventTimes' => function($q){
                         $q->select(['id', 'event_id', 'start', 'end', 'description']);
+                    }, 'channels' => function($q) {
+                        $tablePositionId = Auth::guard('customer')->user()->tablePosition()->first()->id ?? null;
+                        
+                        $q->when(!empty($tablePositionId), function($q) use ($tablePositionId) {
+                            $q->where('table_position_id', $tablePositionId)
+                                ->with(['tableAccount' => function($q) {
+                                    $q->select('id', 'full_name', 'username');
+                                }]);
+                        });
                     }])
                     ->first();
         
