@@ -281,6 +281,8 @@ class CustomerService
 
         if(isset($bankAccount)){
             $participantInfo['bank_order'] = $bankAccount->bank_order;
+        }else{
+            $participantInfo['bank_order'] = 0;
         }
         
         $participantRelatives = $participant->customerRelatives()->get();
