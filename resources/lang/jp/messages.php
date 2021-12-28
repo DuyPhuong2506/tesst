@@ -73,6 +73,7 @@ return [
         'list_null' => 'Event list null',
         'detail_fail' => 'Event detail fail',
         'not_found' => 'The wedding event not found !',
+        'send_check_seat_subject' => '席次確認依頼',
 
         'validation' => [
             'title' => [

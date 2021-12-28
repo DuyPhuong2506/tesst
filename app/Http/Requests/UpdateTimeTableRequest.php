@@ -4,11 +4,12 @@ namespace App\Http\Requests;
 
 use App\Http\Requests\ApiRequest;
 
-class UpdateTimeTableEventRequest extends ApiRequest
+class UpdateTimeTableRequest extends ApiRequest
 {
     public function rules()
     {
         $rules = [
+            "wedding_id" => 'required|exists:weddings,id',
             "time_table" => "array",
             "time_table.0.start" => "date_format:H:i|required",
             "time_table.0.end" => "date_format:H:i|after:time_table.0.start|required",

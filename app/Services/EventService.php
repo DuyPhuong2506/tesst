@@ -2,6 +2,7 @@
 namespace App\Services;
 
 use App\Jobs\SendEventEmailJob;
+use App\Jobs\SendDoneSeatJob;
 use App\Constants\Role;
 use App\Constants\EventConstant;
 use App\Repositories\EventRepository;
@@ -167,6 +168,32 @@ class EventService
         ];
     }
 
+    /*
+    | Staff event detail for update UI[AS-150]
+    | @param int $staffID
+    | @param int $eventID
+    */
+    public function staffEventDetail($staffID, $weddingID)
+    {
+        $weddingDetail = $this->eventRepo->model
+            ->where('id', $weddingID)
+            ->whereHas('place', function($q) use($staffID){
+                $q->whereHas('restaurant', function($q) use($staffID){
+                    $q->whereHas('user', function($q) use($staffID){
+                        $q->where('id', $staffID);
+                    });
+                });
+            })
+            ->select(
+                'id', 'title', 'pic_name', 'date', 
+                'ceremony_reception_time', 'ceremony_time',
+                'party_reception_time', 'party_time',
+            )
+            ->first();
+
+        return $weddingDetail;
+    }
+
     public function getWeddingEventWithBearerToken($customerId)
     {   
         $tablePosition = $this->customerRepo->model->where('id', $customerId)
@@ -257,42 +284,8 @@ class EventService
             'ceremony_time' => $data['ceremony_time'],
             'party_reception_time' => $data['party_reception_time'],
             'party_time' => $data['party_time'],
-            'place_id' => $data['place_id'],
-            'allow_remote' => $data['allow_remote'],
-            'guest_invitation_response_date' => $data['guest_invitation_response_date'],
-            'couple_edit_date' => $data['couple_edit_date']
+            'place_id' => $data['place_id']
         ]);
-        
-        $couple = [
-            [
-                'email' => $data['groom_email'], 
-                'full_name' => $data['groom_name'],
-                'role' => Role::GROOM
-            ],
-            [
-                'email' => $data['bride_email'],
-                'full_name' => $data['bride_name'],
-                'role' => Role::BRIDE
-            ]
-        ];
-
-        foreach($couple as $key => $value){
-            $username = random_str_az(8).random_str_number(4);
-            $password = random_str_az(8).random_str_number(4);
-
-            $value = array_merge($value, [
-                'username' => $username,
-                'password' => $password
-            ]);
-
-            $sendEmailJob = new SendEventEmailJob($value['email'], $value);
-            dispatch($sendEmailJob);
-            
-            $event->customers()->updateOrCreate([
-                'role' => $value['role'], 
-                'wedding_id' => $id
-            ], $value);
-        }
         
         return $this->detailEvent($id);
     }
@@ -321,5 +314,30 @@ class EventService
         }
       
         return false;
+    }
+
+    public function notifyToPlanner($weddingID)
+    {
+        $wedding = $this->eventRepo->model->find($weddingID);
+        $place = $wedding->place()->first();
+        $restaurant = $place->restaurant()->first();
+        $staff = $restaurant->user()->first();
+
+        $groomCustomer = $wedding->customers()
+            ->where('role', Role::GROOM)
+            ->select('full_name')
+            ->first();
+
+        $staffEmail = $staff->email;
+        $contentEmail = [
+            'contactName' => $restaurant->contact_name,
+            'groomName' => $groomCustomer->full_name,
+            'appURL' => env('APP_URL'),
+        ];
+
+        $sendEmailJob = new SendDoneSeatJob($staffEmail, $contentEmail);
+        dispatch($sendEmailJob);
+
+        return true;
     }
 }
