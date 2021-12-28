@@ -7,6 +7,7 @@ use App\Constants\Role;
 use App\Constants\EventConstant;
 use App\Repositories\EventRepository;
 use App\Repositories\CustomerRepository;
+use App\Repositories\ChannelRepository;
 use Carbon\Carbon;
 use Auth;
 use Str;
@@ -16,13 +17,16 @@ class EventService
 {
     protected $eventRepo;
     protected $customerRepo;
+    protected $channelRepo;
 
     public function __construct(
         EventRepository $eventRepo,
-        CustomerRepository $customerRepo
+        CustomerRepository $customerRepo,
+        ChannelRepository $channelRepo
     ){
         $this->eventRepo = $eventRepo;
         $this->customerRepo = $customerRepo;
+        $this->channelRepo = $channelRepo;
     }
 
     public function eventList($request)
@@ -226,20 +230,22 @@ class EventService
                         }]);
                     }, 'eventTimes' => function($q){
                         $q->select(['id', 'event_id', 'start', 'end', 'description']);
-                    }, 'channels' => function($q) {
-                        $tablePositionId = Auth::guard('customer')->user()->tablePosition()->first()->id ?? null;
-                        
-                        $q->when(!empty($tablePositionId), function($q) use ($tablePositionId) {
-                            $q->where('table_position_id', $tablePositionId)
-                                ->with(['tableAccount' => function($q) {
-                                    $q->select('id', 'full_name', 'username');
-                                }]);
-                        });
                     }])
                     ->first();
         
         $data['customer_detail'] = $tablePosition;
-        
+        $data['channel_table'] = null;
+        $tablePositionId = Auth::guard('customer')->user()->tablePosition()->first()->id ?? null;
+        if($tablePositionId && $weddingId) {
+            $data['channel_table'] = $this->channelRepo
+                ->model
+                ->whereWeddingId($weddingId)
+                ->whereTablePositionId($tablePositionId)
+                ->with(['tableAccount' => function($q) {
+                    $q->select('id', 'full_name', 'username');
+                }])
+                ->first();
+        }
         return $data;
     }
 
