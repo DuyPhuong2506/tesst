@@ -121,6 +121,12 @@ Route::prefix('v1')->group(function () {
         echo true;
     });
 
+    Route::get('/agora/remove-channel', function()  {
+        \DB::table('channels')->delete();
+
+        echo true;
+    });
+
     Route::get('/dump-wedding', function(){
         \Artisan::call('db:seed --class=WeddingSeeder');
     });

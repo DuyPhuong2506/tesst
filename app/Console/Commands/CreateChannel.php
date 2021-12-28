@@ -83,17 +83,19 @@ class CreateChannel extends Command
                 if(!$checkChannel){
 
                     $channel = [
-                        'wedding_id' => $wedding->id,
-                        'name' => $table->position,
-                        'amount' => 6,
-                        'status' => Common::STATUS_FALSE,
-                        'type' => EventConstant::TYPE_GUEST,
-                        'start_time' => null,
-                        'end_time' => null,
-                        'created_at' => \Carbon\Carbon::now(),
-                        'updated_at' => \Carbon\Carbon::now(),
-                        'role' => RtcTokenBuilder::RolePublisher,
-                        'customer_id' => $tableAccount->id ?? null,
+                        'wedding_id'    => $wedding->id,
+                        'name'          => $table->position,
+                        'display_name'  => $table->position,
+                        'amount'        => 6,
+                        'status'        => Common::STATUS_FALSE,
+                        'type'          => EventConstant::TYPE_GUEST,
+                        'start_time'    => null,
+                        'end_time'      => null,
+                        'created_at'    => \Carbon\Carbon::now(),
+                        'updated_at'    => \Carbon\Carbon::now(),
+                        'role'          => RtcTokenBuilder::RolePublisher,
+                        'customer_id'   => $tableAccount->id ?? null,
+                        'table_position_id'   => $table->id ?? null,
                     ];
 
                     $id = \DB::table('channels')->insertGetId($channel);
@@ -146,6 +148,7 @@ class CreateChannel extends Command
         $data = [
             'wedding_id'    => $wedding_id,
             'name'          => $name,
+            'display_name'  => $name,
             'amount'        => 6,
             'status'        => Common::STATUS_FALSE,
             'type'          => $role,
@@ -154,7 +157,8 @@ class CreateChannel extends Command
             'created_at'    => \Carbon\Carbon::now(),
             'updated_at'    => \Carbon\Carbon::now(),
             'role'          => RtcTokenBuilder::RolePublisher,
-            'customer_id'   => $customer_id
+            'customer_id'   => $customer_id,
+            'table_position_id' => null
         ];
 
         return $data;

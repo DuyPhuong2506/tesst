@@ -50,4 +50,9 @@ class Wedding extends Model
     {
         return $this->hasOne(WeddingCard::class, 'wedding_id', 'id');
     }
+
+    public function channels()
+    {
+        return $this->hasMany(Channel::class, 'wedding_id', 'id');
+    } 
 }
