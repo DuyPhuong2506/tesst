@@ -14,18 +14,47 @@ class CreateEventRequest extends ApiRequest
             'title' => 'required|max:100|string',
             'date' => [
                 'required', 
-                'date_format:Y-m-d H:i',
+                'date_format:Y-m-d',
                 'after:today',
                 function($attribute, $value, $fail){
-                    $placeId = request()->place_id;
-                    $eventDate = Carbon::parse($value)->format('Y-m-d');
-                    $exist = Wedding::whereDate('date', '=', $eventDate)
-                                    ->whereHas('place', function($q) use($placeId){
-                                        $q->where('id', $placeId);
-                                    })
-                                    ->exists();
-                    if($exist){
-                        $fail(__('messages.event.validation.date.was_held'));
+                    $ceremonyReceptionTime = request()->ceremony_reception_time;
+                    $ceremonyTime = request()->ceremony_time;
+                    $partyTime = request()->party_time;
+                    $date = request()->date;
+                    $placeID = request()->place_id;
+
+                    $startTime = (isset($ceremonyReceptionTime)) 
+                        ? Carbon::createFromFormat('H:i', $ceremonyReceptionTime[0])
+                        : Carbon::createFromFormat('H:i', $ceremonyTime[0]);
+                    $endTime = Carbon::createFromFormat('H:i', $partyTime[1]);
+                    
+                    $wedding = Wedding::whereHas('place', function($q) use($placeID){
+                            $q->where('id', $placeID);
+                        })
+                        ->where('date', $date);
+                    $weddings = $wedding->get();
+                    $exists = $wedding->exists();
+                    
+                    if($exists){
+                        foreach ($weddings as $key => $value) {
+                            $dbCeremonyReceptionTime = $value['ceremony_reception_time'];
+                            $dbCeremonyTime = $value['ceremony_time'];
+                            $dbStartTime = (isset($dbCeremonyReceptionTime))
+                                ? (explode("-", $dbCeremonyReceptionTime))[0]
+                                : (explode("-", $dbCeremonyTime))[0];
+                            $dbEndTime = (explode("-", $value['party_time']))[1];
+
+                            #Carbon format start and end wedding time
+                            $dbStartTime = Carbon::createFromFormat('H:i', $dbStartTime);
+                            $dbEndTime = Carbon::createFromFormat('H:i', $dbEndTime);
+
+                            if(
+                                ($startTime->gte($dbStartTime) && $endTime->lte($dbEndTime)) || 
+                                ($startTime->lte($dbStartTime) && $endTime->gte($dbEndTime))
+                            ){
+                                $fail("Tồn tại đám cưới trong phạm vi thời gian này rồi !");
+                            }
+                        }
                     }
                 }
             ],
