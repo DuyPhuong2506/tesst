@@ -20,7 +20,7 @@ class AgoraService
     }
 
     /*  RtcTokenBuilder::buildTokenWithUid($appID, $appCertificate, $channelName, $uid, $role, $privilegeExpiredTs);*/
-    public function getRtcToken(string $channelName, int $uid = 0, $role = RtcTokenBuilder::RoleSubscriber, int $expireTimestamp = 0)
+    public function getRtcToken(string $channelName, int $uid = 0, $role = RtcTokenBuilder::RoleSubscriber, int $expireTimestamp = 3600 * 24)
     {
         try {
             $currentTimestamp =  Carbon::now()->timestamp;
