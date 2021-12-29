@@ -8,6 +8,24 @@ use App\Models\Wedding;
 
 class CreateEventRequest extends ApiRequest
 {
+    public function isBetween($dbFrom, $dbTo, $start, $end) {
+        $dbFrom = strtotime($dbFrom);
+        $dbTo = strtotime($dbTo);
+        $start = strtotime($start);
+        $end = strtotime($end);
+
+        if(
+            (($start < $dbFrom) and ($end > $dbFrom) and ($end <= $dbTo)) OR
+            (($start >= $dbFrom) and ($start < $dbTo) and ($end <= $dbTo)) OR
+            (($start <= $dbFrom) and ($end >= $dbTo)) OR
+            (($start >= $dbFrom) and ($start < $dbTo) and ($end >= $dbTo))
+        ){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
     public function rules()
     {
         $rule = [
@@ -19,40 +37,50 @@ class CreateEventRequest extends ApiRequest
                 function($attribute, $value, $fail){
                     $ceremonyReceptionTime = request()->ceremony_reception_time;
                     $ceremonyTime = request()->ceremony_time;
+                    $partyReceptionTime = request()->party_reception_time;
                     $partyTime = request()->party_time;
                     $date = request()->date;
                     $placeID = request()->place_id;
 
-                    $startTime = (isset($ceremonyReceptionTime)) 
-                        ? Carbon::createFromFormat('H:i', $ceremonyReceptionTime[0])
-                        : Carbon::createFromFormat('H:i', $ceremonyTime[0]);
-                    $endTime = Carbon::createFromFormat('H:i', $partyTime[1]);
+                    $ceremony = (isset($ceremonyReceptionTime))
+                        ? $ceremonyReceptionTime
+                        : $ceremonyTime;
+                    
+                    $party = (isset($partyReceptionTime))
+                        ? $partyReceptionTime
+                        : $partyTime;
                     
                     $wedding = Wedding::whereHas('place', function($q) use($placeID){
                             $q->where('id', $placeID);
                         })
                         ->where('date', $date);
-                    $weddings = $wedding->get();
-                    $exists = $wedding->exists();
+                    $listWedding = $wedding->get();
                     
-                    if($exists){
-                        foreach ($weddings as $key => $value) {
+                    if($wedding->exists()){
+                        foreach ($listWedding as $key => $value) {
                             $dbCeremonyReceptionTime = $value['ceremony_reception_time'];
                             $dbCeremonyTime = $value['ceremony_time'];
-                            $dbStartTime = (isset($dbCeremonyReceptionTime))
-                                ? (explode("-", $dbCeremonyReceptionTime))[0]
-                                : (explode("-", $dbCeremonyTime))[0];
-                            $dbEndTime = (explode("-", $value['party_time']))[1];
+                            $dbPartyReceptionTime = $value['party_reception_time'];
+                            $dbPartyTime = $value['party_time'];
 
-                            #Carbon format start and end wedding time
-                            $dbStartTime = Carbon::createFromFormat('H:i', $dbStartTime);
-                            $dbEndTime = Carbon::createFromFormat('H:i', $dbEndTime);
-
+                            $dbCeremony = (isset($dbCeremonyReceptionTime))
+                                ? explode("-", $dbCeremonyReceptionTime)
+                                : explode("-", $dbCeremonyTime);
+                            $dbParty = (isset($dbPartyReceptionTime))
+                                ? explode("-", $dbPartyReceptionTime)
+                                : explode("-", $dbPartyTime);
+                            
                             if(
-                                ($startTime->gte($dbStartTime) && $endTime->lte($dbEndTime)) || 
-                                ($startTime->lte($dbStartTime) && $endTime->gte($dbEndTime))
+                                $this->isBetween(
+                                    $dbCeremony[0], $dbCeremony[1], 
+                                    $ceremony[0], $ceremony[1]
+                                ) or
+                                $this->isBetween(
+                                    $dbParty[0], $dbParty[1], 
+                                    $party[0], $party[1]
+                                )
                             ){
-                                $fail("Tồn tại đám cưới trong phạm vi thời gian này rồi !");
+                                $fail(__('messages.event.validation.date.was_held'));
                             }
                         }
                     }
