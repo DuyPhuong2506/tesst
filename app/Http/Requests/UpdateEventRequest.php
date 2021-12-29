@@ -17,6 +17,25 @@ class UpdateEventRequest extends ApiRequest
         $this->user = Auth::user();
     }
 
+    public function isBetween($dbFrom, $dbTo, $start, $end) 
+    {
+        $dbFrom = strtotime($dbFrom);
+        $dbTo = strtotime($dbTo);
+        $start = strtotime($start);
+        $end = strtotime($end);
+
+        if(
+            (($start < $dbFrom) and ($end > $dbFrom) and ($end <= $dbTo)) OR
+            (($start >= $dbFrom) and ($start < $dbTo) and ($end <= $dbTo)) OR
+            (($start <= $dbFrom) and ($end >= $dbTo)) OR
+            (($start >= $dbFrom) and ($start < $dbTo) and ($end >= $dbTo))
+        ){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
     public function rules()
     {
         $rule = [
@@ -45,17 +64,58 @@ class UpdateEventRequest extends ApiRequest
                 'required',
                 'date_format:Y-m-d',
                 'after:today',
-                function($attribute, $value, $fail){
-                    $id = request()->event;
+                function($attribute, $value, $fail)
+                {
+                    $ceremonyReceptionTime = request()->ceremony_reception_time;
+                    $ceremonyTime = request()->ceremony_time;
+                    $partyReceptionTime = request()->party_reception_time;
+                    $partyTime = request()->party_time;
                     $date = request()->date;
-                    $place = request()->place_id;
-                    $exist = Wedding::whereDate('date', $date)
-                        ->where('place_id', $place)
-                        ->where('id', '<>', $id)
-                        ->exists();
+                    $placeID = request()->place_id;
 
-                    if($exist){
-                        $fail(__('messages.event.validation.date.was_held'));
+                    $ceremony = (isset($ceremonyReceptionTime))
+                        ? $ceremonyReceptionTime
+                        : $ceremonyTime;
+                    
+                    $party = (isset($partyReceptionTime))
+                        ? $partyReceptionTime
+                        : $partyTime;
+
+                    $wedding = Wedding::whereHas('place', function($q) use($placeID){
+                            $q->where('id', $placeID);
+                        })
+                        ->where('date', $date);
+                    
+                    $listWedding = $wedding->get();
+
+                    if($wedding->exists()){
+                        foreach ($listWedding as $key => $value) {
+                            $dbCeremonyReceptionTime = $value['ceremony_reception_time'];
+                            $dbCeremonyTime = $value['ceremony_time'];
+                            $dbPartyReceptionTime = $value['party_reception_time'];
+                            $dbPartyTime = $value['party_time'];
+
+                            $dbCeremony = (isset($dbCeremonyReceptionTime))
+                                ? explode("-", $dbCeremonyReceptionTime)
+                                : explode("-", $dbCeremonyTime);
+
+                            $dbParty = (isset($dbPartyReceptionTime))
+                                ? explode("-", $dbPartyReceptionTime)
+                                : explode("-", $dbPartyTime);
+
+                            if(
+                                $this->isBetween(
+                                    $dbCeremony[0], $dbCeremony[1], 
+                                    $ceremony[0], $ceremony[1]
+                                ) or
+                                $this->isBetween(
+                                    $dbParty[0], $dbParty[1], 
+                                    $party[0], $party[1]
+                                )
+                            ){
+                                $fail(__('messages.event.validation.date.was_held'));
+                            }
+                        }
                     }
                 }
             ],
