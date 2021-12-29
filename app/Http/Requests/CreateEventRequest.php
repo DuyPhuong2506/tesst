@@ -8,7 +8,7 @@ use App\Models\Wedding;
 
 class CreateEventRequest extends ApiRequest
 {
-    public function isBeetween($dbFrom, $dbTo, $start, $end) {
+    public function isBetween($dbFrom, $dbTo, $start, $end) {
         $dbFrom = strtotime($dbFrom);
         $dbTo = strtotime($dbTo);
         $start = strtotime($start);
@@ -71,11 +71,11 @@ class CreateEventRequest extends ApiRequest
                                 : explode("-", $dbPartyTime);
                             
                             if(
-                                $this->isBeetween(
+                                $this->isBetween(
                                     $dbCeremony[0], $dbCeremony[1], 
                                     $ceremony[0], $ceremony[1]
                                 ) or
-                                $this->isBeetween(
+                                $this->isBetween(
                                     $dbParty[0], $dbParty[1], 
                                     $party[0], $party[1]
                                 )
