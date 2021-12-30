@@ -112,7 +112,6 @@ class CustomerService
                 });
                 $q->orWhereIn('join_status', $status);
             })
-            
             ->select(['id', 'full_name', 'email', 'join_status'])
             ->with(['tablePosition' => function($q){
                 $q->select(['id', 'position']);
@@ -126,10 +125,15 @@ class CustomerService
             ->select('guest_invitation_response_date', 'couple_edit_date')
             ->first();
 
+        $tableList = $this->weddingRepo->model->find($weddingID)
+            ->place()->first()
+            ->tablePositions()->get();
+
         return [
             'guest_invitation_response_date' => $dates->guest_invitation_response_date,
             'couple_edit_date' => $dates->couple_edit_date,
-            'customer_participant' => $customerParticipant
+            'customer_participant' => $customerParticipant,
+            'table_list' => $tableList
         ];
     }
 
