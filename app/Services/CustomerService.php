@@ -97,7 +97,7 @@ class CustomerService
                 $q->where('wedding_id', $weddingID);
                 $q->where('role', Role::GUEST);
             })
-            ->where(function($q) use($keyword){
+            ->where(function($q) use($keyword, $status){
                 $q->orWhere('full_name', 'like', '%'.$keyword.'%');
                 $q->orWhere('email', 'like', '%'.$keyword.'%');
                 $q->orWhere(function($q) use($keyword){
@@ -110,7 +110,9 @@ class CustomerService
                         $q->where('relationship_couple', 'like', '%'.$keyword.'%');
                     });
                 });
+                $q->orWhereIn('join_status', $status);
             })
+            
             ->select(['id', 'full_name', 'email', 'join_status'])
             ->with(['tablePosition' => function($q){
                 $q->select(['id', 'position']);
