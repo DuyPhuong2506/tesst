@@ -116,3 +116,30 @@ if (!function_exists('getDateStringRandom')) {
         return date("_Y_m_d_H_i_s", time());
     }
 }
+
+if (!function_exists('isBetween')) {
+
+    /**
+     * Compare a range time is between other range time in DB
+     *
+     * @param $dbFrom, $dbTo, $start, $end
+     * @return bool
+     */
+    function isBetween($dbFrom, $dbTo, $start, $end) {
+        $dbFrom = strtotime($dbFrom);
+        $dbTo = strtotime($dbTo);
+        $start = strtotime($start);
+        $end = strtotime($end);
+    
+        if(
+            (($start < $dbFrom) and ($end > $dbFrom) and ($end <= $dbTo)) OR
+            (($start >= $dbFrom) and ($start < $dbTo) and ($end <= $dbTo)) OR
+            (($start <= $dbFrom) and ($end >= $dbTo)) OR
+            (($start >= $dbFrom) and ($start < $dbTo) and ($end >= $dbTo))
+        ){
+            return true;
+        }else{
+            return false;
+        }
+    }
+}
