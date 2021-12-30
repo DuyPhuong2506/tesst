@@ -4,8 +4,8 @@ namespace App\Constants;
 class ResponseCardStatus
 {
     const RESPONSE_CARD_STATUS = [
-        1 => "tham gia", #Will come
-        2 => "khong", #Won't come 
-        3 => "tu xa", #Remote join
+        1 => "出席", #Will come
+        2 => "欠席", #Won't come 
+        3 => "リモート参加", #Remote join
     ];
 }
