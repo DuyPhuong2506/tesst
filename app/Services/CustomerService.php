@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Constants\Common;
 use App\Constants\Role;
 use App\Constants\InviteSend;
+use App\Constants\ResponseCardStatus;
 use Str;
 
 class CustomerService
@@ -85,8 +86,12 @@ class CustomerService
     public function coupleListGuest($weddingID, $request)
     {
         $keyword = (isset($request['keyword'])) ? escape_like($request['keyword']) : NULL;
-        // $paginate = (isset($request['paginate'])) ? $request['paginate'] : EventConstant::PAGINATE;
+        $status = [];
         
+        if(!empty($keyword)){
+            $status = getArrayIndex($keyword, ResponseCardStatus::RESPONSE_CARD_STATUS);
+        }
+
         $customerParticipant =  $this->customerRepo->model
             ->where(function($q) use($weddingID, $keyword){
                 $q->where('wedding_id', $weddingID);
