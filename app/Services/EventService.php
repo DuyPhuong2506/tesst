@@ -36,28 +36,30 @@ class EventService
         $paginate = (isset($request['paginate'])) ? $request['paginate'] : EventConstant::PAGINATE;
 
         return $this->eventRepo->model->whereHas('place', function($q){
-                            $q->whereHas('restaurant', function($q){
-                                $q->whereHas('user', function($q){
-                                    $q->whereId(Auth::user()->id);
-                                });
-                            });
-                        })
-                        ->when(isset($keyword), function($q) use($keyword){
-                            $q->whereHas('place', function($q) use($keyword){
-                                $q->where("name", "like", '%'.$keyword.'%')
-                                  ->where('status', Common::STATUS_TRUE)
-                                  ->orWhere("title", "like", '%'.$keyword.'%');
-                            })->orWhere('place_id', null);
-                        })
-                        ->when(count($orderBy) > 0, function ($q) use($orderBy){
-                            return $q->orderBy($orderBy[0], $orderBy[1]);
-                        })
-                        ->select(['id', 'title', 'pic_name', 'date', 'place_id'])
-                        ->with(['place' => function($q){
-                            $q->select('id', 'name');
-                        }])
-                        ->orderBy('created_at', 'desc')
-                        ->paginate($paginate);
+                $q->whereHas('restaurant', function($q){
+                    $q->whereHas('user', function($q){
+                        $q->whereId(Auth::user()->id);
+                    });
+                });
+            })
+            ->when(isset($keyword), function($q) use($keyword){
+                $q->whereHas('place', function($q) use($keyword){
+                    $q->where("name", "like", '%'.$keyword.'%')
+                        ->where('status', Common::STATUS_TRUE)
+                        ->orWhere("title", "like", '%'.$keyword.'%');
+                });
+                $q->orWhere('place_id', null);
+                $q->orWhere("pic_name", "like", '%'.$keyword.'%');
+            })
+            ->when(count($orderBy) > 0, function ($q) use($orderBy){
+                return $q->orderBy($orderBy[0], $orderBy[1]);
+            })
+            ->select(['id', 'title', 'pic_name', 'date', 'place_id'])
+            ->with(['place' => function($q){
+                $q->select('id', 'name');
+            }])
+            ->orderBy('created_at', 'desc')
+            ->paginate($paginate);
     }
 
     public function updateThankMessage($eventId, $data)
@@ -247,33 +249,6 @@ class EventService
                 ->first();
         }
         return $data;
-    }
-
-    public function coupleListGuest($coupleId, $request)
-    {
-        $keyword = (isset($request['keyword'])) ? escape_like($request['keyword']) : NULL;
-        $paginate = (isset($request['paginate'])) ? $request['paginate'] : EventConstant::PAGINATE;
-
-        $weddingId = $this->customerRepo->model->where('id', $coupleId)->first()->wedding_id;
-        
-        return $this->customerRepo->model->where(function($q) use($weddingId, $keyword){
-                            $q->where('wedding_id', $weddingId);
-                            $q->where('role', Role::GUEST);
-                        })
-                        ->where(function($q) use($keyword){
-                            $q->orWhere('full_name', 'like', '%'.$keyword.'%');
-                            $q->orWhere('email', 'like', '%'.$keyword.'%');
-                            $q->orWhere(function($q) use($keyword){
-                                $q->whereHas('tablePosition', function($q) use($keyword){
-                                    $q->where('position', 'like', '%'.$keyword.'%');
-                                });
-                            });
-                        })
-                        ->select(['id', 'full_name', 'email', 'join_status'])
-                        ->with(['tablePosition' => function($q){
-                            $q->select(['id', 'position']);
-                        }])
-                        ->paginate($paginate);
     }
 
     public function updateEvent($id, $data)

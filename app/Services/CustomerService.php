@@ -82,6 +82,50 @@ class CustomerService
         return $getList;
     }
 
+    public function coupleListGuest($weddingID, $request)
+    {
+        $keyword = (isset($request['keyword'])) ? escape_like($request['keyword']) : NULL;
+        // $paginate = (isset($request['paginate'])) ? $request['paginate'] : EventConstant::PAGINATE;
+        
+        $customerParticipant =  $this->customerRepo->model
+            ->where(function($q) use($weddingID, $keyword){
+                $q->where('wedding_id', $weddingID);
+                $q->where('role', Role::GUEST);
+            })
+            ->where(function($q) use($keyword){
+                $q->orWhere('full_name', 'like', '%'.$keyword.'%');
+                $q->orWhere('email', 'like', '%'.$keyword.'%');
+                $q->orWhere(function($q) use($keyword){
+                    $q->whereHas('tablePosition', function($q) use($keyword){
+                        $q->where('position', 'like', '%'.$keyword.'%');
+                    });
+                });
+                $q->orWhere(function($q) use($keyword){
+                    $q->whereHas('customerInfo', function($q) use($keyword){
+                        $q->where('relationship_couple', 'like', '%'.$keyword.'%');
+                    });
+                });
+            })
+            ->select(['id', 'full_name', 'email', 'join_status'])
+            ->with(['tablePosition' => function($q){
+                $q->select(['id', 'position']);
+            }])
+            ->with(['customerInfo' => function($q){
+                $q->select('id', 'relationship_couple', 'customer_id');
+            }])
+            ->get();
+
+        $dates = $this->weddingRepo->model->where('id', $weddingID)
+            ->select('guest_invitation_response_date', 'couple_edit_date')
+            ->first();
+
+        return [
+            'guest_invitation_response_date' => $dates->guest_invitation_response_date,
+            'couple_edit_date' => $dates->couple_edit_date,
+            'customer_participant' => $customerParticipant
+        ];
+    }
+
     public function getBankID(int $bankOrder, int $weddingId)
     {
         $bankAccountId = null;
