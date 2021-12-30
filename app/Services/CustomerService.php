@@ -47,7 +47,11 @@ class CustomerService
             ->when(isset($auth->role) && in_array($auth->role, $roleWeddingIds), function($q) use ($auth) {
                 $q->whereHas('wedding', function($q) use ($auth){
                     $q->whereId($auth->wedding_id)
-                        ->where('is_close', Common::STATUS_FALSE);
+                        ->where(function($q) {
+                            $q->where('is_close', Common::STATUS_FALSE)
+                                ->orWhere('is_close', null);
+                        });
+                        
                 });
             })
             // ->when(isset($auth->role) && in_array($auth->role, $roleTableIds), function($q) use ($auth) {
