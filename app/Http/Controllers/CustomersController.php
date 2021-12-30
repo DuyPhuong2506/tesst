@@ -46,13 +46,11 @@ class CustomersController extends Controller
         $weddingID = $this->customer->wedding_id;
         $data = $this->customerService->coupleListGuest($weddingID, $request);
 
-        return $data;
+        if($data){
+            return $this->respondSuccess($data); 
+        }
 
-        // if($data){
-        //     return $this->respondSuccess($data); 
-        // }
-
-        // return $this->respondError(Response::HTTP_BAD_REQUEST, __('messages.event.list_null'));
+        return $this->respondError(Response::HTTP_BAD_REQUEST, __('messages.event.list_null'));
     }
 
     /**
