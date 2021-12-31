@@ -265,6 +265,7 @@ return [
             ],
             'content' => [
                 'required' => '必須項目に入力してください。',
+                'max' => 'The wedding card content can not be greater than :max characters'
             ],
             'couple_photo' => [
                 'required' => '必須項目に入力してください。',
@@ -273,7 +274,7 @@ return [
             ],
             'wedding_price' => [
                 'required' => '必須項目に入力してください。',
-                'numeric' => 'Must be numeric'
+                'digits_between' => 'The wedding price is 0~6 number characters',
             ],
         ]
     ],
@@ -289,18 +290,23 @@ return [
         'validation' => [
             'bank_name' => [
                 'required' => '必須項目に入力してください。',
+                'max' => 'The bank account can not be greater than :max characters',
             ],
             'bank_branch' => [
                 'required' => '必須項目に入力してください。',
+                'max' => 'The bank account can not be greater than :max characters',
             ],
             'account_number' => [
                 'required' => '必須項目に入力してください。',
+                'digits' => 'The account number is :digits number characters',
             ],
             'card_type' => [
                 'required' => '必須項目に入力してください。',
+                'max' => 'The card type can not be greater than :max characters',
             ],
             'holder_name' => [
                 'required' => '必須項目に入力してください。',
+                'max' => 'The holder name can not be greater than :max characters',
             ],
             'wedding_card_id' => [
                 'required' => '必須項目に入力してください。',
@@ -331,12 +337,15 @@ return [
             ],
             'first_name' => [
                 'required' => '必須項目に入力してください。',
+                'max' => 'The participant first name can not greater than :max characters',
             ],
             'last_name' => [
                 'required' => '必須項目に入力してください。',
+                'max' => 'The participant last name can not greater than :max characters',
             ],
             'relationship_couple' => [
-                'required' => '必須項目に入力してください。'
+                'required' => '必須項目に入力してください。',
+                'max' => 'The participant last name can not greater than :max characters',
             ],
             'email' => [
                 'required' => '必須項目に入力してください。',
@@ -361,10 +370,10 @@ return [
                 'numeric' => 'The customer type must be numeric',
             ],
             'task_content' => [
-                'required' => '必須項目に入力してください。'
+                'max' => 'The task content can not be greater than :max characters',
             ],
             'free_word' => [
-                'required' => '必須項目に入力してください。'
+                'max' => 'The free word can not be greater than :max characters',
             ],
             'bank_account_id' => [
                 'required' => '必須項目に入力してください。',
@@ -385,6 +394,19 @@ return [
                 'exists' => 'The participant id does not exists',
                 'numeric' => 'The id must be numeric',
             ],
+            'customer_relatives' => [
+                'first_name' => [
+                    'required' => 'The customer relative is require',
+                    'max' => 'The customer relative first name can not be greater than :max'
+                ],
+                'last_name' => [
+                    'required' => 'The customer relative is require',
+                    'max' => 'The customer relative last name can not be greater than :max',
+                ],
+                'relationship' => [
+                    'max' => 'The customer relative last name can not be greater than :max',
+                ]
+            ]
         ]
     ],
     'customer_task' => [

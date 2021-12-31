@@ -14,14 +14,14 @@ class UpdateCardContentRequest extends ApiRequest
     public function rules()
     {
         return [
-            'content' => 'required',
+            'content' => 'nullable|string|max:500',
         ];
     }
 
     public function messages()
     {
         return [
-            'content.required' => __('messages.wedding_card.validation.content.required'),
+            'content.max' => __('messages.wedding_card.validation.content.max'),
         ];
     }
 }
