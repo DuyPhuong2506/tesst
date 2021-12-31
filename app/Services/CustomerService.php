@@ -83,7 +83,7 @@ class CustomerService
         return $getList;
     }
 
-    public function coupleListGuest($weddingID, $request)
+    public function staffCoupleGetListGuest($weddingID, $request)
     {
         $keyword = (isset($request['keyword'])) ? escape_like($request['keyword']) : NULL;
         $status = [];

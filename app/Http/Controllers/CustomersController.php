@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Http\Requests\CreateParticipantRequest;
 use App\Http\Requests\UpdateParticipantRequest;
+use App\Http\Requests\StaffGetListGuestRequest;
 use App\Services\CustomerService;
 use Auth;
 use DB;
@@ -44,7 +45,7 @@ class CustomersController extends Controller
     public function coupleListGuest(Request $request)
     {
         $weddingID = $this->customer->wedding_id;
-        $data = $this->customerService->coupleListGuest($weddingID, $request);
+        $data = $this->customerService->staffCoupleGetListGuest($weddingID, $request);
 
         if($data){
             return $this->respondSuccess($data); 
@@ -53,6 +54,17 @@ class CustomersController extends Controller
         return $this->respondError(Response::HTTP_BAD_REQUEST, __('messages.event.list_null'));
     }
 
+    public function staffListGuest(StaffGetListGuestRequest $request)
+    {
+        $weddingID = $request->id;
+        $data = $this->customerService->staffCoupleGetListGuest($weddingID, $request);
+
+        if($data){
+            return $this->respondSuccess($data); 
+        }
+
+        return $this->respondError(Response::HTTP_BAD_REQUEST, __('messages.event.list_null'));
+    }
     /**
      * Show the form for creating a new resource.
      *

@@ -50,6 +50,7 @@ Route::prefix('v1')->group(function () {
                 Route::put('/staff-admin/create-or-update', 'UsersController@upadateStaffAdmin');
             });
             Route::resource('/places', 'PlacesController');
+            Route::get('/staff/guest-list', 'CustomersController@staffListGuest');
         });
 
         /* Role Super Admin */
