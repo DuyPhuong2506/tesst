@@ -261,6 +261,7 @@ return [
             ],
             'content' => [
                 'required' => 'The content is required',
+                'max' => 'The wedding card content can not be greater than :max characters'
             ],
             'couple_photo' => [
                 'required' => 'The couple photo is required',
@@ -269,7 +270,7 @@ return [
             ],
             'wedding_price' => [
                 'required' => 'The wedding price is required',
-                'numeric' => 'Must be numeric'
+                'digits_between' => 'The wedding price is 0~6 number characters',
             ]
         ]
     ],
@@ -285,18 +286,23 @@ return [
         'validation' => [
             'bank_name' => [
                 'required' => 'The bank name is required',
+                'max' => 'The bank account can not be greater than :max characters',
             ],
             'bank_branch' => [
                 'required' => 'The bank branch is required',
+                'max' => 'The bank account can not be greater than :max characters',
             ],
             'account_number' => [
                 'required' => 'The account number is required',
+                'digits' => 'The account number is :digits number characters',
             ],
             'card_type' => [
                 'required' => 'The card type is required',
+                'max' => 'The card type can not be greater than :max characters',
             ],
             'holder_name' => [
                 'required' => 'The holder name is required',
+                'max' => 'The holder name can not be greater than :max characters',
             ],
             'wedding_card_id' => [
                 'required' => 'The wedding card id is required',
@@ -327,12 +333,15 @@ return [
             ],
             'first_name' => [
                 'required' => 'The first name is required',
+                'max' => 'The participant first name can not greater than :max characters',
             ],
             'last_name' => [
                 'required' => 'The last name is required',
+                'max' => 'The participant last name can not greater than :max characters',
             ],
             'relationship_couple' => [
-                'required' => 'The couple relationship is required'
+                'required' => 'The couple relationship is required',
+                'max' => 'The participant last name can not greater than :max characters',
             ],
             'email' => [
                 'required' => 'The email field is required',
@@ -357,10 +366,10 @@ return [
                 'numeric' => 'The customer type must be numeric',
             ],
             'task_content' => [
-                'required' => 'The task content is required'
+                'max' => 'The task content can not be greater than :max characters',
             ],
             'free_word' => [
-                'required' => 'The free work is required'
+                'max' => 'The free word can not be greater than :max characters',
             ],
             'bank_account_id' => [
                 'required' => 'The bank account id is required',
@@ -381,6 +390,19 @@ return [
                 'exists' => 'The participant id does not exists',
                 'numeric' => 'The id must be numeric',
             ],
+            'customer_relatives' => [
+                'first_name' => [
+                    'required' => 'The customer relative is require',
+                    'max' => 'The customer relative first name can not be greater than :max'
+                ],
+                'last_name' => [
+                    'required' => 'The customer relative is require',
+                    'max' => 'The customer relative last name can not be greater than :max',
+                ],
+                'relationship' => [
+                    'max' => 'The customer relative last name can not be greater than :max',
+                ]
+            ]
         ]
     ],
     'customer_task' => [

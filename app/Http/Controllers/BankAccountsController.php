@@ -104,7 +104,7 @@ class BankAccountsController extends Controller
             DB::rollback();
 
             return $this->respondError(
-                Response::HTTP_BAD_REQUEST, __('messages.wedding_card.update_fail')
+                Response::HTTP_BAD_REQUEST, __('messages.bank_account.update_fail')
             );
         }
     }
