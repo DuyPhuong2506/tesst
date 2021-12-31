@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use App\Http\Requests\ApiRequest;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Restaurant;
+use App\Models\Wedding;
 
 class StaffGetListGuestRequest extends ApiRequest
 {
@@ -28,10 +29,17 @@ class StaffGetListGuestRequest extends ApiRequest
                 {
                     $restaurantID = $this->staffUser->restaurant_id;
                     $weddingID = request()->id;
-                    $place = Restaurant::find($restaurantID)->places()->first();
-                    $isWedding = $place->weddings()->where('id', $weddingID)->exists();
-                    
-                    if(!$isWedding){
+                    $places = Restaurant::find($restaurantID)->places()->select('id')->get();
+                    $placeIDs = [];
+                    foreach ($places as $key => $value) {
+                        array_push($placeIDs, $value['id']);
+                    }
+
+                    $exist = Wedding::where('id', $weddingID)
+                        ->whereIn('place_id', $placeIDs)
+                        ->exists();
+
+                    if(!$exist){
                         $fail(__('messages.event.validation.id.exists'));
                     }
                 }
