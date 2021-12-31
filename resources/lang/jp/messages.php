@@ -113,6 +113,9 @@ return [
                 'max' => ':max文字列以内を入力してください。',
                 'required' => 'The greeting message is required !'
             ],
+            'thank_you_message' => [
+                'max' => ':max文字列以内を入力してください。',
+            ],
             'couple_name' => [
                 'required' => '必須項目に入力してください。',
                 'max' => ':max文字列以内を入力してください。'

@@ -107,18 +107,6 @@ class EventsController extends Controller
         return $this->respondError(Response::HTTP_BAD_REQUEST, __('messages.event.list_null'));
     }
 
-    public function coupleListGuest(Request $request)
-    {
-        $coupleId = Auth::guard('customer')->user()->id;
-        $data = $this->eventService->coupleListGuest($coupleId, $request);
-
-        if($data){
-            return $this->respondSuccess($data); 
-        }
-
-        return $this->respondError(Response::HTTP_BAD_REQUEST, __('messages.event.list_null'));
-    }
-
     public function update(UpdateEventRequest $request)
     {
         $requestData = $request->all();

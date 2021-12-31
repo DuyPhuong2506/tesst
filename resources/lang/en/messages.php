@@ -112,6 +112,9 @@ return [
                 'max' => 'The greeting_message can not be greater than :max characters',
                 'required' => 'The greeting message is required !'
             ],
+            'thank_you_message' => [
+                'max' => 'The thank you messages can not be greater than :max characters',
+            ],
             'couple_name' => [
                 'required' => 'The couple_name field is required',
                 'max' => 'The couple_name can not be greater than :max characters'

@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Constants\Common;
 use App\Constants\Role;
 use App\Constants\InviteSend;
+use App\Constants\ResponseCardStatus;
 use Str;
 
 class CustomerService
@@ -84,6 +85,60 @@ class CustomerService
         }
 
         return $getList;
+    }
+
+    public function staffCoupleGetListGuest($weddingID, $request)
+    {
+        $keyword = (isset($request['keyword'])) ? escape_like($request['keyword']) : NULL;
+        $status = [];
+        
+        if(!empty($keyword)){
+            $status = getArrayIndex($keyword, ResponseCardStatus::RESPONSE_CARD_STATUS);
+        }
+
+        $customerParticipant =  $this->customerRepo->model
+            ->where(function($q) use($weddingID, $keyword){
+                $q->where('wedding_id', $weddingID);
+                $q->where('role', Role::GUEST);
+            })
+            ->where(function($q) use($keyword, $status){
+                $q->orWhere('full_name', 'like', '%'.$keyword.'%');
+                $q->orWhere('email', 'like', '%'.$keyword.'%');
+                $q->orWhere(function($q) use($keyword){
+                    $q->whereHas('tablePosition', function($q) use($keyword){
+                        $q->where('position', 'like', '%'.$keyword.'%');
+                    });
+                });
+                $q->orWhere(function($q) use($keyword){
+                    $q->whereHas('customerInfo', function($q) use($keyword){
+                        $q->where('relationship_couple', 'like', '%'.$keyword.'%');
+                    });
+                });
+                $q->orWhereIn('join_status', $status);
+            })
+            ->select(['id', 'full_name', 'email', 'join_status'])
+            ->with(['tablePosition' => function($q){
+                $q->select(['id', 'position']);
+            }])
+            ->with(['customerInfo' => function($q){
+                $q->select('id', 'relationship_couple', 'customer_id');
+            }])
+            ->get();
+
+        $dates = $this->weddingRepo->model->where('id', $weddingID)
+            ->select('guest_invitation_response_date', 'couple_edit_date')
+            ->first();
+
+        $tableList = $this->weddingRepo->model->find($weddingID)
+            ->place()->first()
+            ->tablePositions()->get();
+
+        return [
+            'guest_invitation_response_date' => $dates->guest_invitation_response_date,
+            'couple_edit_date' => $dates->couple_edit_date,
+            'customer_participant' => $customerParticipant,
+            'table_list' => $tableList
+        ];
     }
 
     public function getBankID(int $bankOrder, int $weddingId)

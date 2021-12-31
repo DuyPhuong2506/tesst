@@ -16,14 +16,14 @@ class UpdateThankMsgRequest extends ApiRequest
     public function rules()
     {
         return [
-            'thank_you_message' => 'required'
+            'thank_you_message' => 'nullable|max:200',
         ];
     }
 
     public function messages()
     {
         return [
-            'greeting_message.required' => __('messages.event.validation.greeting_message.required')
+            'thank_you_message.max' => __('messages.event.validation.thank_you_message.max')
         ];
     }
 }

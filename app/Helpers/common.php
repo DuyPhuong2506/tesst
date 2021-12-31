@@ -116,3 +116,22 @@ if (!function_exists('getDateStringRandom')) {
         return date("_Y_m_d_H_i_s", time());
     }
 }
+
+if (!function_exists('getArrayIndex')) {
+
+    /**
+     * Get array index with param value search
+     *
+     * @param $search
+     * @param $array want to search
+     * @return indexs of array
+     */
+    function getArrayIndex($search, $array)
+    {
+        $results = array_filter($array, function($value) use($search){
+            return strpos($value, $search) !== false;
+        });
+
+        return array_keys($results);
+    }
+}

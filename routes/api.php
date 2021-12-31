@@ -50,6 +50,7 @@ Route::prefix('v1')->group(function () {
                 Route::put('/staff-admin/create-or-update', 'UsersController@upadateStaffAdmin');
             });
             Route::resource('/places', 'PlacesController');
+            Route::get('/staff/guest-list', 'CustomersController@staffListGuest');
         });
 
         /* Role Super Admin */
@@ -70,7 +71,7 @@ Route::prefix('v1')->group(function () {
             Route::get('/couple/wedding-card/get-pre-signed', 'WeddingCardsController@getPreSigned');
 
             Route::get('/couple/event', 'EventsController@coupleDetailEvent');
-            Route::get('/couple/guest-list', 'EventsController@coupleListGuest');
+            Route::get('/couple/guest-list', 'CustomersController@coupleListGuest');
             
             Route::prefix('/couple/event')->group(function () {
                 Route::post('/thank-message/update', 'EventsController@updateThankMessage');
