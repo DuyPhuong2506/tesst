@@ -50,7 +50,8 @@ Route::prefix('v1')->group(function () {
                 Route::put('/staff-admin/create-or-update', 'UsersController@upadateStaffAdmin');
             });
             
-            Route::prefix('/staff/event')->group(function () {
+            Route::prefix('/staff')->group(function () {
+                Route::get('/guest-participant/get', 'CustomersController@staffGetGuestInfo');
                 Route::post('/guest-participant/update', 'CustomersController@staffUpdateGuestInfo');
             });
 

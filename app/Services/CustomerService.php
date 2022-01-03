@@ -381,6 +381,32 @@ class CustomerService
     }
 
     /**
+     * UI STAFF - [AS170]
+     * @param $id of guest participant id
+     * **/
+    public function staffGetParticipant($id)
+    {
+        $participant = $this->customerRepo
+            ->model
+            ->where('id', $id)
+            ->where('role', Role::GUEST)
+            ->select('id', 'email', 'join_status')
+            ->first();
+
+        $participantInfo = $participant->customerInfo()
+            ->select(
+                'id', 'is_only_party', 'first_name', 'last_name', 'relationship_couple',
+                'phone', 'post_code', 'address'
+            )
+            ->first();
+        
+        return [
+            'participant' => $participant,
+            'participant_info' => $participantInfo
+        ];
+    }
+
+    /**
      * UI COUPLE - [U064]
      * @param $requestData as $data
      * **/
