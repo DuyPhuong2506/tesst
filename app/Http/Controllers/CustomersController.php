@@ -7,6 +7,8 @@ use Illuminate\Http\Response;
 use App\Http\Requests\CreateParticipantRequest;
 use App\Http\Requests\UpdateParticipantRequest;
 use App\Http\Requests\StaffGetListGuestRequest;
+use App\Http\Requests\CoupleUpdateGuestRequest;
+use App\Http\Requests\StaffUpdateGuestRequest;
 use App\Services\CustomerService;
 use Auth;
 use DB;
@@ -162,6 +164,60 @@ class CustomersController extends Controller
                 return $this->respondSuccess([
                     'message' => __('messages.participant.update_success')
                 ]);
+            }
+
+            DB::rollback();
+        } catch (\Throwable $th) {
+            DB::rollback();
+
+            return $this->respondError(
+                Response::HTTP_BAD_REQUEST, __('messages.participant.update_fail')
+            );
+        }
+    }
+
+    /**
+     * UI COUPLE - [U064] Couple Edit Guest Info
+     * @param $request 
+     * **/
+    public function coupleUpdateGuestInfo(CoupleUpdateGuestRequest $request)
+    {
+        $requestData = $request->all();
+        DB::beginTransaction();
+        try {
+            $status = $this->customerService->coupleUpdateGuestInfo($requestData);
+            if($status){
+                DB::commit();
+                return $this->respondSuccess(
+                    ['message' => __('messages.participant.update_success')]
+                );
+            }
+
+            DB::rollback();
+        } catch (\Throwable $th) {
+            DB::rollback();
+
+            return $this->respondError(
+                Response::HTTP_BAD_REQUEST, __('messages.participant.update_fail')
+            );
+        }
+    }
+
+    /**
+     * UI COUPLE - [AS170] Staff Edit Guest Info
+     * @param $request 
+     * **/
+    public function staffUpdateGuestInfo(StaffUpdateGuestRequest $request)
+    {
+        $requestData = $request->all();
+        DB::beginTransaction();
+        try {
+            $status = $this->customerService->staffUpdateGuestInfo($requestData);
+            if($status){
+                DB::commit();
+                return $this->respondSuccess(
+                    ['message' => __('messages.participant.update_success')]
+                );
             }
 
             DB::rollback();

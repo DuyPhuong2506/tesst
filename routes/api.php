@@ -49,6 +49,11 @@ Route::prefix('v1')->group(function () {
             Route::prefix('/users')->group(function () {
                 Route::put('/staff-admin/create-or-update', 'UsersController@upadateStaffAdmin');
             });
+            
+            Route::prefix('/staff/event')->group(function () {
+                Route::post('/guest-participant/update', 'CustomersController@staffUpdateGuestInfo');
+            });
+
             Route::resource('/places', 'PlacesController');
             Route::get('/staff/guest-list', 'CustomersController@staffListGuest');
         });
@@ -75,6 +80,7 @@ Route::prefix('v1')->group(function () {
             
             Route::prefix('/couple/event')->group(function () {
                 Route::post('/thank-message/update', 'EventsController@updateThankMessage');
+                Route::post('/guest-participant/update', 'CustomersController@coupleUpdateGuestInfo');
             });
 
             Route::get('/couple/wedding-card/notify-to-staff', 'WeddingCardsController@notifyToStaff');
