@@ -5,6 +5,7 @@ use App\Jobs\SendEventEmailJob;
 use App\Jobs\SendDoneSeatJob;
 use App\Constants\Role;
 use App\Constants\EventConstant;
+use App\Constants\NotifyPlannerConstant;
 use App\Repositories\EventRepository;
 use App\Repositories\CustomerRepository;
 use App\Repositories\ChannelRepository;
@@ -320,6 +321,10 @@ class EventService
         $place = $wedding->place()->first();
         $restaurant = $place->restaurant()->first();
         $staff = $restaurant->user()->first();
+
+        $wedding->update([
+            'is_notify_planner' => NotifyPlannerConstant::SENT
+        ]);
 
         $groomCustomer = $wedding->customers()
             ->where('role', Role::GROOM)

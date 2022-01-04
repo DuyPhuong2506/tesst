@@ -84,6 +84,7 @@ class WeddingCardService
 
         $filePathArray = [
             'image_path' => $filePath,
+            'image_name' => $fileName,
             'full_link_image' => Storage::disk('s3')->url($filePath),
             'extension' =>  $extensionFile,
         ];

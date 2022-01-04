@@ -87,6 +87,10 @@ class CustomerService
         return $getList;
     }
 
+    /**
+     * UI COUPLE EVENT DETAIL - LIST GUEST - [U063]
+     * @param $weddingID, $request
+     * **/
     public function staffCoupleGetListGuest($weddingID, $request)
     {
         $keyword = (isset($request['keyword'])) ? escape_like($request['keyword']) : NULL;
@@ -125,8 +129,8 @@ class CustomerService
             }])
             ->get();
 
-        $dates = $this->weddingRepo->model->where('id', $weddingID)
-            ->select('guest_invitation_response_date', 'couple_edit_date')
+        $wedding = $this->weddingRepo->model->where('id', $weddingID)
+            ->select('guest_invitation_response_date', 'couple_edit_date', 'is_notify_planner')
             ->first();
 
         $tableList = $this->weddingRepo->model->find($weddingID)
@@ -134,8 +138,9 @@ class CustomerService
             ->tablePositions()->get();
 
         return [
-            'guest_invitation_response_date' => $dates->guest_invitation_response_date,
-            'couple_edit_date' => $dates->couple_edit_date,
+            'guest_invitation_response_date' => $wedding->guest_invitation_response_date,
+            'couple_edit_date' => $wedding->couple_edit_date,
+            'is_notify_planner' => $wedding->is_notify_planner,
             'customer_participant' => $customerParticipant,
             'table_list' => $tableList
         ];
