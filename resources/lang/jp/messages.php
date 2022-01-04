@@ -406,6 +406,11 @@ return [
                 'relationship' => [
                     'max' => 'The customer relative last name can not be greater than :max',
                 ]
+            ],
+            'join_status' => [
+                'required' => 'The join status is required',
+                'deadline' => 'The join status is deadline',
+                'numeric' => 'The join status is numeric',
             ]
         ]
     ],

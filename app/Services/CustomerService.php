@@ -324,7 +324,7 @@ class CustomerService
             ->where('id', $id)
             ->where('wedding_id', $weddingId)
             ->where('role', Role::GUEST)
-            ->select('id', 'email', 'wedding_id')
+            ->select('id', 'email', 'wedding_id', 'join_status')
             ->first();
 
         $participantInfo = $participant->customerInfo()
@@ -378,6 +378,85 @@ class CustomerService
             'contact' => $restaurant,
             'wedding_card' => $weddingCard
         ];
+    }
+
+    /**
+     * UI STAFF - [AS170]
+     * @param $id of guest participant id
+     * **/
+    public function staffGetParticipant($id)
+    {
+        $participant = $this->customerRepo
+            ->model
+            ->where('id', $id)
+            ->where('role', Role::GUEST)
+            ->select('id', 'email', 'join_status')
+            ->first();
+
+        $participantInfo = $participant->customerInfo()
+            ->select(
+                'id', 'is_only_party', 'first_name', 'last_name', 'relationship_couple',
+                'phone', 'post_code', 'address'
+            )
+            ->first();
+        
+        return [
+            'participant' => $participant,
+            'participant_info' => $participantInfo
+        ];
+    }
+
+    /**
+     * UI COUPLE - [U064]
+     * @param $requestData as $data
+     * **/
+    public function coupleUpdateGuestInfo($data)
+    {
+        $guest = $this->customerRepo->model->find($data['id']);
+        $guest->update([
+                'email' => Str::lower($data['email']),
+                'full_name' => $data['first_name'] . " " . $data['last_name'],
+                'join_status' => $data['join_status'],
+            ]);
+        $guest->customerInfo()
+            ->update([
+                'first_name' => $data['first_name'],
+                'last_name' => $data['last_name'],
+                'relationship_couple' => $data['relationship_couple'],
+                'post_code' => $data['post_code'],
+                'phone' => $data['phone'],
+                'address' => $data['address']
+            ]);
+        
+        return true;
+    }
+
+    /**
+     * UI COUPLE - [AS170] Staff Edit Guest Info
+     * @param $requestData as $data
+     * **/
+    public function staffUpdateGuestInfo($data)
+    {
+        $guest = $this->customerRepo->model->find($data['id']);
+
+        $guest->update([
+            'email' => Str::lower($data['email']),
+            'full_name' => $data['first_name'] . " " . $data['last_name'],
+            'join_status' => $data['join_status'],
+        ]);
+
+        $guest->customerInfo()
+            ->update([
+                'first_name' => $data['first_name'],
+                'last_name' => $data['last_name'],
+                'relationship_couple' => $data['relationship_couple'],
+                'post_code' => $data['post_code'],
+                'phone' => $data['phone'],
+                'address' => $data['address'],
+                'is_only_party' => $data['is_only_party']
+            ]);
+
+        return true;
     }
     
 }
