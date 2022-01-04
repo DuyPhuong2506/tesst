@@ -235,15 +235,14 @@ class CustomerService
             ->where('role', Role::GUEST)
             ->with(['customerInfo' => function($q){
                 $q->select(
-                    'id', 'first_name', 'last_name', 
-                    'relationship_couple', 'is_send_wedding_card',
+                    'id', 'first_name', 'last_name', 'is_send_wedding_card',
                     'is_only_party', 'customer_id', 'email_status',
                 );
             }])
             ->select('id', 'full_name', 'email')
+            ->withCount('customerRelatives')
             ->paginate($paginate);
 
-        
         $dateInfo = $this->weddingRepo
             ->model
             ->where('id', $weddingId)
