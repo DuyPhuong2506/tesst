@@ -127,9 +127,11 @@ class WeddingCardService
             }])
             ->first();
 
-        $disk = Storage::disk('s3');
-        $couplePhoto = $disk->url($data['couple_photo']);
-        $data['couple_photo'] = $couplePhoto;
+        if(isset($data['couple_photo'])){
+            $disk = Storage::disk('s3');
+            $couplePhoto = $disk->url($data['couple_photo']);
+            $data['couple_photo'] = $couplePhoto;
+        }
         
         return $data;
     }
