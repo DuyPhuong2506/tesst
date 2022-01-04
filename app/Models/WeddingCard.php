@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class WeddingCard extends Model
 {
@@ -46,5 +47,13 @@ class WeddingCard extends Model
     public function templateCard()
     {
         return $this->belongsTo(TemplateCard::class, 'template_card_id');
+    }
+
+    /**
+     * Set the attribulte that owns the WeddingCard
+     */
+    public function getCouplePhotoAttribute($value)
+    {
+        return Storage::disk('s3')->url($value);
     }
 }

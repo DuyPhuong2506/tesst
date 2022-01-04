@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class TemplateCard extends Model
 {
@@ -24,5 +25,21 @@ class TemplateCard extends Model
     public function weddingCards()
     {
         return $this->hasMany(WeddingCard::class, 'template_card_id', 'id');
+    }
+
+    /**
+     * Set the attribulte that owns the WeddingCard
+     */
+    public function getCardPathAttribute($value)
+    {
+        return Storage::disk('s3')->url($value);
+    }
+
+    /**
+     * Set the attribulte that owns the WeddingCard
+     */
+    public function getCardThumbPathAttribute($value)
+    {
+        return Storage::disk('s3')->url($value);
     }
 }

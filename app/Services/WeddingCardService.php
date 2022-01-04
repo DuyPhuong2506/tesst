@@ -126,12 +126,6 @@ class WeddingCardService
                 $q->select('id', 'guest_invitation_response_date', 'couple_edit_date');
             }])
             ->first();
-
-        if(isset($data['couple_photo'])){
-            $disk = Storage::disk('s3');
-            $couplePhoto = $disk->url($data['couple_photo']);
-            $data['couple_photo'] = $couplePhoto;
-        }
         
         return $data;
     }
