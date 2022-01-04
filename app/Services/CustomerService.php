@@ -248,15 +248,17 @@ class CustomerService
             ->withCount('customerRelatives')
             ->paginate($paginate);
 
-        $dateInfo = $this->weddingRepo
+        $wedding = $this->weddingRepo
             ->model
             ->where('id', $weddingId)
-            ->select('guest_invitation_response_date', 'couple_edit_date')
+            ->select('guest_invitation_response_date', 'couple_edit_date', 'is_notify_planner')
             ->first();
 
         return [
             'participants' => $participants,
-            'date_info' => $dateInfo
+            'guest_invitation_response_date' => $wedding->guest_invitation_response_date,
+            'couple_edit_date' => $wedding->couple_edit_date,
+            'is_notify_planner' => $wedding->is_notify_planner,
         ];
         
     }

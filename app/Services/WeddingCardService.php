@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Facades\Image;
 use App\Constants\Role;
 use App\Constants\InviteSend;
+use App\Constants\NotifyPlannerConstant;
 
 class WeddingCardService
 {
@@ -139,20 +140,17 @@ class WeddingCardService
             $staff = $restaurant->user()->first();
             $customers = $wedding->customers()
                 ->where('role', Role::GROOM)
-                ->orWhere('role', Role::BRIDE)
                 ->select('full_name')
-                ->get();
+                ->first();
 
-            $customerNames = [];
-            foreach ($customers as $key => $value) {
-                array_push($customerNames, $value['full_name']);
-            }
-            $customerNames = implode(", " ,$customerNames);
+            $wedding->update([
+                'is_notify_planner' => NotifyPlannerConstant::SENT
+            ]);
 
             $staffEmail = $staff->email;
             $contentEmail = [
                 'contactName' => $restaurant->contact_name,
-                'customerName' => $customerNames,
+                'customerName' => $customers->full_name,
                 'appURL' => env('APP_URL'),
             ];
 
