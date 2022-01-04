@@ -36,7 +36,7 @@ class TemplateCard extends Model
             return null;
         }
 
-        return Storage::disk('s3')->url("template_card/".$value); 
+        return Storage::disk('s3')->url("templatecard/".$value); 
     }
 
     /**
@@ -48,6 +48,6 @@ class TemplateCard extends Model
             return null;
         }
 
-        return Storage::disk('s3')->url("template_card/".$value); 
+        return Storage::disk('s3')->url("templatecard/".$value); 
     }
 }
