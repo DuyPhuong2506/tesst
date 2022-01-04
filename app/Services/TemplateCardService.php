@@ -31,6 +31,7 @@ class TemplateCardService
     {   
         $linkS3Thumbnail = null;
         $linkS3 = null;
+        $nameFile = null;
         if ($file){
             $nameDirectory = 'templatecard/';
             $fullName = $file->getClientOriginalName();
@@ -46,13 +47,13 @@ class TemplateCardService
                     $nameDirectory.'thumbnail_' . $nameFile,
                     $imgThumb->__toString(),
                 );
-                $linkS3Thumbnail = $nameDirectory.'thumbnail_' . $nameFile;
+                $linkS3Thumbnail = 'thumbnail_' . $nameFile;
             }
         }
 
         return [
-            'card_path' => $linkS3,
-            'card_thumb_path' => $linkS3Thumbnail
+            'card_path' => $nameFile,
+            'card_thumb_path' => $linkS3Thumbnail,
         ];
     }
 

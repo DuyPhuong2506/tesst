@@ -48,17 +48,4 @@ class WeddingCard extends Model
     {
         return $this->belongsTo(TemplateCard::class, 'template_card_id');
     }
-
-    /**
-     * Set the attribulte that owns the WeddingCard
-     */
-    public function getCouplePhotoAttribute($value)
-    {
-        if(!isset($value) || trim($value) === ''){
-            return null;
-        }
-        
-        return Storage::disk('s3')->url("couple/".$value);
-        
-    }
 }

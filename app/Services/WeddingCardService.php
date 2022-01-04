@@ -39,11 +39,6 @@ class WeddingCardService
         $wedding = $this->weddingRepo->model->find($weddingId);
         $weddingCard = $wedding->weddingCard();
         
-        if($weddingCard->exists()){
-            $couplePhoto = parse_url($weddingCard->first()->couple_photo);
-            Storage::disk('s3')->delete($couplePhoto);
-        }
-        
         $weddingCard = $weddingCard->updateOrCreate(
             ['wedding_id' => $weddingId],
             $cardData
@@ -98,8 +93,7 @@ class WeddingCardService
            
         return  [
             'couple_pre_signeds' => $pre_signed,
-            'file_name' => $fileName,
-            'file_extension' => $extensionFile
+            'file_path' => $file_paths
         ];
     }
 
