@@ -40,7 +40,7 @@ class WeddingCardService
         $weddingCard = $wedding->weddingCard();
         
         if($weddingCard->exists()){
-            $couplePhoto = $weddingCard->first()->couple_photo;
+            $couplePhoto = parse_url($weddingCard->first()->couple_photo);
             Storage::disk('s3')->delete($couplePhoto);
         }
         
@@ -96,8 +96,9 @@ class WeddingCardService
         $pre_signed = $preSignedArray;
            
         return  [
-            'couple_file_paths' => $file_paths,
             'couple_pre_signeds' => $pre_signed,
+            'file_name' => $fileName,
+            'file_extension' => $extensionFile
         ];
     }
 
