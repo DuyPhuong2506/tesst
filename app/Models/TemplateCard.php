@@ -32,7 +32,11 @@ class TemplateCard extends Model
      */
     public function getCardPathAttribute($value)
     {
-        return Storage::disk('s3')->url($value);
+        if(isset($value)){
+            return Storage::disk('s3')->url($value);
+        }
+
+        return null;
     }
 
     /**
@@ -40,6 +44,10 @@ class TemplateCard extends Model
      */
     public function getCardThumbPathAttribute($value)
     {
-        return Storage::disk('s3')->url($value);
+        if(isset($value)){
+            return Storage::disk('s3')->url($value);
+        }
+        
+        return null;
     }
 }
