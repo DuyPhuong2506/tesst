@@ -54,10 +54,11 @@ class WeddingCard extends Model
      */
     public function getCouplePhotoAttribute($value)
     {
-        if(isset($value)){
-            return Storage::disk('s3')->url($value);
+        if(!isset($value) || trim($value) === ''){
+            return null;
         }
-
-        return null;
+        
+        return Storage::disk('s3')->url("couple/".$value);
+        
     }
 }
