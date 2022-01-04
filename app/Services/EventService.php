@@ -196,8 +196,17 @@ class EventService
                 'party_reception_time', 'party_time',
             )
             ->first();
+        
+        $couple = $weddingDetail->customers()
+            ->where('role', Role::GROOM)
+            ->orWhere('role', Role::BRIDE)
+            ->select('full_name', 'email', 'role')
+            ->get();
 
-        return $weddingDetail;
+        return [
+            'wedding_detail' => $weddingDetail,
+            'couple' => $couple
+        ];
     }
 
     public function getWeddingEventWithBearerToken($customerId)
