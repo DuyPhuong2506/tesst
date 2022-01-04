@@ -26,7 +26,8 @@ class Wedding extends Model
         'couple_invitation_edit_date',
         'ceremony_confirm_date',
         'is_livestream',
-        'is_join_table'
+        'is_join_table',
+        'is_notify_planner',
     ];
     
     protected $table = 'weddings';

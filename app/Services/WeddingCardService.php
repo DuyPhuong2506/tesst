@@ -40,7 +40,7 @@ class WeddingCardService
         $weddingCard = $wedding->weddingCard();
         
         if($weddingCard->exists()){
-            $couplePhoto = $weddingCard->first()->couple_photo;
+            $couplePhoto = parse_url($weddingCard->first()->couple_photo);
             Storage::disk('s3')->delete($couplePhoto);
         }
         
@@ -84,6 +84,7 @@ class WeddingCardService
 
         $filePathArray = [
             'image_path' => $filePath,
+            'image_name' => $fileName,
             'full_link_image' => Storage::disk('s3')->url($filePath),
             'extension' =>  $extensionFile,
         ];
