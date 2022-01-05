@@ -97,6 +97,25 @@ class WeddingCardsController extends Controller
     }
 
     /**
+     * Display the specified resource.
+     *
+     * @param  Request $weddingCardID
+     * @return \Illuminate\Http\Response
+     */
+    public function staffGetWeddingCard(Request $request)
+    {   
+        $weddingId = $request->onLy('id');
+        $data = $this->weddingCardService->showWeddingCard($weddingId);
+        if($data){
+            return $this->respondSuccess($data);
+        }
+        
+        return $this->respondError(
+            Response::HTTP_BAD_REQUEST, __('messages.wedding_card.detail_fail')
+        );
+    }
+
+    /**
      * Show the form for editing the specified resource.
      *
      * @param  int  $id

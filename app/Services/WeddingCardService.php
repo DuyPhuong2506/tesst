@@ -2,13 +2,9 @@
 namespace App\Services;
 
 use App\Repositories\WeddingCardRepository;
-use App\Repositories\BankAccountRepository;
 use App\Repositories\EventRepository;
-use App\Repositories\CustomerRepository;
-use App\Repositories\CustomerInfoRepository;
 use App\Jobs\SendDoneCardToStaffJob;
 use Illuminate\Support\Facades\Storage;
-use Intervention\Image\Facades\Image;
 use App\Constants\Role;
 use App\Constants\InviteSend;
 use App\Constants\NotifyPlannerConstant;
@@ -16,23 +12,14 @@ use App\Constants\NotifyPlannerConstant;
 class WeddingCardService
 {
     protected $weddingCardRepo;
-    protected $bankAccountRepo;
     protected $weddingRepo;
-    protected $customerRepo;
-    protected $customerInfoRepo;
 
     public function __construct(
         WeddingCardRepository $weddingCardRepo,
-        BankAccountRepository $bankAccountRepo,
-        EventRepository $weddingRepo,
-        CustomerRepository $customerRepo,
-        CustomerInfoRepository $customerInfoRepo
+        EventRepository $weddingRepo
     ){
         $this->weddingCardRepo = $weddingCardRepo;
-        $this->bankAccountRepo = $bankAccountRepo;
         $this->weddingRepo = $weddingRepo;
-        $this->customerRepo = $customerRepo;
-        $this->customerInfoRepo = $customerInfoRepo;
     }
 
     public function createWeddingCard($cardData, $weddingId)
@@ -96,21 +83,6 @@ class WeddingCardService
             'couple_pre_signeds' => $pre_signed,
             'file_path' => $file_paths
         ];
-    }
-
-    public function detailWeddingCard($id)
-    {
-        $data = $this->weddingCardRepo
-                     ->model
-                     ->where('id', $id)
-                     ->with(['bankAccounts'])
-                     ->first();
-
-        $disk = Storage::disk('s3');
-        $couplePhoto = $disk->url($data['couple_photo']);
-        $data['couple_photo'] = $couplePhoto;
-        
-        return $data;
     }
 
     public function showWeddingCard($weddingId)
