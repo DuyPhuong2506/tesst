@@ -194,7 +194,7 @@ class EventService
             ->select(
                 'id', 'title', 'pic_name', 'date', 
                 'ceremony_reception_time', 'ceremony_time',
-                'party_reception_time', 'party_time',
+                'party_reception_time', 'party_time', 'table_map_image'
             )
             ->first();
         

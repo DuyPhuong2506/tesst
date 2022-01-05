@@ -241,10 +241,10 @@ class CustomerService
             ->with(['customerInfo' => function($q){
                 $q->select(
                     'id', 'first_name', 'last_name', 'is_send_wedding_card',
-                    'is_only_party', 'customer_id', 'email_status',
+                    'is_only_party', 'customer_id', 'email_status'
                 );
             }])
-            ->select('id', 'full_name', 'email')
+            ->select('id', 'full_name', 'email', 'invitation_url')
             ->withCount('customerRelatives')
             ->paginate($paginate);
 

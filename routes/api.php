@@ -52,11 +52,12 @@ Route::prefix('v1')->group(function () {
             
             Route::prefix('/staff')->group(function () {
                 Route::get('/guest-participant/get', 'CustomersController@staffGetGuestInfo');
+                Route::get('/wedding-card/detail', 'WeddingCardsController@staffGetWeddingCard');
+                Route::get('/guest-list', 'CustomersController@staffListGuest');
                 Route::post('/guest-participant/update', 'CustomersController@staffUpdateGuestInfo');
             });
 
             Route::resource('/places', 'PlacesController');
-            Route::get('/staff/guest-list', 'CustomersController@staffListGuest');
         });
 
         /* Role Super Admin */
