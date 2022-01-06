@@ -410,7 +410,15 @@ return [
                 'required' => 'The join status is required',
                 'deadline' => 'The join status is deadline',
                 'numeric' => 'The join status is numeric',
-            ]
+            ],
+            'current_position' => [
+                'required' => 'The current position is required',
+                'numeric' => 'The current position is numeric',
+            ],
+            'updated_position' => [
+                'required' => 'The updated position is required',
+                'numeric' => 'The updated position is numeric',
+            ],
         ]
     ],
     'customer_task' => [

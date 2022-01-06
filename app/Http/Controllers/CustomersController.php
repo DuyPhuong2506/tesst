@@ -9,6 +9,8 @@ use App\Http\Requests\UpdateParticipantRequest;
 use App\Http\Requests\StaffGetListGuestRequest;
 use App\Http\Requests\CoupleUpdateGuestRequest;
 use App\Http\Requests\StaffUpdateGuestRequest;
+use App\Http\Requests\CoupleReoderGuestRequest;
+use App\Http\Requests\StaffReoderGuestRequest;
 use App\Http\Requests\StaffGetGuestRequest;
 use App\Services\CustomerService;
 use Auth;
@@ -244,6 +246,62 @@ class CustomersController extends Controller
         } catch (\Throwable $th) {
             DB::rollback();
 
+            return $this->respondError(
+                Response::HTTP_BAD_REQUEST, __('messages.participant.update_fail')
+            );
+        }
+    }
+
+    /**
+     * UI COUPLE - [U063.1] reorder
+     * @param $request 
+     * **/
+    public function coupleReoderGuest(CoupleReoderGuestRequest $request)
+    {
+        $weddingID = $this->customer->wedding_id;
+        $requestData = $request->only('id', 'updated_position');
+        DB::beginTransaction();
+        try {
+            $status = $this->customerService->reoderGuest($weddingID, $requestData);
+            if($status){
+                DB::commit();
+                return $this->respondSuccess(
+                    ['message' => __('messages.participant.update_success')]
+                );
+            }
+
+            DB::rollback();
+        } catch (\Throwable $th) {
+            DB::rollback();
+            
+            return $this->respondError(
+                Response::HTTP_BAD_REQUEST, __('messages.participant.update_fail')
+            );
+        }
+    }
+
+    /**
+     * UI STAFF ADMIN - [AS157] reorder
+     * @param $request 
+     * **/
+    public function staffReoderGuest(StaffReoderGuestRequest $request)
+    {
+        $weddingID = $request->wedding_id;
+        $requestData = $request->only('id', 'updated_position');
+        DB::beginTransaction();
+        try {
+            $status = $this->customerService->reoderGuest($weddingID, $requestData);
+            if($status){
+                DB::commit();
+                return $this->respondSuccess(
+                    ['message' => __('messages.participant.update_success')]
+                );
+            }
+
+            DB::rollback();
+        } catch (\Throwable $th) {
+            DB::rollback();
+            
             return $this->respondError(
                 Response::HTTP_BAD_REQUEST, __('messages.participant.update_fail')
             );

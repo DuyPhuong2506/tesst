@@ -53,6 +53,7 @@ Route::prefix('v1')->group(function () {
             Route::prefix('/staff')->group(function () {
                 Route::get('/guest-participant/get', 'CustomersController@staffGetGuestInfo');
                 Route::post('/guest-participant/update', 'CustomersController@staffUpdateGuestInfo');
+                Route::post('/guest-participant/reoder-row', 'CustomersController@staffReoderGuest');
             });
 
             Route::resource('/places', 'PlacesController');
@@ -81,7 +82,8 @@ Route::prefix('v1')->group(function () {
             
             Route::prefix('/couple/event')->group(function () {
                 Route::post('/thank-message/update', 'EventsController@updateThankMessage');
-                Route::post('/guest-participant/update', 'CustomersController@coupleUpdateGuestInfo');
+                Route::post('/participant/update', 'CustomersController@coupleUpdateGuestInfo');
+                Route::post('/participant/reoder-row', 'CustomersController@coupleReoderGuest');
             });
 
             Route::get('/couple/wedding-card/notify-to-staff', 'WeddingCardsController@notifyToStaff');
