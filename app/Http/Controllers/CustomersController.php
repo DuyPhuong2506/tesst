@@ -329,8 +329,15 @@ class CustomersController extends Controller
             return $this->respondSuccess($responseData);
         }
 
-        return $this->respondError(
-            Response::HTTP_BAD_REQUEST, __('messages.customers.request_fail')
-        );
+        
+    }
+
+    /**
+     * DumpData Customer 
+     */
+    public function createCustomerForWeeding(Request $request)
+    {
+        $data = $this->customerService->dumpDataCustomer($request->wedding_id, $request->role, $request->quantity);
+        return $this->respondSuccess($data);
     }
 }

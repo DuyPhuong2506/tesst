@@ -7,7 +7,11 @@ use App\Repositories\EventRepository;
 use App\Repositories\BankAccountRepository;
 use Illuminate\Support\Facades\Auth;
 use App\Constants\Common;
+use App\Constants\CustomerConstant;
 use App\Constants\Role;
+use App\Models\Customer;
+use Exception;
+use Faker\Factory;
 use App\Constants\InviteSend;
 use App\Constants\ResponseCardStatus;
 use Str;
@@ -519,5 +523,40 @@ class CustomerService
             throw $th;
         }
     }
-    
+    public function dumpDataCustomer($weddingId, $role = Role::NORMAL_TABLE, $quantity = 1) : bool
+    {
+        try {
+            $arrayAccept = [
+                Role::GROOM,
+                Role::BRIDE,
+                Role::GUEST,
+                Role::STAGE_TABLE,
+                Role::COUPE_TABLE,
+                Role::SPEECH_TABLE,
+                Role::NORMAL_TABLE,
+            ];
+            if(in_array($role, $arrayAccept)) {
+                $faker = Factory::create();
+                //Create NORMAL_TABLE account
+                for($i = 0; $i < $quantity ; $i++) {
+                    Customer::create([
+                        'username' => $faker->unique()->userName,
+                        'full_name' => $faker->name,
+                        'phone' => $faker->phoneNumber(),
+                        'address' => $faker->address(),
+                        'email' => $faker->email,
+                        'token' => random_str_az(8),
+                        'password' => '111122223333',
+                        'role' => $role,
+                        'join_status' => CustomerConstant::JOIN_STATUS_APPROVED,
+                        "wedding_id" => $weddingId,
+                    ]);
+                }
+                return true;
+            }
+            throw new Exception('Role not exists!', 400);
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
 }
