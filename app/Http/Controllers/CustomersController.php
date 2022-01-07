@@ -232,16 +232,24 @@ class CustomersController extends Controller
     public function staffUpdateGuestInfo(StaffUpdateGuestRequest $request)
     {
         $requestData = $request->all();
-        $status = $this->customerService->staffUpdateGuestInfo($requestData);
-        if($status){
-            return $this->respondSuccess(
-                ['message' => __('messages.participant.update_success')]
+        DB::beginTransaction();
+        try {
+            $status = $this->customerService->staffUpdateGuestInfo($requestData);
+            if($status){
+                DB::commit();
+                return $this->respondSuccess(
+                    ['message' => __('messages.participant.update_success')]
+                );
+            }
+
+            DB::rollback();
+        } catch (\Throwable $th) {
+            DB::rollback();
+
+            return $this->respondError(
+                Response::HTTP_BAD_REQUEST, __('messages.participant.update_fail')
             );
         }
-
-        return $this->respondError(
-            Response::HTTP_BAD_REQUEST, __('messages.participant.update_fail')
-        );
     }
 
     /**
@@ -273,24 +281,17 @@ class CustomersController extends Controller
     {
         $weddingID = $request->wedding_id;
         $requestData = $request->only('id', 'updated_position');
-        DB::beginTransaction();
-        try {
-            $status = $this->customerService->reoderGuest($weddingID, $requestData);
-            if($status){
-                DB::commit();
-                return $this->respondSuccess(
-                    ['message' => __('messages.participant.update_success')]
-                );
-            }
+        $status = $this->customerService->reoderGuest($weddingID, $requestData);
 
-            DB::rollback();
-        } catch (\Throwable $th) {
-            DB::rollback();
-            
-            return $this->respondError(
-                Response::HTTP_BAD_REQUEST, __('messages.participant.update_fail')
+        if($status){
+            return $this->respondSuccess(
+                ['message' => __('messages.participant.update_success')]
             );
         }
+
+        return $this->respondError(
+            Response::HTTP_BAD_REQUEST, __('messages.participant.update_fail')
+        );
     }
 
     /**
