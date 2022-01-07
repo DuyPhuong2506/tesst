@@ -11,6 +11,7 @@ use App\Constants\Role;
 use App\Constants\InviteSend;
 use App\Constants\ResponseCardStatus;
 use Str;
+use DB;
 
 class CustomerService
 {
@@ -490,27 +491,33 @@ class CustomerService
      * **/
     public function reoderGuest($weddingID, $requestData)
     {
-        $customerID = $requestData['id'];
-        $currentPosition = $this->customerRepo->model->find($customerID)->order;
-        $updatedPosition = $requestData['updated_position'];
-        $customer = $this->customerRepo->model;
-
-        if($currentPosition < $updatedPosition){
-            for($i = $currentPosition + 1; $i <= $updatedPosition; $i++){
-                $customer::where('wedding_id', $weddingID)
-                    ->where('order', $i)
-                    ->update(['order' => $i - 1]);
+        DB::beginTransaction();
+        try {
+            $customerID = $requestData['id'];
+            $currentPosition = $this->customerRepo->model->find($customerID)->order;
+            $updatedPosition = $requestData['updated_position'];
+            $customer = $this->customerRepo->model;
+            
+            if($currentPosition < $updatedPosition){
+                for($i = $currentPosition + 1; $i <= $updatedPosition; $i++){
+                    $customer::where('wedding_id', $weddingID)
+                        ->where('order', $i)
+                        ->update(['order' => $i - 1]);
+                }
+            }else{
+                for($i = $currentPosition; $i >= $updatedPosition; $i--){
+                    $customer::where('wedding_id', $weddingID)
+                        ->where('order', $i)
+                        ->update(['order' => $i + 1]);
+                }
             }
-        }else{
-            for($i = $currentPosition; $i >= $updatedPosition; $i--){
-                $customer::where('wedding_id', $weddingID)
-                    ->where('order', $i)
-                    ->update(['order' => $i + 1]);
-            }
+            $customer::where('id', $customerID)->update(['order' => $updatedPosition]);
+            DB::commit();
+            return "true";
+        } catch (\Throwable $th) {
+            DB::rollback();
+            throw $th;
         }
-        $customer::where('id', $customerID)->update(['order' => $updatedPosition]);
-
-        return true;
     }
     
 }
