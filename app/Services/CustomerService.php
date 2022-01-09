@@ -465,6 +465,10 @@ class CustomerService
         return true;
     }
 
+    /**
+     * UI COUPLE - [U063] Couple Event Detail
+     * @param $request 
+     * **/
     public function customerJoinTable($data)
     {
         $guestID = $data['id'];

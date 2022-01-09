@@ -291,6 +291,10 @@ class CustomersController extends Controller
         );
     }
 
+    /**
+     * UI COUPLE - [U063] Couple Event Detail
+     * @param $request 
+     * **/
     public function coupleUpdateGuestTable(CoupleUpdateGuestTableRequest $request)
     {
         $requestData = $request->only('id', 'table_position_id');
