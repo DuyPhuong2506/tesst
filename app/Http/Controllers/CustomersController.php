@@ -10,6 +10,7 @@ use App\Http\Requests\StaffGetListGuestRequest;
 use App\Http\Requests\CoupleUpdateGuestRequest;
 use App\Http\Requests\StaffUpdateGuestRequest;
 use App\Http\Requests\StaffGetGuestRequest;
+use App\Http\Requests\CoupleUpdateGuestTableRequest;
 use App\Services\CustomerService;
 use Auth;
 use DB;
@@ -287,6 +288,22 @@ class CustomersController extends Controller
 
         return $this->respondError(
             Response::HTTP_BAD_REQUEST, __('messages.customers.request_fail')
+        );
+    }
+
+    public function coupleUpdateGuestTable(CoupleUpdateGuestTableRequest $request)
+    {
+        $requestData = $request->only('id', 'table_position_id');
+        $data = $this->customerService->customerJoinTable($requestData);
+
+        if($data){
+            return $this->respondSuccess([
+                'messages' => __('messages.participant.update_success')
+            ]);
+        }
+
+        return $this->respondError(
+            Response::HTTP_BAD_REQUEST, __('messages.participant.update_fail')
         );
     }
 }

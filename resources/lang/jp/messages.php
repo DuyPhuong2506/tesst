@@ -329,6 +329,7 @@ return [
         'list_fail' => 'The list is fail',
         'detail_fail' => 'Participant detail fail',
         'not_found' => 'Participant not found',
+        'max_remote' => '同じテーブルに最大６名のリモート参加者が指定できます。',
 
         'validation' => [
             'is_only_party' => [

@@ -328,6 +328,7 @@ return [
         'list_fail' => 'The list is fail',
         'detail_fail' => 'Participant detail fail',
         'not_found' => 'Participant not found',
+        'max_remote' => 'This table is can not greater than 6 guest participant',
 
         'validation' => [
             'is_only_party' => [

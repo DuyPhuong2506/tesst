@@ -464,5 +464,18 @@ class CustomerService
 
         return true;
     }
+
+    public function customerJoinTable($data)
+    {
+        $guestID = $data['id'];
+        $tableID = $data['table_position_id'];
+
+        $this->customerRepo->model
+            ->find($guestID)
+            ->tablePosition()
+            ->sync($tableID);
+
+        return true;
+    }
     
 }

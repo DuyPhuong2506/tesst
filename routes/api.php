@@ -83,6 +83,7 @@ Route::prefix('v1')->group(function () {
             Route::prefix('/couple/event')->group(function () {
                 Route::post('/thank-message/update', 'EventsController@updateThankMessage');
                 Route::post('/guest-participant/update', 'CustomersController@coupleUpdateGuestInfo');
+                Route::post('/guest-participant/update-table', 'CustomersController@coupleUpdateGuestTable');
             });
 
             Route::get('/couple/wedding-card/notify-to-staff', 'WeddingCardsController@notifyToStaff');
