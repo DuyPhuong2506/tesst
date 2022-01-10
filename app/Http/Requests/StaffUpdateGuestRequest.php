@@ -16,12 +16,12 @@ class StaffUpdateGuestRequest extends ApiRequest
 {
 
     protected $staffUser;
-    protected $weddingID;
+    protected $guestUser;
 
     public function __construct()
     {
         $this->staffUser = Auth::user();
-        $this->weddingID = Customer::find(request()->id)->wedding_id;
+        $this->guestUser = Customer::find(request()->id);
     }
 
     /**
@@ -36,9 +36,8 @@ class StaffUpdateGuestRequest extends ApiRequest
                 'required',
                 function($attribute, $value, $fail)
                 {
-                    $guestID = request()->id;
                     $staffID = $this->staffUser->id;
-                    $weddingID = $this->weddingID;
+                    $weddingID = $this->guestUser->wedding_id;
 
                     $exist = Wedding::where('id', $weddingID)
                         ->whereHas('place.restaurant.user', function($q) use($staffID){
@@ -63,14 +62,13 @@ class StaffUpdateGuestRequest extends ApiRequest
                 function($attribute, $value, $fail)
                 {
                     $guestID = request()->id;
-                    $weddingID = $this->weddingID;
                     $tableID = request()->table_position_id;
-
                     $guest = Customer::where('id', $guestID)
                         ->where('role', Role::GUEST);
 
                     if($guest->exists())
                     {
+                        $weddingID = $this->guestUser->wedding_id;
                         $joinStatus = $guest->select('join_status')
                             ->first()->join_status;
                         
