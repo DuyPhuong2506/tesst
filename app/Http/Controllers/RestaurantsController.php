@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Repositories\RestaurantRepository;
 use App\Http\Requests\CreateRestaurantRequest;
+use App\Http\Requests\UpdateRestaurantRequest;
 
 class RestaurantsController extends Controller
 {
@@ -34,9 +35,24 @@ class RestaurantsController extends Controller
         return $this->respondSuccess($restaurant);
     }
 
-    public function update(Request $request, $id)
+    public function update(UpdateRestaurantRequest $request, $id)
     {
-        $attributes = $request->only('name','phone','address','logo_url','greeting_msg');
+        $attributes = $request->only(
+            'name', 
+            'phone', 
+            'address_1',
+            'address_2', 
+            'logo_url', 
+            'greeting_msg',
+            'post_code',
+            'contact_name',
+            'contact_email',
+            'company_id',
+            'company_name',
+            'guest_invitation_response_num',
+            'couple_edit_num',
+            'link_place'
+        );
         $restaurant = $this->restaurantRepo->update($id, $attributes);
         if ($restaurant) {
             return $this->respondSuccess($restaurant);
