@@ -478,9 +478,11 @@ class CustomerService
                 'relationship_couple' => $data['relationship_couple'],
                 'post_code' => $data['post_code'],
                 'phone' => $data['phone'],
-                'address' => $data['address'],
-                'is_only_party' => $data['is_only_party']
+                'address' => $data['address']
             ]);
+        
+        $guest->tablePosition()
+            ->sync($data['table_position_id']);
 
         return true;
     }

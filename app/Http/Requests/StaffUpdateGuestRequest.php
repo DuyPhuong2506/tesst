@@ -5,18 +5,23 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 use App\Constants\Role;
+use App\Constants\ResponseCardStatus;
+use App\Constants\Common;
 use App\Models\Customer;
 use App\Models\Wedding;
+use App\Models\TablePosition;
 use Carbon\Carbon;
 
 class StaffUpdateGuestRequest extends ApiRequest
 {
 
     protected $staffUser;
+    protected $weddingID;
 
     public function __construct()
     {
         $this->staffUser = Auth::user();
+        $this->weddingID = Customer::find(request()->id)->wedding_id;
     }
 
     /**
@@ -33,15 +38,11 @@ class StaffUpdateGuestRequest extends ApiRequest
                 {
                     $guestID = request()->id;
                     $staffID = $this->staffUser->id;
-                    $weddingID = Customer::find($guestID)->wedding_id;
+                    $weddingID = $this->weddingID;
 
                     $exist = Wedding::where('id', $weddingID)
-                        ->whereHas('place', function($q) use($staffID){
-                            $q->whereHas('restaurant', function($q) use($staffID){
-                                $q->whereHas('user', function($q) use($staffID){
-                                    $q->where('id', $staffID);
-                                });
-                            });
+                        ->whereHas('place.restaurant.user', function($q) use($staffID){
+                            $q->where('id', $staffID);
                         })
                         ->exists();
 
@@ -50,23 +51,7 @@ class StaffUpdateGuestRequest extends ApiRequest
                     }
                 }
             ],
-            'join_status' => [
-                'required',
-                'numeric',
-                function($attribute, $value, $fail)
-                {
-                    $weddingID = Customer::find(request()->id)->wedding_id;
-                    $wedding = Wedding::find($weddingID);
-                    $deadLineEdit = Carbon::createFromFormat(
-                        'Y-m-d',  $wedding->couple_edit_date
-                    );
-                    $today = Carbon::today();
-
-                    if($today->greaterThan($deadLineEdit)){
-                        $fail(__('messages.participant.validation.join_status.deadline'));
-                    }
-                }
-            ],
+            'join_status' => 'required|numeric',
             'first_name' => 'required|max:10',
             'last_name' => 'required|max:10',
             'relationship_couple' => 'required|max:50',
@@ -78,7 +63,7 @@ class StaffUpdateGuestRequest extends ApiRequest
                 function($attribute, $value, $fail)
                 {
                     $guestID = request()->id;
-                    $weddingID = request()->wedding_id;
+                    $weddingID = $this->weddingID;
                     $tableID = request()->table_position_id;
 
                     $guest = Customer::where('id', $guestID)
