@@ -57,7 +57,7 @@ Route::prefix('v1')->group(function () {
                 Route::post('/guest-participant/update', 'CustomersController@staffUpdateGuestInfo');
                 Route::post('/guest-participant/reoder-row', 'CustomersController@staffReoderGuest');
             });
-
+            Route::get('/table-account-wedding/{wedding_id}', 'TableAccountController@getTableAccountOfWedding');
             Route::resource('/places', 'PlacesController');
         });
 
@@ -109,7 +109,6 @@ Route::prefix('v1')->group(function () {
         Route::get('/places-get-pre-signed', 'PlacesController@getPreSigned')->name('get.getPreSigned');
         Route::resource('/restaurants','RestaurantsController');
         Route::resource('/table-positon', 'TablePositionsController');
-        Route::resource('/table-account', 'TableAccountController');
         Route::resource('/customer', 'CustomersController');
         Route::get('/customer-in-wedding', 'CustomersController@getListCustomerInWedding');
         Route::post('/create-dump-customer', 'CustomersController@createCustomerForWeeding');
