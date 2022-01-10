@@ -11,6 +11,7 @@ use App\Constants\Role;
 use App\Constants\InviteSend;
 use App\Constants\ResponseCardStatus;
 use Str;
+use DB;
 
 class CustomerService
 {
@@ -94,6 +95,7 @@ class CustomerService
     public function staffCoupleGetListGuest($weddingID, $request)
     {
         $keyword = (isset($request['keyword'])) ? escape_like($request['keyword']) : NULL;
+        $orderBy = (isset($request['order_by'])) ? explode('|', $request['order_by']) : [];
         $status = [];
         
         if(!empty($keyword)){
@@ -120,13 +122,16 @@ class CustomerService
                 });
                 $q->orWhereIn('join_status', $status);
             })
-            ->select(['id', 'full_name', 'email', 'join_status'])
+            ->select(['id', 'full_name', 'email', 'join_status', 'order'])
             ->with(['tablePosition' => function($q){
                 $q->select(['id', 'position']);
             }])
             ->with(['customerInfo' => function($q){
                 $q->select('id', 'relationship_couple', 'customer_id');
             }])
+            ->when(count($orderBy) > 0, function ($q) use($orderBy){
+                return $q->orderBy($orderBy[0], $orderBy[1]);
+            })
             ->get();
 
         $wedding = $this->weddingRepo->model->where('id', $weddingID)
@@ -193,13 +198,19 @@ class CustomerService
         $fullname = $requestData['first_name'] . " " . $requestData['last_name'];
         $bankID = $this->getBankID($requestData['bank_order'], $weddingId);
 
+        $curentOrder = $this->customerRepo->model
+            ->where('wedding_id', $weddingId)
+            ->where('role', Role::GUEST)
+            ->max('order') + 1;
+
         $customer = $this->customerRepo->create([
             'username' => $username,
             'password' => $password,
             'email' => Str::lower($requestData['email']),
             'role' => Role::GUEST,
             'full_name' => $fullname,
-            'wedding_id' => $weddingId
+            'wedding_id' => $weddingId,
+            'order' => $curentOrder
         ]);
 
         $customerInfo = $customer->customerInfo()->create([
@@ -273,6 +284,15 @@ class CustomerService
             ->first();
 
         if($participant){
+            $order = $participant->order;
+            $maxOrder = $this->customerRepo->model->max('order');
+            for($i = $order + 1; $i <= $maxOrder ; $i++){
+                $this->customerRepo->model
+                    ->where('wedding_id', $weddingId)
+                    ->where('order', $i)
+                    ->update(['order' => $i - 1]);
+            }
+
             $participant->delete();
             return true;
         }
@@ -463,6 +483,41 @@ class CustomerService
             ]);
 
         return true;
+    }
+
+    /**
+     * UI COUPLE - [U063.1] reorder
+     * @param $request 
+     * **/
+    public function reoderGuest($weddingID, $requestData)
+    {
+        DB::beginTransaction();
+        try {
+            $customerID = $requestData['id'];
+            $currentPosition = $this->customerRepo->model->find($customerID)->order;
+            $updatedPosition = $requestData['updated_position'];
+            $customer = $this->customerRepo->model;
+            
+            if($currentPosition < $updatedPosition){
+                for($i = $currentPosition + 1; $i <= $updatedPosition; $i++){
+                    $customer::where('wedding_id', $weddingID)
+                        ->where('order', $i)
+                        ->update(['order' => $i - 1]);
+                }
+            }else{
+                for($i = $currentPosition; $i >= $updatedPosition; $i--){
+                    $customer::where('wedding_id', $weddingID)
+                        ->where('order', $i)
+                        ->update(['order' => $i + 1]);
+                }
+            }
+            $customer::where('id', $customerID)->update(['order' => $updatedPosition]);
+            DB::commit();
+            return "true";
+        } catch (\Throwable $th) {
+            DB::rollback();
+            throw $th;
+        }
     }
     
 }
