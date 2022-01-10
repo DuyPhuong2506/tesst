@@ -8,6 +8,7 @@ use App\Services\WeddingCardService;
 use App\Http\Requests\CreateWeddingCardRequest;
 use App\Http\Requests\UploadCouplePhotoRequest;
 use App\Http\Requests\UpdateCardContentRequest;
+use App\Http\Requests\StaffGetGuestWeddingCardRequest;
 use DB;
 use Auth;
 
@@ -102,10 +103,10 @@ class WeddingCardsController extends Controller
      * @param  Request $weddingCardID
      * @return \Illuminate\Http\Response
      */
-    public function staffGetWeddingCard(Request $request)
+    public function staffGetWeddingCard(StaffGetGuestWeddingCardRequest $request)
     {   
-        $weddingId = $request->onLy('id');
-        $data = $this->weddingCardService->showWeddingCard($weddingId);
+        $guestID = $request->id;
+        $data = $this->weddingCardService->staffGetWeddingCard($guestID);
         if($data){
             return $this->respondSuccess($data);
         }
