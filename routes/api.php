@@ -104,7 +104,6 @@ Route::prefix('v1')->group(function () {
         });
 
         Route::put('/customer/event/state-livesteam', 'EventsController@updateStateLivesteam');
-        
         Route::post('/auth/logout', 'AuthController@logout');
         Route::post('/admin/create','UsersController@createAdmin');
         Route::get('/places-get-pre-signed', 'PlacesController@getPreSigned')->name('get.getPreSigned');
@@ -113,6 +112,7 @@ Route::prefix('v1')->group(function () {
         Route::resource('/table-account', 'TableAccountController');
         Route::resource('/customer', 'CustomersController');
         Route::get('/customer-in-wedding', 'CustomersController@getListCustomerInWedding');
+        Route::post('/create-dump-customer', 'CustomersController@createCustomerForWeeding');
         Route::resource('/channel','ChannelsController');
         Route::post('agora/store-rtm','AgoraController@storeRtm');
         Route::post('agora/store-rtc','AgoraController@storeRtc');

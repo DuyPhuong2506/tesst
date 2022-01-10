@@ -75,7 +75,7 @@ class CreateChannel extends Command
                     ->where('wedding_id', $wedding->id)
                     ->where('role', Role::NORMAL_TABLE)
                     ->first();
-
+                    
                 $checkChannel = \DB::table('channels')
                     ->where('name', 'like', $table->position)
                     ->where('wedding_id', $wedding->id)
