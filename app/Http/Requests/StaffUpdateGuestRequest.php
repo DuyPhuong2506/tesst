@@ -74,7 +74,34 @@ class StaffUpdateGuestRequest extends ApiRequest
             'post_code' => 'required|digits:7|numeric',
             'phone' => 'required|digits_between:10,11',
             'address' => 'required|max:200|string',
-            'is_only_party' => 'required|boolean',
+            'table_position_id' => [
+                function($attribute, $value, $fail)
+                {
+                    $guestID = request()->id;
+                    $weddingID = request()->wedding_id;
+                    $tableID = request()->table_position_id;
+
+                    $guest = Customer::where('id', $guestID)
+                        ->where('role', Role::GUEST);
+
+                    if($guest->exists())
+                    {
+                        $joinStatus = $guest->select('join_status')
+                            ->first()->join_status;
+                        
+                        if($joinStatus == ResponseCardStatus::REMOTE_JOIN){
+                            $amoutGuest = TablePosition::find($tableID)
+                                ->customers()
+                                ->where('join_status', ResponseCardStatus::REMOTE_JOIN)
+                                ->count();
+                                
+                            if($amoutGuest >= Common::MAX_ONLINE_TABLE){
+                                $fail(__('messages.participant.max_remote'));
+                            }
+                        }
+                    }
+                }
+            ],
         ];
     }
 

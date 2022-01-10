@@ -9,6 +9,8 @@ use App\Http\Requests\UpdateParticipantRequest;
 use App\Http\Requests\StaffGetListGuestRequest;
 use App\Http\Requests\CoupleUpdateGuestRequest;
 use App\Http\Requests\StaffUpdateGuestRequest;
+use App\Http\Requests\CoupleReoderGuestRequest;
+use App\Http\Requests\StaffReoderGuestRequest;
 use App\Http\Requests\StaffGetGuestRequest;
 use App\Http\Requests\CoupleUpdateGuestTableRequest;
 use App\Services\CustomerService;
@@ -249,6 +251,48 @@ class CustomersController extends Controller
                 Response::HTTP_BAD_REQUEST, __('messages.participant.update_fail')
             );
         }
+    }
+
+    /**
+     * UI COUPLE - [U063.1] reorder
+     * @param $request 
+     * **/
+    public function coupleReoderGuest(CoupleReoderGuestRequest $request)
+    {
+        $weddingID = $this->customer->wedding_id;
+        $requestData = $request->only('id', 'updated_position');
+        $status = $this->customerService->reoderGuest($weddingID, $requestData);
+
+        if($status){
+            return $this->respondSuccess(
+                ['message' => __('messages.participant.update_success')]
+            );
+        }
+
+        return $this->respondError(
+            Response::HTTP_BAD_REQUEST, __('messages.participant.update_fail')
+        );
+    }
+
+    /**
+     * UI STAFF ADMIN - [AS157] reorder
+     * @param $request 
+     * **/
+    public function staffReoderGuest(StaffReoderGuestRequest $request)
+    {
+        $weddingID = $request->wedding_id;
+        $requestData = $request->only('id', 'updated_position');
+        $status = $this->customerService->reoderGuest($weddingID, $requestData);
+
+        if($status){
+            return $this->respondSuccess(
+                ['message' => __('messages.participant.update_success')]
+            );
+        }
+
+        return $this->respondError(
+            Response::HTTP_BAD_REQUEST, __('messages.participant.update_fail')
+        );
     }
 
     /**

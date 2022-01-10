@@ -3,6 +3,7 @@ namespace App\Services;
 
 use App\Repositories\WeddingCardRepository;
 use App\Repositories\EventRepository;
+use App\Repositories\CustomerRepository;
 use App\Jobs\SendDoneCardToStaffJob;
 use Illuminate\Support\Facades\Storage;
 use App\Constants\Role;
@@ -13,13 +14,16 @@ class WeddingCardService
 {
     protected $weddingCardRepo;
     protected $weddingRepo;
+    protected $customerRepo;
 
     public function __construct(
         WeddingCardRepository $weddingCardRepo,
-        EventRepository $weddingRepo
+        EventRepository $weddingRepo,
+        CustomerRepository $customerRepo
     ){
         $this->weddingCardRepo = $weddingCardRepo;
         $this->weddingRepo = $weddingRepo;
+        $this->customerRepo = $customerRepo;
     }
 
     public function createWeddingCard($cardData, $weddingId)
@@ -133,6 +137,58 @@ class WeddingCardService
         }
 
         return false;
+    }
+
+    public function staffGetWeddingCard($guestID)
+    {
+        $guest = $this->customerRepo->model
+            ->where('id', $guestID)
+            ->select('id', 'full_name', 'email', 'wedding_id')
+            ->with(['customerInfo' => function($q){
+                $q->select(
+                    'id', 'customer_id', 
+                    'post_code', 'phone', 'address', 
+                    'first_name', 'last_name', 'free_word',
+                    'task_content'
+                );
+            }])
+            ->first();
+
+        $wedding = $guest->wedding()
+            ->select(
+                'id', 'thank_you_message', 'greeting_message', 
+                'date', 'ceremony_reception_time', 'ceremony_time',
+                'party_reception_time', 'party_time', 'place_id'
+            )
+            ->first();
+        
+        $place = $wedding->place()
+            ->select('id', 'name', 'restaurant_id')
+            ->with(['restaurant' => function($q){
+                $q->select('id', 'address_1', 'address_2', 'phone');
+            }])
+            ->first();
+
+        $weddingCard = $wedding->weddingCard()
+            ->select('id', 'wedding_price', 'content', 'couple_photo', 'template_card_id')
+            ->first();
+        
+        $templateCard = $weddingCard->templateCard()->select('card_path')->first();
+
+        $couple = $wedding->customers()
+            ->where('role', Role::GROOM)
+            ->orWhere('role', Role::BRIDE)
+            ->select('full_name')
+            ->get();
+
+        return [
+            'guest' => $guest,
+            'wedding' => $wedding,
+            'wedding_card' => $weddingCard,
+            'template_card' => $templateCard,
+            'place' => $place,
+            'couple_name' => $couple
+        ];
     }
 
 }
