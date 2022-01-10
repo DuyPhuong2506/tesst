@@ -91,14 +91,19 @@ class WeddingCardService
 
     public function showWeddingCard($weddingId)
     {
-        $data = $this->weddingCardRepo
-            ->model
-            ->where('wedding_id', $weddingId)
-            ->with(['bankAccounts', 'templateCard'])
-            ->with(['wedding' => function($q){
-                $q->select('id', 'guest_invitation_response_date', 'couple_edit_date');
-            }])
-            ->first();
+        $data = null;
+        try {
+            $data = $this->weddingCardRepo
+                ->model
+                ->where('wedding_id', $weddingId)
+                ->with(['bankAccounts', 'templateCard'])
+                ->with(['wedding' => function($q){
+                    $q->select('id', 'guest_invitation_response_date', 'couple_edit_date');
+                }])
+                ->first();
+        } catch (\Throwable $th) {
+            throw $th;
+        }
         
         return $data;
     }

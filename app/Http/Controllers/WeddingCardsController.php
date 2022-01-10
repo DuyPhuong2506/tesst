@@ -88,13 +88,7 @@ class WeddingCardsController extends Controller
     {   
         $weddingId = $this->customer->wedding_id;
         $data = $this->weddingCardService->showWeddingCard($weddingId);
-        if($data){
-            return $this->respondSuccess($data);
-        }
-        
-        return $this->respondError(
-            Response::HTTP_BAD_REQUEST, __('messages.wedding_card.detail_fail')
-        );
+        return $this->respondSuccess($data);
     }
 
     /**
