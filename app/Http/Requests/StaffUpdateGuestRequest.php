@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 use App\Constants\Role;
-use App\Constants\ResponseCardStatus;
+use App\Constants\CustomerConstant;
 use App\Constants\Common;
 use App\Models\Customer;
 use App\Models\Wedding;
@@ -72,10 +72,10 @@ class StaffUpdateGuestRequest extends ApiRequest
                         $joinStatus = $guest->select('join_status')
                             ->first()->join_status;
                         
-                        if($joinStatus == ResponseCardStatus::REMOTE_JOIN){
+                        if($joinStatus == CustomerConstant::REMOTE_JOIN){
                             $amoutGuest = TablePosition::find($tableID)
                                 ->customers()
-                                ->where('join_status', ResponseCardStatus::REMOTE_JOIN)
+                                ->where('join_status', CustomerConstant::REMOTE_JOIN)
                                 ->count();
                                 
                             if($amoutGuest >= Common::MAX_ONLINE_TABLE){

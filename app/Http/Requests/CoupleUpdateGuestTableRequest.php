@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Customer;
 use App\Models\TablePosition;
 use App\Constants\Role;
-use App\Constants\ResponseCardStatus;
+use App\Constants\CustomerConstant;
 use App\Constants\Common;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
@@ -46,10 +46,10 @@ class CoupleUpdateGuestTableRequest extends ApiRequest
                         $joinStatus = $guest->select('join_status')
                             ->first()->join_status;
                         
-                        if($joinStatus == ResponseCardStatus::REMOTE_JOIN){
+                        if($joinStatus == CustomerConstant::JOIN_STATUS_APPROVED){
                             $amoutGuest = TablePosition::find($tableID)
                                 ->customers()
-                                ->where('join_status', ResponseCardStatus::REMOTE_JOIN)
+                                ->where('join_status', CustomerConstant::JOIN_STATUS_APPROVED)
                                 ->count();
                                 
                             if($amoutGuest >= Common::MAX_ONLINE_TABLE){

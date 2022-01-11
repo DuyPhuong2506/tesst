@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Constants\Common;
 use App\Constants\Role;
 use App\Constants\InviteSend;
-use App\Constants\ResponseCardStatus;
+use App\Constants\CustomerConstant;
 use Str;
 use DB;
 
@@ -99,7 +99,7 @@ class CustomerService
         $status = [];
         
         if(!empty($keyword)){
-            $status = getArrayIndex($keyword, ResponseCardStatus::RESPONSE_CARD_STATUS);
+            $status = getArrayIndex($keyword, CustomerConstant::RESPONSE_CARD_STATUS);
         }
 
         $customerParticipant =  $this->customerRepo->model
