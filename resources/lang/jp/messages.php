@@ -84,7 +84,7 @@ return [
                 'required' => '必須項目に入力してください。',
                 'date_format' => 'The date format is invalid.',
                 'after' => '今日より後の日付を入力してください。',
-                'was_held' => '式の日時と会場が存在されました。別の日時と会場を選択してください。'
+                'was_held' => '会場は該当の日時に使用されています。',
             ],
             'pic_name' => [
                 'required' => '必須項目に入力してください。',

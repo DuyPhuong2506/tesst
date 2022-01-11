@@ -8,101 +8,144 @@ use App\Models\Wedding;
 
 class CreateEventRequest extends ApiRequest
 {
-    public function isBetween($dbFrom, $dbTo, $start, $end) {
-        $dbFrom = strtotime($dbFrom);
-        $dbTo = strtotime($dbTo);
-        $start = strtotime($start);
-        $end = strtotime($end);
+    protected $placeID;
+    protected $date;
 
-        if(
-            (($start < $dbFrom) and ($end > $dbFrom) and ($end <= $dbTo)) OR
-            (($start >= $dbFrom) and ($start < $dbTo) and ($end <= $dbTo)) OR
-            (($start <= $dbFrom) and ($end >= $dbTo)) OR
-            (($start >= $dbFrom) and ($start < $dbTo) and ($end >= $dbTo))
-        ){
-            return true;
-        }else{
-            return false;
-        }
+    public function __construct()
+    {
+        $this->placeID = request()->place_id;
+        $this->date = request()->date;
     }
+    
+    public function isDuplicateTime($fieldTime, $dbTimeType)
+    {
+        $placeID = $this->placeID;
+        $date = $this->date;
+        $dbTimeName = [];
 
+        if($dbTimeType === "ceremony"){
+            $dbTimeName = ["ceremony_reception_time", "ceremony_time"];
+        } else if($dbTimeType === "party"){
+            $dbTimeName = ["party_reception_time", "party_time"];
+        }
+
+        $wedding = Wedding::whereHas('place', function($q) use($placeID){
+            $q->where('id', $placeID);
+        })->where('date', $date);
+
+        $listWedding = $wedding->get();
+
+        if($wedding->exists()){
+            foreach ($listWedding as $key => $value) 
+            {
+                $dbTime1 = [null, null];
+                if(isset($value[$dbTimeName[0]])){
+                    $dbTime1 = explode("-", $value[$dbTimeName[0]]);
+                }
+                $dbTime2 = explode("-", $value[$dbTimeName[1]]);
+
+                if(
+                    isBetween($dbTime1[0], $dbTime1[1], $fieldTime[0], $fieldTime[1]) OR
+                    isBetween($dbTime2[0], $dbTime2[1], $fieldTime[0], $fieldTime[1])
+                ){
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+    
     public function rules()
     {
         $rule = [
             'title' => 'required|max:100|string',
-            'date' => [
-                'required', 
-                'date_format:Y-m-d',
-                'after:today',
+            'date' => 'required|date_format:Y-m-d|after:today',
+            'pic_name' => 'required|string|max:20',
+
+            'ceremony_reception_time' => [
+                'nullable',
+                'array',
+                'min:2',
+                'max:2',
                 function($attribute, $value, $fail){
                     $ceremonyReceptionTime = request()->ceremony_reception_time;
-                    $ceremonyTime = request()->ceremony_time;
-                    $partyReceptionTime = request()->party_reception_time;
-                    $partyTime = request()->party_time;
-                    $date = request()->date;
-                    $placeID = request()->place_id;
+                    $isDuplicate = $this->isDuplicateTime(
+                        $ceremonyReceptionTime, "ceremony"
+                    );
 
-                    $ceremony = (isset($ceremonyReceptionTime))
-                        ? $ceremonyReceptionTime
-                        : $ceremonyTime;
-                    
-                    $party = (isset($partyReceptionTime))
-                        ? $partyReceptionTime
-                        : $partyTime;
-                    
-                    $wedding = Wedding::whereHas('place', function($q) use($placeID){
-                            $q->where('id', $placeID);
-                        })
-                        ->where('date', $date);
-                    $listWedding = $wedding->get();
-                    
-                    if($wedding->exists()){
-                        foreach ($listWedding as $key => $value) {
-                            $dbCeremonyReceptionTime = $value['ceremony_reception_time'];
-                            $dbCeremonyTime = $value['ceremony_time'];
-                            $dbPartyReceptionTime = $value['party_reception_time'];
-                            $dbPartyTime = $value['party_time'];
-
-                            $dbCeremony = (isset($dbCeremonyReceptionTime))
-                                ? explode("-", $dbCeremonyReceptionTime)
-                                : explode("-", $dbCeremonyTime);
-                            $dbParty = (isset($dbPartyReceptionTime))
-                                ? explode("-", $dbPartyReceptionTime)
-                                : explode("-", $dbPartyTime);
-                            
-                            if(
-                                $this->isBetween(
-                                    $dbCeremony[0], $dbCeremony[1], 
-                                    $ceremony[0], $ceremony[1]
-                                ) or
-                                $this->isBetween(
-                                    $dbParty[0], $dbParty[1], 
-                                    $party[0], $party[1]
-                                )
-                            ){
-                                $fail(__('messages.event.validation.date.was_held'));
-                            }
+                    if(isset($ceremonyReceptionTime)){
+                        if($isDuplicate){
+                            $fail(__('messages.event.validation.date.was_held'));
                         }
                     }
                 }
             ],
-            'pic_name' => 'required|string|max:20',
-
-            'ceremony_reception_time' => 'nullable|array|min:2|max:2',
             'ceremony_reception_time.*' => "date_format:H:i",
             'ceremony_reception_time.1' => "after:ceremony_reception_time.0",
 
-            'ceremony_time' => 'array|required|min:2|max:2',
+            'ceremony_time' => [
+                'array',
+                'required',
+                'min:2',
+                'max:2',
+                function($attribute, $value, $fail){
+                    $ceremonyTime = request()->ceremony_time;
+                    $isDuplicate = $this->isDuplicateTime(
+                        $ceremonyTime, "ceremony"
+                    );
+
+                    if(isset($ceremonyTime)){
+                        if($isDuplicate){
+                            $fail(__('messages.event.validation.date.was_held'));
+                        }
+                    }
+                }
+            ],
             'ceremony_time.*' => "date_format:H:i",
             'ceremony_time.0' => "after_or_equal:ceremony_reception_time.1",
             'ceremony_time.1' => "after:ceremony_time.0",
 
-            'party_reception_time' => 'nullable|array|min:2|max:2',
+            'party_reception_time' => [
+                'nullable',
+                'array',
+                'min:2',
+                'max:2',
+                function($attribute, $value, $fail){
+                    $partyReceptionTime = request()->party_reception_time;
+                    $isDuplicate = $this->isDuplicateTime(
+                        $partyReceptionTime, "party"
+                    );
+
+                    if(isset($partyReceptionTime)){
+                        if($isDuplicate){
+                            $fail(__('messages.event.validation.date.was_held'));
+                        }
+                    }
+                }
+            ],
             'party_reception_time.*' => "date_format:H:i",
             'party_reception_time.0' => "after_or_equal:ceremony_time.1",
             'party_reception_time.1' => "after:party_reception_time.0",
 
-            'party_time' => 'array|required|min:1|max:2',
+            'party_time' => [
+                'array',
+                'required',
+                'min:1',
+                'max:2',
+                function($attribute, $value, $fail){
+                    $partyTime = request()->party_time;
+                    $isDuplicate = $this->isDuplicateTime(
+                        $partyTime, "party"
+                    );
+
+                    if(isset($partyTime)){
+                        if($isDuplicate){
+                            $fail(__('messages.event.validation.date.was_held'));
+                        }
+                    }
+                }
+            ],
             'party_time.*' => "date_format:H:i",
             'party_time.0' => "after_or_equal:party_reception_time.1",
             'party_time.1' => "after:party_time.0",
