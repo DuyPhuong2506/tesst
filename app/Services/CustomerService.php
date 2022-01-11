@@ -13,7 +13,7 @@ use App\Models\Customer;
 use Exception;
 use Faker\Factory;
 use App\Constants\InviteSend;
-use App\Constants\ResponseCardStatus;
+use App\Constants\CustomerConstant;
 use Str;
 use DB;
 
@@ -103,7 +103,7 @@ class CustomerService
         $status = [];
         
         if(!empty($keyword)){
-            $status = getArrayIndex($keyword, ResponseCardStatus::RESPONSE_CARD_STATUS);
+            $status = getArrayIndex($keyword, CustomerConstant::RESPONSE_CARD_STATUS);
         }
 
         $customerParticipant =  $this->customerRepo->model
@@ -482,15 +482,33 @@ class CustomerService
                 'relationship_couple' => $data['relationship_couple'],
                 'post_code' => $data['post_code'],
                 'phone' => $data['phone'],
-                'address' => $data['address'],
-                'is_only_party' => $data['is_only_party']
+                'address' => $data['address']
             ]);
+        
+        $guest->tablePosition()
+            ->sync($data['table_position_id']);
 
         return true;
     }
 
     /**
-     * UI COUPLE - [U063.1] reorder
+     * UI COUPLE - [U063] Couple Event Detail
+     * @param $request 
+     * **/
+    public function customerJoinTable($data)
+    {
+        $guestID = $data['id'];
+        $tableID = $data['table_position_id'];
+
+        $this->customerRepo->model
+            ->find($guestID)
+            ->tablePosition()
+            ->sync($tableID);
+
+        return true;
+    }
+
+     /* UI COUPLE - [U063.1] reorder
      * @param $request 
      * **/
     public function reoderGuest($weddingID, $requestData)

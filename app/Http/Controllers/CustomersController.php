@@ -12,6 +12,7 @@ use App\Http\Requests\StaffUpdateGuestRequest;
 use App\Http\Requests\CoupleReoderGuestRequest;
 use App\Http\Requests\StaffReoderGuestRequest;
 use App\Http\Requests\StaffGetGuestRequest;
+use App\Http\Requests\CoupleUpdateGuestTableRequest;
 use App\Services\CustomerService;
 use Auth;
 use DB;
@@ -339,5 +340,25 @@ class CustomersController extends Controller
     {
         $data = $this->customerService->dumpDataCustomer($request->wedding_id, $request->role, $request->quantity);
         return $this->respondSuccess($data);
+    }
+
+    /**
+     * UI COUPLE - [U063] Couple Event Detail
+     * @param $request 
+     * **/
+    public function coupleUpdateGuestTable(CoupleUpdateGuestTableRequest $request)
+    {
+        $requestData = $request->only('id', 'table_position_id');
+        $data = $this->customerService->customerJoinTable($requestData);
+
+        if($data){
+            return $this->respondSuccess([
+                'messages' => __('messages.participant.update_success')
+            ]);
+        }
+
+        return $this->respondError(
+            Response::HTTP_BAD_REQUEST, __('messages.participant.update_fail')
+        );
     }
 }

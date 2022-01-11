@@ -5,18 +5,23 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 use App\Constants\Role;
+use App\Constants\CustomerConstant;
+use App\Constants\Common;
 use App\Models\Customer;
 use App\Models\Wedding;
+use App\Models\TablePosition;
 use Carbon\Carbon;
 
 class StaffUpdateGuestRequest extends ApiRequest
 {
 
     protected $staffUser;
+    protected $guestUser;
 
     public function __construct()
     {
         $this->staffUser = Auth::user();
+        $this->guestUser = Customer::find(request()->id);
     }
 
     /**
@@ -31,17 +36,12 @@ class StaffUpdateGuestRequest extends ApiRequest
                 'required',
                 function($attribute, $value, $fail)
                 {
-                    $guestID = request()->id;
                     $staffID = $this->staffUser->id;
-                    $weddingID = Customer::find($guestID)->wedding_id;
+                    $weddingID = $this->guestUser->wedding_id;
 
                     $exist = Wedding::where('id', $weddingID)
-                        ->whereHas('place', function($q) use($staffID){
-                            $q->whereHas('restaurant', function($q) use($staffID){
-                                $q->whereHas('user', function($q) use($staffID){
-                                    $q->where('id', $staffID);
-                                });
-                            });
+                        ->whereHas('place.restaurant.user', function($q) use($staffID){
+                            $q->where('id', $staffID);
                         })
                         ->exists();
 
@@ -50,23 +50,7 @@ class StaffUpdateGuestRequest extends ApiRequest
                     }
                 }
             ],
-            'join_status' => [
-                'required',
-                'numeric',
-                function($attribute, $value, $fail)
-                {
-                    $weddingID = Customer::find(request()->id)->wedding_id;
-                    $wedding = Wedding::find($weddingID);
-                    $deadLineEdit = Carbon::createFromFormat(
-                        'Y-m-d',  $wedding->couple_edit_date
-                    );
-                    $today = Carbon::today();
-
-                    if($today->greaterThan($deadLineEdit)){
-                        $fail(__('messages.participant.validation.join_status.deadline'));
-                    }
-                }
-            ],
+            'join_status' => 'required|numeric',
             'first_name' => 'required|max:10',
             'last_name' => 'required|max:10',
             'relationship_couple' => 'required|max:50',
@@ -74,7 +58,33 @@ class StaffUpdateGuestRequest extends ApiRequest
             'post_code' => 'required|digits:7|numeric',
             'phone' => 'required|digits_between:10,11',
             'address' => 'required|max:200|string',
-            'is_only_party' => 'required|boolean',
+            'table_position_id' => [
+                function($attribute, $value, $fail)
+                {
+                    $guestID = request()->id;
+                    $tableID = request()->table_position_id;
+                    $guest = Customer::where('id', $guestID)
+                        ->where('role', Role::GUEST);
+
+                    if($guest->exists())
+                    {
+                        $weddingID = $this->guestUser->wedding_id;
+                        $joinStatus = $guest->select('join_status')
+                            ->first()->join_status;
+                        
+                        if($joinStatus == CustomerConstant::REMOTE_JOIN){
+                            $amoutGuest = TablePosition::find($tableID)
+                                ->customers()
+                                ->where('join_status', CustomerConstant::REMOTE_JOIN)
+                                ->count();
+                                
+                            if($amoutGuest >= Common::MAX_ONLINE_TABLE){
+                                $fail(__('messages.participant.max_remote'));
+                            }
+                        }
+                    }
+                }
+            ],
         ];
     }
 
