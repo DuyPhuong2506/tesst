@@ -58,4 +58,9 @@ class User extends AuthJWT
     {
         return $this->belongsTo(Restaurant::class, 'restaurant_id', 'id');
     }
+
+    public function userTokens()
+    {
+        return $this->hasMany(UserToken::class, 'user_id', 'id');
+    }
 }

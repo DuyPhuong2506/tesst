@@ -4,7 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use App\Services\AgoraService;
-
+use App\Constants\Common;
 class UpdateTokenChannel extends Command
 {
     /**
@@ -46,20 +46,12 @@ class UpdateTokenChannel extends Command
     {
         $now = \Carbon\Carbon::now()->startOfDay();
         $channels = \DB::table('channels')
-            ->where('status', STATUS_FALSE)
+            ->where('status', Common::STATUS_FALSE)
             ->get();
-        
+       
         foreach($channels as $channel) {
-            // Rtc token using video call
-            $rtcToken = $this->agoraService->getRtcToken($channel->name, $channel->id, $channel->role);
-
-            // Rtm token using chat
-            $rtmToken = $this->agoraService->getRtmToken($channel->id);
-
             \DB::table('channels')->where('id', $channel->id)->update([
-                'rtc_token' =>  $rtcToken,
-                'rtm_token' =>  $rtmToken,
-                'status'    =>  STATUS_TRUE
+                'status'    =>  Common::STATUS_TRUE
             ]);
         }
     }

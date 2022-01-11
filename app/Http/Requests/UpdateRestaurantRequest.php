@@ -4,10 +4,8 @@ namespace App\Http\Requests;
 
 use App\Http\Requests\ApiRequest;
 
-class UpdateGreetingMsgRequest extends ApiRequest
+class UpdateRestaurantRequest extends ApiRequest
 {
-   
-
     /**
      * Get the validation rules that apply to the request.
      *
@@ -16,14 +14,13 @@ class UpdateGreetingMsgRequest extends ApiRequest
     public function rules()
     {
         return [
-            'greeting_message' => 'required'
+            'link_place' => 'url',
         ];
     }
-
     public function messages()
     {
         return [
-            'greeting_message.required' => __('messages.event.validation.greeting_message.required')
+            'link_place.url' => __('messages.restaurant.validation.url.url'),
         ];
     }
 }

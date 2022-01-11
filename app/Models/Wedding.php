@@ -24,14 +24,17 @@ class Wedding extends Model
         'guest_invitation_response_date',
         'couple_edit_date',
         'couple_invitation_edit_date',
-        'ceremony_confirm_date'
+        'ceremony_confirm_date',
+        'is_livestream',
+        'is_join_table',
+        'is_notify_planner',
     ];
     
     protected $table = 'weddings';
 
     public function eventTimes()
     {
-        return $this->hasMany(EventTimes::class, 'event_id');
+        return $this->hasMany(EventTimes::class, 'event_id', 'id');
     }
 
     public function place()
@@ -42,5 +45,15 @@ class Wedding extends Model
     public function customers()
     {
         return $this->hasMany(Customer::class, 'wedding_id', 'id');
+    } 
+
+    public function weddingCard()
+    {
+        return $this->hasOne(WeddingCard::class, 'wedding_id', 'id');
+    }
+
+    public function channels()
+    {
+        return $this->hasMany(Channel::class, 'wedding_id', 'id');
     } 
 }

@@ -6,45 +6,67 @@ use App\Constants\Role;
 use App\Models\Company;
 use App\Models\Restaurant;
 use App\Repositories\ChannelRepository;
+use Illuminate\Support\Facades\Auth;
 use Mail;
 use Hash;
 use Str;
 use Carbon\Carbon;
+use App\Constants\Common;
+use App\Models\Customer;
+use App\Repositories\CustomerRepository;
 
 class ChannelService
 {
     protected $channelRepo;
 
-    public function __construct(ChannelRepository $channelRepo)
+    public function __construct(ChannelRepository $channelRepo, CustomerRepository $customerRepo)
     {
         $this->channelRepo = $channelRepo;
+        $this->customerRepo = $customerRepo;
     }
 
     public function showDetail($id)
     {   
-        $place = $this->channelRepo->model->whereId($id)->first();
+        $channel = $this->channelRepo->model->whereId($id)->first();
 
-        return $place;
+        return $channel;
     }
 
     public function getAll($request)
     {   
         $orderBy = isset($request['order_by']) ? explode('|', $request['order_by']) : [];
         $keyword = !empty($request['keyword']) ? $request['keyword'] : null;
-        $paginate = !empty($request['paginate']) ? $request['paginate'] : PAGINATE;
-        $list = $this->channelRepo->model
-            ->whereWeddingId(auth()->guard('customer')->user()->wedding_id)
-            ->when(!empty($keyword), function($q) use ($keyword) {
-                $q->where('name', 'like', '%' . $keyword . '%');
-            })
-            ->where('status', STATUS_TRUE)
-            ->orderBy('created_at', 'desc');
-
-        if($paginate != PAGINATE_ALL){
+        $paginate = !empty($request['paginate']) ? $request['paginate'] : Common::PAGINATE;
+        $list = $this->channelRepo->model;
+        if(Auth::guard('customer')->check()){
+            $list = $list->whereWeddingId(auth()->guard('customer')->user()->wedding_id)
+                ->when(!empty($keyword), function($q) use ($keyword) {
+                    $q->where('name', 'like', '%' . $keyword . '%');
+                })
+                ->where('status', Common::STATUS_TRUE)
+                ->with(['tableAccount' => function($q) {
+                    $q->select('id', 'full_name', 'username');
+                }])
+                ->orderBy('created_at', 'desc');
+        } 
+        if($paginate != Common::PAGINATE_ALL){
             $list = $list->paginate($paginate);
         } else {
             $list = $list->get();
         }
         return $list;
+    }
+
+    public function updateChannel(int $id, array $request)
+    {   
+        $channel = $this->showDetail($id);
+        $data =  [];
+        if($channel){
+            if(is_numeric($request['status'])){
+                $data['status'] = $request['status'];
+            }
+            $channel->update($data);
+        }
+        return $channel;
     }
 }

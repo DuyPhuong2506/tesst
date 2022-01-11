@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Services\AgoraService;
+use App\Http\Requests\StoreRtcRequest;
+use App\Http\Requests\StoreRtmRequest;
 use Webpatser\Uuid\Uuid;
 use Illuminate\Support\Facades\Auth;
 use Exception;
@@ -41,19 +43,19 @@ class AgoraController extends Controller
                 $channelName = $user['username'];
                 $uuid = $user['id'];
                 // Rtc token using video call
-                $rtcToken = $this->agoraService->getRtcToken($channelName, $uuid, $user['role']);
+                // $rtcToken = $this->agoraService->getRtcToken($channelName, $uuid, $user['role']);
 
-                // Rtm token using chat
-                $rtmToken = $this->agoraService->getRtmToken($uuid);
+                // // Rtm token using chat
+                // $rtmToken = $this->agoraService->getRtmToken($uuid);
 
-                $dataChanels[] = [
-                    'app_id' => env('AGORA_APP_ID'),
-                    'uuid' => $uuid,
-                    'chanel_name' => $channelName,
-                    'rtc_token' => $rtcToken,
-                    'rtm_token' => $rtmToken,
-                    'role' => $user['role']
-                ];
+                // $dataChanels[] = [
+                //     'app_id' => env('AGORA_APP_ID'),
+                //     'uuid' => $uuid,
+                //     'chanel_name' => $channelName,
+                //     'rtc_token' => $rtcToken,
+                //     'rtm_token' => $rtmToken,
+                //     'role' => $user['role']
+                // ];
             }
 
             
@@ -66,6 +68,29 @@ class AgoraController extends Controller
            
 
             return $this->respondSuccess($dataChanels);
+        } catch (Exception $e) {
+            return $this->respondError(Response::HTTP_BAD_REQUEST, $e->getMessage());
+        }
+    }
+
+    public function storeRtm(StoreRtmRequest $request)
+    {
+        try {
+            $uuid = auth()->guard('customer')->user()->id;
+            $rtmToken = $this->agoraService->getRtmToken($uuid);
+            return $this->respondSuccess($rtmToken);
+        } catch (Exception $e) {
+            return $this->respondError(Response::HTTP_BAD_REQUEST, $e->getMessage());
+        }
+    }
+
+    public function storeRtc(StoreRtcRequest $request)
+    {
+        try {
+            $uuid = auth()->guard('customer')->user()->id;
+            $rtcToken = $this->agoraService->getRtcToken($request->name, $uuid, $request->role);
+
+            return $this->respondSuccess($rtcToken);
         } catch (Exception $e) {
             return $this->respondError(Response::HTTP_BAD_REQUEST, $e->getMessage());
         }

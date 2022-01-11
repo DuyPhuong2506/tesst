@@ -25,7 +25,7 @@ class CreateEventRequest extends ApiRequest
 
         if($dbTimeType === "ceremony"){
             $dbTimeName = ["ceremony_reception_time", "ceremony_time"];
-        }else if($dbTimeType === "party"){
+        } else if($dbTimeType === "party"){
             $dbTimeName = ["party_reception_time", "party_time"];
         }
 

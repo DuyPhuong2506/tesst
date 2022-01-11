@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Response;
 use Illuminate\Http\Request;
 use App\Traits\ApiTrait;
+use App\Constants\Role;
 use JWTAuth;
 
 class RoleAdminStaffMiddleware
@@ -22,16 +23,24 @@ class RoleAdminStaffMiddleware
      */
     public function handle($request, Closure $next)
     {
-        if(!Auth::user()){
+        $token = $request->bearerToken();
+        $exists = \App\Models\UserToken::where('token', $token)->exists();
+        if(!Auth::user() || !$exists){
             $token = $request->bearerToken();
             Auth::setToken($token)->invalidate();
-            
-            return $this->respondError(Response::HTTP_UNAUTHORIZED, 'The token has been blacklisted');
+            return $this->respondError(
+                Response::HTTP_UNAUTHORIZED, 'The token has been blacklisted'
+            );
         }
         
-        $user = JWTAuth::parseToken()->authenticate();
-        if($user->role == \App\Constants\Role::STAFF_ADMIN) return $next($request);
+        if(Auth::check()){
+            if(in_array(Auth::user()->role, [Role::STAFF_ADMIN])){
+                return $next($request);
+            }
+        }
         
-        return  $this->respondError(Response::HTTP_METHOD_NOT_ALLOWED, 'PERMISSION DENIED, ROLE STAFF');
+        return  $this->respondError(
+            Response::HTTP_METHOD_NOT_ALLOWED, 'PERMISSION DENIED, ROLE STAFF'
+        );
     }
 }

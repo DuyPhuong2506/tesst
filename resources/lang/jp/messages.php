@@ -73,6 +73,7 @@ return [
         'list_null' => 'Event list null',
         'detail_fail' => 'Event detail fail',
         'not_found' => 'The wedding event not found !',
+        'send_check_seat_subject' => '席次確認依頼',
 
         'validation' => [
             'title' => [
@@ -111,6 +112,9 @@ return [
             'greeting_message' => [
                 'max' => ':max文字列以内を入力してください。',
                 'required' => 'The greeting message is required !'
+            ],
+            'thank_you_message' => [
+                'max' => ':max文字列以内を入力してください。',
             ],
             'couple_name' => [
                 'required' => '必須項目に入力してください。',
@@ -225,6 +229,9 @@ return [
                 'numeric' => 'Must be numeric',
                 'max' => '半角数字1～180日前までの日数を入力してください。',
                 'min' => '半角数字1～180日前までの日数を入力してください。'
+            ],
+            'url' => [
+                'url' => '「会場リンク」欄に入力されているURLの形式が正しくありません。正しいURLを入力して下さい。'
             ]
         ]
     ],
@@ -242,5 +249,198 @@ return [
                 'different' => 'メールアドレスがすでにシステムで使用されています。 別のメールアドレスを入力してください。'
             ]
         ]
-    ]
+    ],
+    'wedding_card' => [
+        'create_success' => 'Wedding card create success',
+        'create_fail' => 'Wedding card create fail',
+        'update_success' => 'Wedding card update success',
+        'update_fail' => 'Wedding card update fail',
+        'delete_success' => 'Wedding card delete success',
+        'delete_fail' => 'Wedding card delete fail',
+        'send_mail_sucess' => 'The mail send success',
+        'send_mail_fail' => 'The mail send fail',
+        'subject_to_staff' => 'WEB招待状確認依頼',
+
+        'validation' => [
+            'template_card_id' => [
+                'required' => '必須項目に入力してください。',
+                'exists' => 'The template card does not exist'
+            ],
+            'content' => [
+                'required' => '必須項目に入力してください。',
+                'max' => 'The wedding card content can not be greater than :max characters'
+            ],
+            'couple_photo' => [
+                'required' => '必須項目に入力してください。',
+                'mimes' => 'The couple photo must be JPG, PNG type',
+                'max' => 'The couple photo can not be greater than 10Mb',
+            ],
+            'wedding_price' => [
+                'required' => '必須項目に入力してください。',
+                'digits_between' => 'The wedding price is 0~6 number characters',
+            ],
+        ]
+    ],
+    'bank_account' => [
+        'create_success' => 'Bank account create success',
+        'create_fail' => 'Bank account create fail',
+        'update_success' => 'Bank account update success',
+        'update_fail' => 'Bank account update fail',
+        'delete_success' => 'Bank account delete success',
+        'delete_fail' => 'Bank account delete fail',
+        'not_exist' => 'The bank account does not exists !',
+
+        'validation' => [
+            'bank_name' => [
+                'required' => '必須項目に入力してください。',
+                'max' => 'The bank account can not be greater than :max characters',
+            ],
+            'bank_branch' => [
+                'required' => '必須項目に入力してください。',
+                'max' => 'The bank account can not be greater than :max characters',
+            ],
+            'account_number' => [
+                'required' => '必須項目に入力してください。',
+                'digits' => 'The account number is :digits number characters',
+            ],
+            'card_type' => [
+                'required' => '必須項目に入力してください。',
+                'max' => 'The card type can not be greater than :max characters',
+            ],
+            'holder_name' => [
+                'required' => '必須項目に入力してください。',
+                'max' => 'The holder name can not be greater than :max characters',
+            ],
+            'wedding_card_id' => [
+                'required' => '必須項目に入力してください。',
+                'exists' => 'The wedding card id does not exist',
+            ],
+            'bank_account' => [
+                'array' => 'The data type must be an array',
+                'required' => 'The bank account data is required',
+                'max' => 'The banks account can not be greater than :max items'
+            ],
+        ]
+    ],
+    'participant' => [
+        'create_success' => 'Participant create success',
+        'create_fail' => 'Participant create fail',
+        'update_success' => 'Participant update success',
+        'update_fail' => 'Participant update fail',
+        'delete_success' => 'Participant delete success',
+        'delete_fail' => 'Participant delete fail',
+        'list_fail' => 'The list is fail',
+        'detail_fail' => 'Participant detail fail',
+        'not_found' => 'Participant not found',
+        'max_remote' => '同じテーブルに最大６名のリモート参加者が指定できます。',
+
+        'validation' => [
+            'is_only_party' => [
+                'required' => '必須項目に入力してください。',
+                'boolean' => 'The is only party is boolean',
+            ],
+            'first_name' => [
+                'required' => '必須項目に入力してください。',
+                'max' => 'The participant first name can not greater than :max characters',
+            ],
+            'last_name' => [
+                'required' => '必須項目に入力してください。',
+                'max' => 'The participant last name can not greater than :max characters',
+            ],
+            'relationship_couple' => [
+                'required' => '必須項目に入力してください。',
+                'max' => 'The participant last name can not greater than :max characters',
+            ],
+            'email' => [
+                'required' => '必須項目に入力してください。',
+                'max' => 'The email can not be greater than :max characters',
+                'regex' => 'The email format is invalid'
+            ],
+            'post_code' => [
+                'required' => 'The post code is required',
+                'digits' => 'The post code is :digits characters',
+                'numeric' => 'The post code is numeric',
+            ],
+            'address' => [
+                'required' => '必須項目に入力してください。',
+                'max' => 'The address can not be greater than :max characters',
+            ],
+            'phone' => [
+                'required' => 'The phone is required',
+                'digits_between' => 'The phone must be 10~11 characters'
+            ],
+            'customer_type' => [
+                'required' => '必須項目に入力してください。' ,
+                'numeric' => 'The customer type must be numeric',
+            ],
+            'task_content' => [
+                'max' => 'The task content can not be greater than :max characters',
+            ],
+            'free_word' => [
+                'max' => 'The free word can not be greater than :max characters',
+            ],
+            'bank_account_id' => [
+                'required' => '必須項目に入力してください。',
+                'exists' => 'The bank account does not exists'
+            ],
+            'bank_order' => [
+                'required' => '必須項目に入力してください。',
+                'min' => 'The bank account value can not be less than :min',
+                'max' => 'The bank account value can not be greater than :max',
+                'numeric' => 'The bank order must be a numeric',
+            ],
+            'is_send_wedding_card' => [
+                'required' => '必須項目に入力してください。',
+                'boolean' => 'The is send wedding card must be an boolean'
+            ],
+            'id' => [
+                'required' => '必須項目に入力してください。',
+                'exists' => 'The participant id does not exists',
+                'numeric' => 'The id must be numeric',
+            ],
+            'customer_relatives' => [
+                'first_name' => [
+                    'required' => 'The customer relative is require',
+                    'max' => 'The customer relative first name can not be greater than :max'
+                ],
+                'last_name' => [
+                    'required' => 'The customer relative is require',
+                    'max' => 'The customer relative last name can not be greater than :max',
+                ],
+                'relationship' => [
+                    'max' => 'The customer relative last name can not be greater than :max',
+                ]
+            ],
+            'join_status' => [
+                'required' => 'The join status is required',
+                'deadline' => 'The join status is deadline',
+                'numeric' => 'The join status is numeric',
+            ],
+            'current_position' => [
+                'required' => 'The current position is required',
+                'numeric' => 'The current position is numeric',
+            ],
+            'updated_position' => [
+                'required' => 'The updated position is required',
+                'numeric' => 'The updated position is numeric',
+            ],
+        ]
+    ],
+    'customer_task' => [
+        'create_success' => 'Customer task create success',
+        'create_fail' => 'Customer task create fail',
+        'update_success' => 'Customer task update success',
+        'update_fail' => 'Customer task update fail',
+        'delete_success' => 'Customer task delete success',
+        'delete_fail' => 'Customer task delete fail',
+
+        'validation' => [
+            'name' => [
+                'required' => 'Customer task name is required',
+            ],
+            'description' => [
+                'required' => 'Customer task description is required'
+            ]
+        ]
+    ],
 ];

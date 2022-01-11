@@ -15,6 +15,8 @@ class TablePosition extends Model
 
     public function customers()
     {
-        return $this->hasMany(Customer::class, 'table_position_id', 'id');
+        return $this->belongsToMany(
+            Customer::class, 'customer_table', 'table_position_id', 'customer_id'
+        )->withPivot('chair_name', 'status');
     }
 }

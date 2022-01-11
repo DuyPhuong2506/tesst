@@ -14,14 +14,14 @@ use Illuminate\Support\Facades\Mail;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+
 Route::prefix('v1')->group(function () {
-    Route::get('/dump-customer-token', 'EventsController@dumpCustomerToken');
 
     Route::post('/auth/register', 'AuthController@register');
     Route::post('/auth/login', 'AuthController@login');
     Route::post('/auth/customer/login', 'AuthCustomerController@login');
+    Route::post('/auth/customer/token-login', 'AuthCustomerController@tokenLogin');
     Route::post('/auth/table-account/login', 'AuthTableAccountController@login');
-
     #API CHANGE PASSWORD
     Route::post('/forgot-password','UsersController@sendEmailResetPassword');
     Route::post('/change-password','UsersController@updatePassword');
@@ -44,15 +44,20 @@ Route::prefix('v1')->group(function () {
         
         /* Role Staff Admin */
         Route::group(['middleware' => 'auth.admin_staff'], function(){
-            Route::prefix('/staff')->group(function () {
-                Route::post('/update-event', 'EventsController@staffUpdateEvent');
-            });
             Route::resource('/event','EventsController');
-
+            Route::resource('/time-table', 'WeddingTimeTableController');
             Route::prefix('/users')->group(function () {
                 Route::put('/staff-admin/create-or-update', 'UsersController@upadateStaffAdmin');
             });
-
+            
+            Route::prefix('/staff')->group(function () {
+                Route::get('/guest-participant/get', 'CustomersController@staffGetGuestInfo');
+                Route::get('/wedding-card/detail', 'WeddingCardsController@staffGetWeddingCard');
+                Route::get('/guest-list', 'CustomersController@staffListGuest');
+                Route::post('/guest-participant/update', 'CustomersController@staffUpdateGuestInfo');
+                Route::post('/guest-participant/reoder-row', 'CustomersController@staffReoderGuest');
+            });
+            Route::get('/table-account-wedding/{wedding_id}', 'TableAccountController@getTableAccountOfWedding');
             Route::resource('/places', 'PlacesController');
         });
 
@@ -71,35 +76,75 @@ Route::prefix('v1')->group(function () {
 
         /* Role Couple */
         Route::group(['middleware' => 'auth.couple'], function(){
+            Route::get('/couple/wedding-card/get-pre-signed', 'WeddingCardsController@getPreSigned');
+
             Route::get('/couple/event', 'EventsController@coupleDetailEvent');
-            Route::get('/couple/guest-list', 'EventsController@coupleListGuest');
+            Route::get('/couple/guest-list', 'CustomersController@coupleListGuest');
             
             Route::prefix('/couple/event')->group(function () {
-                Route::post('/update-greeting', 'EventsController@updateGreetingMsg');
-                Route::post('/update-time-table', 'WeddingTimeTableController@update');
+                Route::post('/thank-message/update', 'EventsController@updateThankMessage');
+                Route::post('/guest-participant/update', 'CustomersController@coupleUpdateGuestInfo');
+                Route::post('/guest-participant/update-table', 'CustomersController@coupleUpdateGuestTable');
+                Route::post('/participant/update', 'CustomersController@coupleUpdateGuestInfo');
+                Route::post('/participant/reoder-row', 'CustomersController@coupleReoderGuest');
             });
+
+            Route::get('/couple/wedding-card/notify-to-staff', 'WeddingCardsController@notifyToStaff');
+            Route::get('/couple/event/notify-to-planner', 'EventsController@notifyToPlanner');
+
+            Route::resource('/couple/template-card', 'TemplateCardsController');
+            Route::resource('/couple/template-content', 'TemplateContentController');
+            Route::resource('/couple/wedding-card', 'WeddingCardsController');
+            Route::resource('/couple/bank-account', 'BankAccountsController');
+            Route::resource('/couple/participant', 'CustomersController');
+            Route::resource('/couple/customer-task', 'CustomerTasksController');
         });
 
-        /* Role Guest */
-        Route::group(['middleware' => 'auth.guest'], function(){
-            Route::resource('/channel','ChannelsController');
-        });
-
-        /* Role Customer (Guest + Groom + Bride) */
+        /* Role Customer*/
         Route::group(['middleware' => 'auth.customer'], function(){
-            
+            Route::get('/customer/event', 'EventsController@getWeddingEventWithBearerToken');
         });
-        
+
+        Route::put('/customer/event/state-livesteam', 'EventsController@updateStateLivesteam');
         Route::post('/auth/logout', 'AuthController@logout');
         Route::post('/admin/create','UsersController@createAdmin');
         Route::get('/places-get-pre-signed', 'PlacesController@getPreSigned')->name('get.getPreSigned');
         Route::resource('/restaurants','RestaurantsController');
+        Route::resource('/table-positon', 'TablePositionsController');
+        Route::resource('/customer', 'CustomersController');
+        Route::get('/customer-in-wedding', 'CustomersController@getListCustomerInWedding');
+        Route::post('/create-dump-customer', 'CustomersController@createCustomerForWeeding');
+        Route::resource('/channel','ChannelsController');
+        Route::post('agora/store-rtm','AgoraController@storeRtm');
+        Route::post('agora/store-rtc','AgoraController@storeRtc');
+    });
 
-    
-    });
     Route::get('/agora/get-token','AgoraController@generateToken')->middleware('cors');
-    Route::get('/send-mail', function () {
-        Mail::to('anhpmt@bap.jp')->send(new SendMail()); 
-        return 'A message has been sent to Mailtrap!';
+
+    Route::get('/agora/create-channel', function()  {
+        \Artisan::call('command:CreateChannel');
+        
+        echo true;
     });
+
+    Route::get('/agora/update-token-channel', function()  {
+        \Artisan::call('command:UpdateTokenChannel');
+
+        echo true;
+    });
+
+    Route::get('/agora/remove-channel', function()  {
+        \DB::table('channels')->delete();
+
+        echo true;
+    });
+
+    Route::get('/dump-wedding', function(){
+        \Artisan::call('db:seed --class=WeddingSeeder');
+    });
+
+    Route::get('/un-dump-wedding', function(){
+        \Artisan::call('db:seed --class=UnWeddingSeeder');
+    });
+
 });

@@ -18,10 +18,22 @@ class TimeTableService
         $this->eventRepo = $eventRepo;
     }
 
-    public function updateTimeTable($weddingId ,$data)
+    public function updateTimeTable($requestData)
     {
-        $this->timeTableRepo->model->where('event_id', $weddingId)->delete();
-        return $this->eventRepo->model->find($weddingId)->eventTimes()->createMany($data);
+        $this->timeTableRepo->model->where('event_id', $requestData['wedding_id'])->delete();
+        return $this->eventRepo->model
+            ->find($requestData['wedding_id'])
+            ->eventTimes()
+            ->createMany($requestData['time_table']);
+    }
+
+    public function getListTimeTable($weddingID)
+    {
+        $timeTables = $this->timeTableRepo->model
+            ->where('event_id', $weddingID)
+            ->get();
+
+        return $timeTables;
     }
 
 }

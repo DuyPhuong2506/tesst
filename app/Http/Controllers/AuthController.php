@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Constants\Common;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -9,6 +10,7 @@ use Illuminate\Http\Response;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
 use Illuminate\Support\Facades\Auth;
+use App\Services\UserTokenService;
 use App\Constants\Role;
 use JWTAuth;
 use JWTAuthException;
@@ -18,15 +20,19 @@ use Carbon\Carbon;
 class AuthController extends Controller
 {
     private $user;
+    protected $userTokenService;
 
-    public function __construct(User $user)
-    {
+    public function __construct(
+        User $user, 
+        UserTokenService $userTokenService
+    ){
         \Config::set('jwt.user', User::class);
         \Config::set('auth.providers', ['users' => [
                 'driver' => 'eloquent',
                 'model' => User::class,
             ]]);
         $this->user = $user;
+        $this->userTokenService = $userTokenService;
     }
 
     public function register(RegisterRequest $request)
@@ -60,6 +66,7 @@ class AuthController extends Controller
         }
 
         $auth = Auth::user();
+        $this->userTokenService->createToken($auth->id, $token);
         $tempStatus = $auth->is_first_login;
 
         $auth->update([
@@ -68,7 +75,7 @@ class AuthController extends Controller
         
         if($auth->role === Role::SUPER_ADMIN){
             $auth->update([
-                'is_first_login' => STATUS_TRUE
+                'is_first_login' => Common::STATUS_TRUE
             ]);
         }
         
@@ -89,6 +96,8 @@ class AuthController extends Controller
         //$this->validate($request, ['token' => 'required']);
         
         try {
+            $token = $request->bearerToken();
+            $this->userTokenService->destroyToken($token);
             auth()->logout();
             return $this->respondSuccess([
                 'message' => 'You have successfully logged out.'

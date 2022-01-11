@@ -22,8 +22,6 @@ class Channel extends Model
      */
     protected $fillable = [
       'wedding_id',
-      'rtc_token',
-      'rtm_token',
       'name',
       'amount',
       'status',
@@ -33,4 +31,13 @@ class Channel extends Model
       'role'
     ];
 
+    public function wedding()
+    {
+        return $this->belongsTo(Wedding::class, 'wedding_id', 'id');
+    }
+
+    public function tableAccount()
+    {
+        return $this->belongsTo(Customer::class, 'customer_id', 'id');
+    }
 }

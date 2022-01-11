@@ -18,9 +18,10 @@ class Customer extends AuthJWT
         'full_name',
         'token',
         'invitation_url',
-        'table_position_id',
+        // 'table_position_id',
         'join_status',
-        'confirmed_at'
+        'confirmed_at',
+        'order',
     ];
 
     protected $hidden = [
@@ -36,11 +37,28 @@ class Customer extends AuthJWT
 
     public function tablePosition()
     {
-        return $this->belongsTo(TablePosition::class, 'table_position_id');
+        return $this->belongsToMany(
+            TablePosition::class, 'customer_table', 'customer_id', 'table_position_id'
+        )->withPivot('chair_name', 'status');
     }
 
     public function setPasswordAttribute($value)
     {
         $this->attributes['password'] = $value;
+    }
+
+    public function customerInfo()
+    {
+        return $this->hasOne(CustomerInfo::class, 'customer_id', 'id');
+    }
+
+    public function customerRelatives()
+    {
+        return $this->hasMany(CustomerRelative::class, 'customer_id', 'id');
+    }
+
+    public function customerRelative()
+    {
+        return $this->hasOne(CustomerRelative::class, 'customer_id', 'id');
     }
 }

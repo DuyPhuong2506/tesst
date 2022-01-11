@@ -4,29 +4,118 @@ namespace App\Http\Requests;
 
 use App\Http\Requests\ApiRequest;
 use App\Models\Wedding;
+use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class UpdateEventRequest extends ApiRequest
 {
-   
+    private $user;
+    
+    public function __construct()
+    {
+        $this->user = Auth::user();
+    }
+
+    public function isBetween($dbFrom, $dbTo, $start, $end) 
+    {
+        $dbFrom = strtotime($dbFrom);
+        $dbTo = strtotime($dbTo);
+        $start = strtotime($start);
+        $end = strtotime($end);
+
+        if(
+            (($start < $dbFrom) and ($end > $dbFrom) and ($end <= $dbTo)) OR
+            (($start >= $dbFrom) and ($start < $dbTo) and ($end <= $dbTo)) OR
+            (($start <= $dbFrom) and ($end >= $dbTo)) OR
+            (($start >= $dbFrom) and ($start < $dbTo) and ($end >= $dbTo))
+        ){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
     public function rules()
     {
         $rule = [
-            'id' => 'required|exists:weddings,id',
+            'id' => [
+                'required',
+                function($attribute, $value, $fail){
+                    $userID = $this->user->id;
+                    $weddingID = request()->id;
+                    $exist = Wedding::where('id', $weddingID)
+                        ->whereHas('place', function($q) use($userID){
+                            $q->whereHas('restaurant', function($q) use($userID){
+                                $q->whereHas('user', function($q) use($userID){
+                                    $q->where('id', $userID);
+                                });
+                            });
+                        })
+                        ->exists();
+                    
+                    if(!$exist){
+                        $fail(__('messages.event.validation.id.exists'));
+                    }
+                }
+            ],
             'title' => 'required|max:100|string',
             'date' => [
-                'required', 
-                'date_format:Y-m-d H:i',
-                function($attribute, $value, $fail){
-                    $placeId = request()->place_id;
-                    $eventDate = Carbon::parse($value)->format('Y-m-d');
-                    $exist = Wedding::whereDate('date', '=', $eventDate)
-                                    ->whereHas('place', function($q) use($placeId){
-                                        $q->where('id', $placeId);
-                                    })
-                                    ->exists();
-                    if($exist){
-                        $fail(__('messages.event.validation.date.was_held'));
+                'required',
+                'date_format:Y-m-d',
+                'after:today',
+                function($attribute, $value, $fail)
+                {
+                    $ceremonyReceptionTime = request()->ceremony_reception_time;
+                    $ceremonyTime = request()->ceremony_time;
+                    $partyReceptionTime = request()->party_reception_time;
+                    $partyTime = request()->party_time;
+                    $date = request()->date;
+                    $placeID = request()->place_id;
+
+                    $ceremony = (isset($ceremonyReceptionTime))
+                        ? $ceremonyReceptionTime
+                        : $ceremonyTime;
+                    
+                    $party = (isset($partyReceptionTime))
+                        ? $partyReceptionTime
+                        : $partyTime;
+
+                    $wedding = Wedding::whereHas('place', function($q) use($placeID){
+                            $q->where('id', $placeID);
+                        })
+                        ->where('date', $date);
+                    
+                    $listWedding = $wedding->get();
+
+                    if($wedding->exists()){
+                        foreach ($listWedding as $key => $value) {
+                            $dbCeremonyReceptionTime = $value['ceremony_reception_time'];
+                            $dbCeremonyTime = $value['ceremony_time'];
+                            $dbPartyReceptionTime = $value['party_reception_time'];
+                            $dbPartyTime = $value['party_time'];
+
+                            $dbCeremony = (isset($dbCeremonyReceptionTime))
+                                ? explode("-", $dbCeremonyReceptionTime)
+                                : explode("-", $dbCeremonyTime);
+
+                            $dbParty = (isset($dbPartyReceptionTime))
+                                ? explode("-", $dbPartyReceptionTime)
+                                : explode("-", $dbPartyTime);
+
+                            if(
+                                $this->isBetween(
+                                    $dbCeremony[0], $dbCeremony[1], 
+                                    $ceremony[0], $ceremony[1]
+                                ) or
+                                $this->isBetween(
+                                    $dbParty[0], $dbParty[1], 
+                                    $party[0], $party[1]
+                                )
+                            ){
+                                $fail(__('messages.event.validation.date.was_held'));
+                            }
+                        }
                     }
                 }
             ],
@@ -52,15 +141,6 @@ class UpdateEventRequest extends ApiRequest
             'party_time.1' => "after:party_time.0",
 
             'place_id' => 'required|exists:places,id,status,1',
-            
-            'groom_name' => 'required|string|max:20',
-            'groom_email' => 'required|max:50|string|email|regex:/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix',
-            'bride_name' => 'required|string|max:20',
-            'bride_email' => 'required|max:50|string|email|regex:/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix',
-
-            'allow_remote' => 'required|boolean',
-            'guest_invitation_response_date' => 'required|date_format:Y-m-d|before:couple_edit_date',
-            'couple_edit_date' => 'required|date_format:Y-m-d|before:date|after:guest_invitation_response_date'
         ];
 
         if(empty(request()->ceremony_reception_time)){
@@ -125,35 +205,6 @@ class UpdateEventRequest extends ApiRequest
             
             'place_id.required' => __('messages.event.validation.place.required'),
             'place_id.exists' => __('messages.event.validation.place.exists'),
-            
-            'groom_name.required' => __('messages.event.validation.couple_name.required'),
-            'groom_name.max' => __('messages.event.validation.couple_name.max'),
-            'bride_name.required' => __('messages.event.validation.couple_name.required'),
-            'bride_name.max' => __('messages.event.validation.couple_name.max'),
-            
-            'groom_email.required' => __('messages.mail.validation.email.required'),
-            'groom_email.max' => __('messages.mail.validation.email.max'),
-            'groom_email.email' => __('messages.mail.validation.email.regex'),
-            'groom_email.regex' => __('messages.mail.validation.email.regex'),
-            
-            'bride_email.required' => __('messages.mail.validation.email.required'),
-            'bride_email.max' => __('messages.mail.validation.email.max'),
-            'bride_email.email' => __('messages.mail.validation.email.regex'),
-            'bride_email.regex' => __('messages.mail.validation.email.regex'),
-
-            'allow_remote.required' => __('messages.mail.validation.email.required'),
-            'allow_remote.boolean' => __('messages.mail.validation.email.boolean'),
-            
-            'guest_invitation_response_date.required' => __('messages.event.validation.guest_invitation_response_date.required'),
-            'guest_invitation_response_date.date_format' => __('messages.event.validation.guest_invitation_response_date.date_format'),
-            'guest_invitation_response_date.before' => __('messages.event.validation.guest_invitation_response_date.before'),
-
-            'couple_edit_date.required' => __('messages.event.validation.couple_edit_date.required'),
-            'couple_edit_date.date_format' => __('messages.event.validation.couple_edit_date.date_format'),
-            'couple_edit_date.before' => __('messages.event.validation.couple_edit_date.before'),
-            'couple_edit_date.after' => __('messages.event.validation.couple_edit_date.after'),
         ];
     }
-
-
 }

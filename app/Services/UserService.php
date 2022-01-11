@@ -12,12 +12,13 @@ use Mail;
 use Hash;
 use Str;
 use Carbon\Carbon;
+use App\Constants\Common;
 
 class UserService
 {
     public function createAdmin($data)
     {   
-        $company = Company::whereIsActive(STATUS_TRUE)->first();
+        $company = Company::whereIsActive(Common::STATUS_TRUE)->first();
         $companyId = null;
         if($company){
             $companyId = $company->id;
@@ -34,7 +35,7 @@ class UserService
     {
         $orderBy = isset($request['order_by']) ? explode('|', $request['order_by']) : [];
         $keyword = !empty($request['keyword']) ? escape_like($request['keyword']) : null;
-        $paginate = !empty($request['paginate']) ? $request['paginate'] : PAGINATE;
+        $paginate = !empty($request['paginate']) ? $request['paginate'] : Common::PAGINATE;
 
         $staffs = User::staff()
             ->when(count($orderBy) > 1, function($q) use ($orderBy) {
@@ -51,7 +52,7 @@ class UserService
             })
             ->where(function($q) {
                 $q->whereHas('company' ,function($q){
-                    $q->whereIsActive(STATUS_TRUE);
+                    $q->whereIsActive(Common::STATUS_TRUE);
                 })->orWhere('company_id', null);
             })
             ->with(['company' => function($q){
@@ -62,7 +63,7 @@ class UserService
             }])
             ->orderBy('created_at', 'desc');
 
-            if($paginate != PAGINATE_ALL){
+            if($paginate != Common::PAGINATE_ALL){
                $staffs = $staffs->paginate($paginate);
             } else {
                 $staffs = $staffs->get();
@@ -109,7 +110,7 @@ class UserService
     
     public function createRememberMail($email, $token)
     {
-        User::where('email',$email)
+        User::where('email', $email)
             ->update([
                 'remember_token' => $token,
                 'email_at' => Carbon::now()
@@ -200,6 +201,7 @@ class UserService
 
     public function inviteNewAdminStaff($email)
     {
+        $email = Str::lower($email);
         $token = Str::random(100);
         $emailInfo = [
             'app_url' => env('ADMIN_URL'),
@@ -241,7 +243,7 @@ class UserService
             'name' => $data['restaurant_name'],
             'phone' => $data['phone'],
             'contact_name' => $data['contact_name'],
-            'contact_email' => $data['contact_email'],
+            'contact_email' => Str::lower($data['contact_email']),
             'post_code' => $data['post_code'],
             'address_1' => $data['address_1'],
             'address_2' => $data['address_2'],
@@ -270,7 +272,7 @@ class UserService
 
         if($user->role === Role::STAFF_ADMIN){
             $user->update([
-                'is_first_login' => config('constant', !defined('STATUS_TRUE'))
+                'is_first_login' => Common::STATUS_TRUE
             ]);
         }
 

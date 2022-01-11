@@ -49,7 +49,13 @@ return [
         'customer' => [
             'driver' => 'jwt',
             'provider' => 'customers',
-        ]
+        ],
+
+        'table_account' => [
+            'driver' => 'jwt',
+            'provider' => 'table_accounts',
+        ],
+        
     ],
 
     /*
@@ -78,6 +84,11 @@ return [
         'customers' => [
             'driver' => 'eloquent',
             'model' => App\Models\Customer::class,
+        ],
+
+        'table_accounts' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\TableAccount::class,
         ],
 
         // 'users' => [

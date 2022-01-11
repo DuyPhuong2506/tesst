@@ -72,6 +72,7 @@ return [
         'list_null' => 'Event list null',
         'detail_fail' => 'Event detail fail',
         'not_found' => 'The wedding event not found !',
+        'send_check_seat_subject' => '席次確認依頼',
 
         'validation' => [
             'title' => [
@@ -110,6 +111,9 @@ return [
             'greeting_message' => [
                 'max' => 'The greeting_message can not be greater than :max characters',
                 'required' => 'The greeting message is required !'
+            ],
+            'thank_you_message' => [
+                'max' => 'The thank you messages can not be greater than :max characters',
             ],
             'couple_name' => [
                 'required' => 'The couple_name field is required',
@@ -241,5 +245,198 @@ return [
                 'different' => 'The groom email can not be same bride email'
             ]
         ]
-    ]
+    ],
+    'wedding_card' => [
+        'create_success' => 'Wedding card create success',
+        'create_fail' => 'Wedding card create fail',
+        'update_success' => 'Wedding card update success',
+        'update_fail' => 'Wedding card update fail',
+        'delete_success' => 'Wedding card delete success',
+        'delete_fail' => 'Wedding card delete fail',
+        'send_mail_sucess' => 'The mail send success',
+        'send_mail_fail' => 'The mail send fail',
+        'subject_to_staff' => 'WEB招待状確認依頼',
+
+        'validation' => [
+            'template_card_id' => [
+                'required' => 'The template card id is required',
+                'exists' => 'The template card does not exist'
+            ],
+            'content' => [
+                'required' => 'The content is required',
+                'max' => 'The wedding card content can not be greater than :max characters'
+            ],
+            'couple_photo' => [
+                'required' => 'The couple photo is required',
+                'mimes' => 'The couple photo must be JPG, PNG type',
+                'max' => 'The couple photo can not be greater than 10Mb',
+            ],
+            'wedding_price' => [
+                'required' => 'The wedding price is required',
+                'digits_between' => 'The wedding price is 0~6 number characters',
+            ]
+        ]
+    ],
+    'bank_account' => [
+        'create_success' => 'Bank account create success',
+        'create_fail' => 'Bank account create fail',
+        'update_success' => 'Bank account update success',
+        'update_fail' => 'Bank account update fail',
+        'delete_success' => 'Bank account delete success',
+        'delete_fail' => 'Bank account delete fail',
+        'not_exist' => 'The bank account does not exists !',
+
+        'validation' => [
+            'bank_name' => [
+                'required' => 'The bank name is required',
+                'max' => 'The bank account can not be greater than :max characters',
+            ],
+            'bank_branch' => [
+                'required' => 'The bank branch is required',
+                'max' => 'The bank account can not be greater than :max characters',
+            ],
+            'account_number' => [
+                'required' => 'The account number is required',
+                'digits' => 'The account number is :digits number characters',
+            ],
+            'card_type' => [
+                'required' => 'The card type is required',
+                'max' => 'The card type can not be greater than :max characters',
+            ],
+            'holder_name' => [
+                'required' => 'The holder name is required',
+                'max' => 'The holder name can not be greater than :max characters',
+            ],
+            'wedding_card_id' => [
+                'required' => 'The wedding card id is required',
+                'exists' => 'The wedding card id does not exist',
+            ],
+            'bank_account' => [
+                'array' => 'The data type must be an array',
+                'required' => 'The bank account data is required',
+                'max' => 'The banks account can not be greater than :max items'
+            ],
+        ]
+    ],
+    'participant' => [
+        'create_success' => 'Participant create success',
+        'create_fail' => 'Participant create fail',
+        'update_success' => 'Participant update success',
+        'update_fail' => 'Participant update fail',
+        'delete_success' => 'Participant delete success',
+        'delete_fail' => 'Participant delete fail',
+        'list_fail' => 'The list is fail',
+        'detail_fail' => 'Participant detail fail',
+        'not_found' => 'Participant not found',
+        'max_remote' => 'This table is can not greater than 6 guest participant',
+
+        'validation' => [
+            'is_only_party' => [
+                'required' => 'The is only party is required',
+                'boolean' => 'The is only party is boolean',
+            ],
+            'first_name' => [
+                'required' => 'The first name is required',
+                'max' => 'The participant first name can not greater than :max characters',
+            ],
+            'last_name' => [
+                'required' => 'The last name is required',
+                'max' => 'The participant last name can not greater than :max characters',
+            ],
+            'relationship_couple' => [
+                'required' => 'The couple relationship is required',
+                'max' => 'The participant last name can not greater than :max characters',
+            ],
+            'email' => [
+                'required' => 'The email field is required',
+                'max' => 'The email can not be greater than :max characters',
+                'regex' => 'The email format is invalid'
+            ],
+            'post_code' => [
+                'required' => 'The post code is required',
+                'digits' => 'The post code is :digits characters',
+                'numeric' => 'The post code is numeric',
+            ],
+            'address' => [
+                'required' => 'The address is required',
+                'max' => 'The address can not be greater than :max characters',
+            ],
+            'phone' => [
+                'required' => 'The phone is required',
+                'digits_between' => 'The phone must be 10~11 characters'
+            ],
+            'customer_type' => [
+                'required' => 'The customer type is required',
+                'numeric' => 'The customer type must be numeric',
+            ],
+            'task_content' => [
+                'max' => 'The task content can not be greater than :max characters',
+            ],
+            'free_word' => [
+                'max' => 'The free word can not be greater than :max characters',
+            ],
+            'bank_account_id' => [
+                'required' => 'The bank account id is required',
+                'exists' => 'The bank account does not exists'
+            ],
+            'bank_order' => [
+                'required' => 'The bank account id is required',
+                'min' => 'The bank account value can not be less than :min',
+                'max' => 'The bank account value can not be greater than :max',
+                'numeric' => 'The bank order must be a numeric',
+            ],
+            'is_send_wedding_card' => [
+                'required' => 'The is send wedding card is required',
+                'boolean' => 'The is send wedding card must be an boolean'
+            ],
+            'id' => [
+                'required' => '必須項目に入力してください。',
+                'exists' => 'The participant id does not exists',
+                'numeric' => 'The id must be numeric',
+            ],
+            'customer_relatives' => [
+                'first_name' => [
+                    'required' => 'The customer relative is require',
+                    'max' => 'The customer relative first name can not be greater than :max'
+                ],
+                'last_name' => [
+                    'required' => 'The customer relative is require',
+                    'max' => 'The customer relative last name can not be greater than :max',
+                ],
+                'relationship' => [
+                    'max' => 'The customer relative last name can not be greater than :max',
+                ]
+            ],
+            'join_status' => [
+                'required' => 'The join status is required',
+                'deadline' => 'The join status is deadline',
+                'numeric' => 'The join status is numeric',
+            ],
+            'current_position' => [
+                'required' => 'The current position is required',
+                'numeric' => 'The current position is numeric',
+            ],
+            'updated_position' => [
+                'required' => 'The updated position is required',
+                'numeric' => 'The updated position is numeric',
+            ],
+        ]
+    ],
+    'customer_task' => [
+        'create_success' => 'Customer task create success',
+        'create_fail' => 'Customer task create fail',
+        'update_success' => 'Customer task update success',
+        'update_fail' => 'Customer task update fail',
+        'delete_success' => 'Customer task delete success',
+        'delete_fail' => 'Customer task delete fail',
+
+        'validation' => [
+            'name' => [
+                'required' => 'Customer task name is required',
+            ],
+            'description' => [
+                'required' => 'Customer task description is required'
+            ]
+        ]
+    ],
 ];
