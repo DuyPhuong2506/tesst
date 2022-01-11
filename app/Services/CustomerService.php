@@ -13,7 +13,6 @@ use App\Models\Customer;
 use Exception;
 use Faker\Factory;
 use App\Constants\InviteSend;
-use App\Constants\CustomerConstant;
 use Str;
 use DB;
 
