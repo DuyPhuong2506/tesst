@@ -25,7 +25,8 @@ class UpdateStaffInfoRequest extends ApiRequest
             'address_1' => 'required|string|max:200',
             'address_2' => 'max:200',
             'guest_invitation_response_num' => 'required|numeric|min:1|max:180',
-            'couple_edit_num' => 'required|numeric|min:1|max:180'
+            'couple_edit_num' => 'required|numeric|min:1|max:180',
+            'link_place' => 'url',
         ];
     }
 
@@ -59,6 +60,7 @@ class UpdateStaffInfoRequest extends ApiRequest
             'couple_edit_num.numeric' => __('messages.restaurant.validation.couple_edit_num.numeric'),
             'couple_edit_num.max' => __('messages.restaurant.validation.couple_edit_num.max'),
             'couple_edit_num.min' => __('messages.restaurant.validation.couple_edit_num.min'),
+            'link_place.url' => __('messages.restaurant.validation.url.url'),
         ];
     }
 }

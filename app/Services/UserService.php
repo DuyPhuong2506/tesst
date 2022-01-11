@@ -249,7 +249,8 @@ class UserService
             'address_2' => $data['address_2'],
             'company_name' => $data['company_name'],
             'guest_invitation_response_num' => $data['guest_invitation_response_num'],
-            'couple_edit_num' => $data['couple_edit_num']
+            'couple_edit_num' => $data['couple_edit_num'],
+            'link_place' => $data['link_place']
         ];
 
         /*
